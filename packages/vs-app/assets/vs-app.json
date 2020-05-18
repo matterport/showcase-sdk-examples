@@ -1,0 +1,620 @@
+{
+  "version": "1.0",
+  "payload": {
+    "objects": [
+      {
+        "name": "slot_1",
+        "position": { "x": -0.4511, "y": 0.57, "z": -0.355},
+        "rotation": { "x": 0, "y": 0,"z": 0 },
+        "scale": { "x": 1, "y": 1,"z": 1 },
+        "components": [
+          {
+            "type": "mp.slot",
+            "inputs": {
+              "size": { "x": 2.2, "y": 1, "z": 1 }
+            }
+          },
+          {
+            "type": "mp.orientedBox",
+            "events": {
+              "INTERACTION.CLICK": true,
+              "INTERACTION.HOVER": false,
+              "INTERACTION.DRAG": false
+            }
+          },
+          {
+            "type": "mp.gltfLoader",
+            "events": {
+              "INTERACTION.CLICK": false,
+              "INTERACTION.HOVER": false,
+              "INTERACTION.DRAG": false
+            }
+          },
+          {
+            "type": "mp.objLoader",
+            "inputs": {
+              "url": "https://static.matterport.com/showcase-sdk/examples/assets-1.0-2-g6b74572/assets/models/mp-logo/brand.obj",
+              "localScale": { "x": 0.02, "y": 0.02, "z": 0.02 },
+              "localRotation": { "x": 0, "y": 0, "z": 0 },
+              "localPosition": { "x": 0, "y": -0.2, "z": 0 }
+            },
+            "events": {
+              "INTERACTION.CLICK": false,
+              "INTERACTION.HOVER": false,
+              "INTERACTION.DRAG": false
+            }
+          },
+          {
+            "type": "mp.loadingIndicator",
+            "inputs": {
+              "size": { "x": 1.0, "y": 1.0, "z": 1.0 }
+            }
+          }
+        ],
+        "bindings": [
+          [4, "logo", 3, "objectRoot"]
+        ]
+      },
+      {
+        "name": "slot_2",
+        "position": { "x": 1.23, "y": 0.353, "z": -0.31},
+        "rotation": { "x": 0, "y": 0,"z": 0 },
+        "scale": { "x": 1, "y": 1,"z": 1 },
+        "components": [
+          {
+            "type": "mp.slot",
+            "inputs": {
+              "size": { "x": 0.7, "y": 0.6, "z": 0.7 }
+            }
+          },
+          {
+            "type": "mp.orientedBox"
+          },
+          {
+            "type": "mp.gltfLoader",
+            "events": {
+              "INTERACTION.CLICK": false,
+              "INTERACTION.HOVER": false,
+              "INTERACTION.DRAG": false
+            }
+          },
+          {
+            "type": "mp.objLoader",
+            "inputs": {
+              "url": "https://static.matterport.com/showcase-sdk/examples/assets-1.0-2-g6b74572/assets/models/mp-logo/icon.obj",
+              "localScale": { "x": 0.02, "y": 0.02, "z": 0.02 },
+              "localRotation": { "x": 0, "y": 0, "z": 0 },
+              "localPosition": { "x": 0, "y": -0.1, "z": 0 }
+            },
+            "events": {
+              "INTERACTION.CLICK": false,
+              "INTERACTION.HOVER": false,
+              "INTERACTION.DRAG": false
+            }
+          },
+          {
+            "type": "mp.loadingIndicator",
+            "inputs": {
+              "size": { "x": 0.6, "y": 0.6, "z": 0.6 }
+            }
+          }
+        ],
+        "bindings": [
+          [4, "logo", 3, "objectRoot"]
+        ]
+      },
+      {
+        "name": "slot_3",
+        "position": { "x": 1.11, "y": 0.55, "z": 1.48},
+        "rotation": { "x": 0, "y": 0,"z": 0 },
+        "scale": { "x": 1, "y": 1,"z": 1 },
+        "components": [
+          {
+            "type": "mp.slot",
+            "inputs": {
+              "size": { "x": 1, "y": 1, "z": 1 }
+            }
+          },
+          {
+            "type": "mp.orientedBox"
+          },
+          {
+            "type": "mp.gltfLoader",
+            "events": {
+              "INTERACTION.CLICK": false,
+              "INTERACTION.HOVER": false,
+              "INTERACTION.DRAG": false
+            }
+          },
+          {
+            "type": "mp.objLoader",
+            "inputs": {
+              "url": "https://static.matterport.com/showcase-sdk/examples/assets-1.0-2-g6b74572/assets/models/mp-logo/brand.obj",
+              "localScale": { "x": 0.02, "y": 0.02, "z": 0.02 },
+              "localRotation": { "x": 0, "y": 0, "z": 0 },
+              "localPosition": { "x": 0, "y": -0.2, "z": 0 }
+            },
+            "events": {
+              "INTERACTION.CLICK": false,
+              "INTERACTION.HOVER": false,
+              "INTERACTION.DRAG": false
+            }
+          },
+          {
+            "type": "mp.loadingIndicator",
+            "inputs": {
+              "size": { "x": 1.0, "y": 1.0, "z": 1.0 }
+            }
+          }
+        ],
+        "bindings": [
+          [4, "logo", 3, "objectRoot"]
+        ]
+      },
+      {
+        "name": "slot_4",
+        "position": { "x": -0.6, "y": 0.31, "z": 1.3},
+        "rotation": { "x": 0, "y": 0,"z": 0 },
+        "scale": { "x": 1, "y": 1,"z": 1 },
+        "components": [
+          {
+            "type": "mp.slot",
+            "inputs": {
+              "size": { "x": 1.7, "y": 0.5, "z": 1.2 }
+            }
+          },
+          {
+            "type": "mp.orientedBox"
+          },
+          {
+            "type": "mp.gltfLoader",
+            "events": {
+              "INTERACTION.CLICK": false,
+              "INTERACTION.HOVER": false,
+              "INTERACTION.DRAG": false
+            }
+          },
+          {
+            "type": "mp.objLoader",
+            "inputs": {
+              "url": "https://static.matterport.com/showcase-sdk/examples/assets-1.0-2-g6b74572/assets/models/mp-logo/brand.obj",
+              "localScale": { "x": 0.02, "y": 0.02, "z": 0.02 },
+              "localRotation": { "x": 0, "y": 0, "z": 0 },
+              "localPosition": { "x": 0, "y": -0.1, "z": 0 }
+            },
+            "events": {
+              "INTERACTION.CLICK": false,
+              "INTERACTION.HOVER": false,
+              "INTERACTION.DRAG": false
+            }
+          },
+          {
+            "type": "mp.loadingIndicator",
+            "inputs": {
+              "size": { "x": 0.5, "y": 0.5, "z": 0.5 }
+            }
+          }
+        ],
+        "bindings": [
+          [4, "logo", 3, "objectRoot"]
+        ]
+      },
+      {
+        "name": "slot_camera",
+        "position": {
+          "x": 2.8,
+          "y": 2.4,
+          "z": 10.71
+        },
+        "rotation": {
+          "x": 0,
+          "y": -22,
+          "z": 0
+        },
+        "scale": {
+          "x": 1,
+          "y": 1,
+          "z": 1
+        },
+        "components": [
+          {
+            "type": "mp.gltfLoader",
+            "inputs": {
+              "url": "https://static.matterport.com/showcase-sdk/examples/assets-1.0-2-g6b74572/assets/models/camera-1/scene.gltf",
+              "localScale": { "x": 0.0008, "y": 0.0008, "z": 0.0008 },
+              "localRotation": { "x": 0, "y": 90, "z": 0 }
+            },
+            "events": {
+              "INTERACTION.CLICK": false,
+              "INTERACTION.HOVER": false,
+              "INTERACTION.DRAG": false
+            }
+          },
+          {
+            "type": "mp.securityCamera",
+            "inputs": {
+              "nearPlane": 0.1,
+              "farPlane": 10,
+              "horizontalFOV": 52,
+              "aspect": 1.7777777777777777,
+              "localPosition": {
+                "x": 0,
+                "y": 0.18,
+                "z": -0.3
+              },
+              "localRotation": {
+                "x": -15,
+                "y": 0,
+                "z": 0
+              },
+              "color": 65280,
+              "panPeriod": 5,
+              "panAngle": -45
+            },
+            "events": {
+              "INTERACTION.CLICK": false,
+              "INTERACTION.HOVER": false,
+              "INTERACTION.DRAG": false
+            }
+          }
+        ]
+      },
+      {
+        "name": "lights",
+        "position": { "x": 0, "y": 0, "z": 0},
+        "rotation": { "x": 0, "y": 0,"z": 0 },
+        "scale": { "x": 1, "y": 1,"z": 1 },
+        "components": [
+          {
+            "type": "mp.ambientLight",
+            "inputs": {
+              "r": 1.0, "g": 1.0, "b": 1.0,
+              "intensity": 3
+            }
+          },
+          {
+            "type": "mp.directionalLight",
+            "inputs": {
+              "intensity": 2,
+              "position": {
+                "x": 0, "y": 2, "z": -1
+              },
+              "target": {
+                "x": 0, "y": -1, "z": 2
+              },
+              "castShadow": true,
+              "debug": false
+            }
+          },
+          {
+            "type": "mp.directionalLight",
+            "inputs": {
+              "intensity": 0.5,
+              "position": {
+                "x": 0, "y": 2, "z": 8
+              },
+              "target": {
+                "x": 0, "y": 0, "z": 2
+              },
+              "castShadow": true,
+              "debug": false
+            }
+          }
+        ]
+      },
+      {
+        "name": "nest",
+        "position": { "x": -3.22, "y": 1.371, "z": 3.7805},
+        "rotation": { "x": 0, "y": 180,"z": 0 },
+        "scale": { "x": 1, "y": 1,"z": 1 },
+        "components": [
+          {
+            "type": "mp.daeLoader",
+            "inputs": {
+              "url": "https://static.matterport.com/showcase-sdk/examples/assets-1.0-2-g6b74572/assets/models/iot/nest-1/model.dae",
+              "localScale": { "x": 0.04, "y": 0.04, "z": 0.04 },
+              "localRotation": { "x": 0, "y": 0, "z": 0 }
+            }
+          },
+          {
+            "type": "mp.planeRenderer"
+          },
+          {
+            "type": "mp.canvasRenderer",
+            "inputs": {
+              "textureRes": {
+                "w": 1024,
+                "h": 1024
+              }
+            }
+          },
+          {
+            "type": "mp.nestThermostat"
+          }
+        ],
+        "bindings": [
+          [3, "loadingState", 0, "loadingState"],
+          [1, "texture", 2, "texture"],
+          [2, "painter", 3, "painter"],
+          [3, "texture", 2, "texture"],
+          [1, "visible", 3, "visible"]
+        ],
+        "events": [
+          [3, "hover", 0, "INTERACTION.HOVER"],
+          [2, "repaint", 3, "repaint"]
+        ]
+      },
+      {
+        "name": "shadow",
+        "components": [
+        ]
+      },
+      {
+        "name": "webcam",
+        "position": { "x": -4.65, "y": 1.5, "z": -0.1},
+        "rotation": { "x": 0, "y": 90,"z": 0 },
+        "scale": { "x": 1.2, "y": 1.2,"z": 1.2 },
+        "components": [
+
+          {
+            "type": "mp.planeRenderer",
+            "inputs": {
+              "transparent": false
+            }
+          },
+          {
+            "type": "mp.videoRenderer"
+          },
+          {
+            "type": "mp.videoStreamCapture",
+            "inputs": {
+              "deviceId": 0
+            }
+          },
+          {
+            "type": "mp.toggleState",
+            "inputs": {
+              "initialState": false
+            }
+          },
+
+          {
+            "type": "mp.planeRenderer",
+            "inputs": {
+              "transparent": true,
+              "opacity": 0.8
+            }
+          },
+          {
+            "type": "mp.canvasRenderer",
+            "inputs": {
+              "textureRes": {
+                "w": 1024,
+                "h": 1024
+              }
+            }
+          },
+          {
+            "type": "mp.canvasBorder",
+            "inputs": {
+              "position": {
+                "x": 0,
+                "y": 0
+              },
+              "size": {
+                "h": 1024,
+                "w": 1024
+              },
+              "radius": 50
+            }
+          },
+
+          {
+            "type": "mp.planeRenderer",
+            "inputs": {
+              "transparent": true,
+              "opacity": 0.8,
+              "polygonOffset": true,
+              "polygonOffsetFactor": -2
+            }
+          },
+          {
+            "type": "mp.canvasRenderer",
+            "inputs": {
+              "textureRes": {
+                "w": 256,
+                "h": 256
+              }
+            }
+          },
+          {
+            "type": "mp.canvasText",
+            "inputs": {
+              "size": {
+                "h": 256,
+                "w": 256
+              },
+              "text": "Click to enable webcam.",
+              "font": "normal bold 30px sans-serif",
+              "position": { "x":70, "y": 70, "z": 0 },
+              "textWidth": 200
+            }
+          }
+        ],
+        "bindings": [
+          [1, "src", 2, "stream"],
+          [0, "texture", 1, "texture"],
+          [2, "enabled", 3, "state"],
+          [0, "aspect", 2, "aspect"],
+          [5, "painter", 6, "painter"],
+          [4, "texture", 5, "texture"],
+          [4, "aspect", 2, "aspect"],
+          [8, "painter", 9, "painter"],
+          [7, "texture", 8, "texture"],
+          [7, "visible", 3, "negated"],
+          [7, "aspect", 2, "aspect"]
+        ],
+        "events": [
+          [3, "toggle", 0, "INTERACTION.CLICK"]
+        ]
+      },
+      {
+        "name": "video",
+        "position": { "x": -3.0, "y": 2.3, "z": 6.7},
+        "rotation": { "x": 0, "y": 90,"z": 0 },
+        "scale": { "x": 1.75, "y": 1.75,"z": 1.75 },
+        "components": [
+          {
+            "type": "mp.tuner",
+            "inputs": {
+              "urls": [
+                "https://bfmbusisecure-i.akamaihd.net/hls/live/265375/876450612001/BFMBusinessS/video_0/video_0.m3u8",
+                "https://video2archives.earthcam.com/archives/_definst_/MP4:permanent/14162/2019/07/22/1300.mp4/chunklist_w1401431259.m3u8",
+                "https://nmxlive.akamaized.net/hls/live/529965/Live_1/index.m3u8",
+                "https://tv5styleen-i.akamaihd.net/hls/live/631650/tv5styleen/tv5style_eng_1200.m3u8",
+                "https://play.cdn.enetres.net/16011939C62D44ED91350508FB25828B021/021/playlist.m3u8",
+                "https://br_hdslive-f.akamaihd.net/i/bfssued_germany@119890/index_3776_av-p.m3u8"
+              ]
+            },
+            "events": {
+              "next": true
+            }
+          },
+          {
+            "type": "mp.hlsLoader"
+          },
+          {
+            "type": "mp.videoRenderer"
+          },
+          {
+            "type": "mp.planeRenderer",
+            "inputs": {
+              "transparent": false,
+              "localScale": { "x": 0.6, "y": 0.6, "z": 0.6 },
+              "localPosition": { "x": 0, "y": 0, "z": 0 }
+            }
+          },
+          {
+            "type": "mp.toggleState",
+            "inputs": {
+              "initialState": false
+            }
+          },
+
+          {
+            "type": "mp.planeRenderer",
+            "inputs": {
+              "transparent": true,
+              "opacity": 0.8,
+              "localScale": { "x": 0.6, "y": 0.6, "z": 0.6 }
+            }
+          },
+          {
+            "type": "mp.canvasRenderer",
+            "inputs": {
+              "textureRes": {
+                "w": 1024,
+                "h": 1024
+              }
+            }
+          },
+          {
+            "type": "mp.canvasBorder",
+            "inputs": {
+              "position": { "x": 0, "y": 0 },
+              "size": { "h": 1024, "w": 1024 },
+              "radius": 50
+            }
+          },
+
+          {
+            "type": "mp.planeRenderer",
+            "inputs": {
+              "localScale": { "x": 0.6, "y": 0.6, "z": 0.6 },
+              "transparent": true,
+              "opacity": 0.8,
+              "polygonOffset": true,
+              "polygonOffsetFactor": -2
+            }
+          },
+          {
+            "type": "mp.canvasRenderer",
+            "inputs": {
+              "textureRes": {
+                "w": 512,
+                "h": 512
+              }
+            }
+          },
+          {
+            "type": "mp.canvasText",
+            "inputs": {
+              "size": {
+                "h": 512,
+                "w": 512
+              },
+              "text": "Click me.",
+              "font": "normal bold 40px sans-serif",
+              "position": { "x":160, "y": 210, "z": 0 },
+              "textWidth": 250
+            }
+          },
+
+          {
+            "type": "mp.planeRenderer",
+            "inputs": {
+              "localScale": { "x": 0.08, "y": 0.08, "z": 1.0 },
+              "localPosition": { "x": 0.22, "y": -0.13, "z": 0.01 }
+            },
+            "events": {
+              "INTERACTION.CLICK": true
+            }
+          },
+          {
+            "type": "mp.canvasRenderer",
+            "inputs": {
+              "textureRes": {
+                "w": 128,
+                "h": 128
+              }
+            }
+          },
+          {
+            "type": "mp.canvasImage",
+            "inputs": {
+              "src": "https://static.matterport.com/showcase-sdk/examples/assets-1.0-2-g6b74572/assets/textures/ff.png",
+              "srcPosition": { "x":0, "y": 0, "z": 0 },
+              "srcSize": { "w": 128, "h": 128},
+              "destPosition": { "x":0, "y": 0, "z": 0 },
+              "destSize": { "w": 128, "h": 128}
+            }
+          }
+        ],
+        "bindings": [
+          [1, "src", 0, "src"],
+          [2, "src", 1, "video"],
+          [3, "texture", 2, "texture"],
+          [1, "enabled", 4, "state"],
+          [3, "aspect", 1, "aspect"],
+
+          [6, "painter", 7, "painter"],
+          [5, "texture", 6, "texture"],
+          [5, "aspect", 1, "aspect"],
+
+          [9, "painter", 10, "painter"],
+          [8, "texture", 9, "texture"],
+          [8, "visible", 4, "negated"],
+
+          [12, "painter", 13, "painter"],
+          [11, "texture", 12, "texture"],
+          [11, "visible", 4, "state"]
+        ],
+        "events": [
+          [4, "toggle", 3, "INTERACTION.CLICK"],
+          [0, "next", 11, "INTERACTION.CLICK"],
+          [12, "repaint", 13, "paint.ready"]
+        ]
+      }
+    ]
+  }
+}

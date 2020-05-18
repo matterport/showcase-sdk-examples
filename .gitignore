@@ -1,0 +1,9 @@
+node_modules
+.idea
+dist
+*.log
+.DS_Store
+.vscode
+version.txt
+bundle.zip
+packages/bundle

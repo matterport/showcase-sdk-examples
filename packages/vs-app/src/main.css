@@ -1,0 +1,20 @@
+.frame {
+  height: 100%;
+  width: 100%;
+  border-width: 0px;
+}
+
+.main {
+  height: 100%;
+  width: 100%;
+}
+
+.list-wrapper {
+  z-index: 100;
+  position: fixed;
+  right: 10px;
+  top: 10px;
+  float: right;
+  width: 120px;
+  background-color: whitesmoke;
+}

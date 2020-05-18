@@ -1,0 +1,8 @@
+{
+  "name": "@mp/core",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  }
+}

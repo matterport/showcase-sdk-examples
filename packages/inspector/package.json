@@ -1,0 +1,35 @@
+{
+  "name": "inspector",
+  "version": "1.0.0",
+  "scripts": {
+    "develop": "webpack-dev-server",
+    "build-prod": "webpack --mode=production",
+    "build-dev": "webpack --mode=development"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.6.0",
+    "@material-ui/icons": "^4.5.1",
+    "@material-ui/lab": "^4.0.0-alpha.31",
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.3",
+    "mobx": "^5.15.1",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "react-dropzone": "^10.2.0",
+    "rxjs": "^6.5.3",
+    "three": "^0.115.0",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "@mp/bundle-sdk": "^1.0.0",
+    "@mp/common": "^1.0.0",
+    "typescript": "^3.7.5"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.1.1",
+    "html-webpack-plugin": "^3.2.0",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^6.2.1",
+    "webpack-dev-server": "^3.9.0"
+  }
+}

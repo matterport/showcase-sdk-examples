@@ -1,0 +1,32 @@
+{
+  "name": "easter",
+  "version": "1.0.0",
+  "main": "lib/easter.js",
+  "scripts": {
+    "develop": "webpack-dev-server",
+    "build-prod": "webpack --mode=production",
+    "build-dev": "webpack --mode=development"
+  },
+  "dependencies": {
+    "@mp/bundle-sdk": "^1.0.0",
+    "@mp/common": "^1.0.0",
+    "@mp/core": "^1.0.0",
+    "@types/react-dom": "^16.9.6",
+    "phaser": "^3.22.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "three": "^0.115.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.31",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.1.1",
+    "html-webpack-plugin": "^4.0.3",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  }
+}

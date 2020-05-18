@@ -1,0 +1,499 @@
+
+.overlay-container {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  text-align: center;
+}
+
+.text-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 680px;
+  height: 516px;
+  margin-top: -258px;
+  margin-left: -340px;
+  background-color: aliceblue;
+  padding: 5px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.tutorial .text-wrapper {
+  height: 568px;
+}
+
+.title {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 36px;
+  letter-spacing: 0.4px;
+  color: #222222;
+  padding: 8px;
+}
+
+.intro .text-wrapper {
+  height: 428px;
+}
+
+.tutorial .title {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+.tutorial .video {
+  width: 598px;
+  height: 340px;
+}
+
+button {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 22px;
+  text-align: center;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #F5F4F3;
+  background: #222222;
+  width: 190px;
+  height: 48px;
+  margin-top: 32px;
+}
+
+#rabbit-ears {
+  padding-top: 48px;
+  width: 128px;
+  height: 105px;
+}
+
+.description {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 26px;
+  text-align: center;
+  letter-spacing: 0.2px;
+  color: #444444;
+  padding-left: 66px;
+  padding-right: 66px;
+}
+
+.basket {
+  opacity: 1;
+  width: 137px;
+  height: 137px;
+}
+
+#game-overlay {
+  float: right;
+  width: 200px;
+  height: 257px;
+  background: rgba(0,0,0,0.8);
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 26px;
+  text-align: center;
+  letter-spacing: 0.2px;
+  color: #F5F4F3;
+  pointer-events: all;
+}
+
+.game-hint {
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 26px;
+  text-align: center;
+  letter-spacing: 0.2px;
+  text-decoration-line: underline;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+
+.game-hint:hover {
+  color: #FF3158;
+}
+
+.no-pointer-events {
+  pointer-events: none;
+}
+
+.dark {
+  background-color: rgba(20,20,20,0.8);
+}
+
+.game-over .text-wrapper {
+  width: 680px;
+  height: 384px;
+  margin-left: -340px;
+  margin-top: -180px;
+  background: #ffffff;
+}
+
+.game-over .title {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 36px;
+  text-align: center;
+  letter-spacing: 0.4px;
+  color: #222222;
+  padding: 16px;
+  margin-top: 15px;
+}
+
+.game-over .description {
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 26px;
+  text-align: center;
+  letter-spacing: 0.2px;
+  color: #444444;
+}
+
+.timer {
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 26px;
+  text-align: center;
+  letter-spacing: 0.2px;
+  color: #F5F4F3;
+  padding-top: 5px;
+}
+
+.score {
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 26px;
+  text-align: center;
+  letter-spacing: 0.2px;
+  color: #F5F4F3;
+  width: 35px;
+  float: left;
+  padding-left: 29px;
+  padding-top: 5px;
+}
+
+.score-desc {
+  text-align: left;
+  padding-top: 5px;
+  display: inline-block;
+}
+
+.link-item-container {
+  display: flex;
+  flex-direction: row;
+  text-align: unset;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.link-item {
+  height: 58px;
+  width: 58px;
+  text-align: center;
+  position: relative;
+  display: block;
+  margin: 7px;
+}
+
+.link-background {
+  height: 58px;
+  width: 58px;
+  left: 0px;
+  -webkit-border-radius: 29px;
+  -moz-border-radius: 29px;
+  border-radius: 29px;
+  background: #F5F4F3;
+}
+
+.link-background:hover {
+  background: #FF3158;
+}
+
+.link-icon {
+  padding: 20px;
+}
+
+.url-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.url-string {
+  width: 255px;
+  height: 48px;
+  background: #F5F4F3;
+  line-height: 1;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 26px;
+  letter-spacing: 0.2px;
+  color: #444444;
+}
+
+.url-copy {
+  margin: 0px;
+}
+
+@media only screen and (max-device-width: 667px) {
+  .intro .text-wrapper {
+    left: 7%;
+    top: 20%;
+    width: 86%;
+    height: 348px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  #rabbit-ears {
+    width: 64px;
+    height: 54px;
+    padding-top: 18px;
+  }
+
+  .intro .title {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 32px;
+    letter-spacing: 0.4px;
+    color: #222222;
+  }
+
+  .intro .description {
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 26px;
+    text-align: center;
+    letter-spacing: 0.2px;
+    color: #444444;
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .intro button {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #F5F4F3;
+    width: 92%;
+    padding: 12px;
+  }
+
+  .tutorial .text-wrapper {
+    left: 7%;
+    top: 20%;
+    width: 86%;
+    height: 319px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  .tutorial .title {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 32px;
+    text-align: center;
+    letter-spacing: 0.4px;
+    color: #222222;
+    padding: 16px;
+  }
+
+  .tutorial .video {
+    width: 94%;
+    height: 52%;
+  }
+
+  .tutorial button {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #F5F4F3;
+    margin-top: 20px;
+    width: 95%;
+  }
+
+  #game-overlay {
+    width: 56%;
+    float: right;
+    margin-top: 24px;
+    height: 11%;
+  }
+
+  .basket {
+    width: 44px;
+    height: 68%;
+    padding: 5%;
+    float: left;
+  }
+
+  #game-overlay .group-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 100%;
+  }
+
+  #game-overlay .score-container {
+    display: flex;
+    flex-direction: row;
+  }
+
+  #game-overlay .timer {
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 22px;
+    text-align: center;
+    letter-spacing: 0.2px;
+    color: #F5F4F3;
+    text-align: left;
+    padding: unset;
+  }
+
+  #game-overlay .score {
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 22px;
+    text-align: center;
+    letter-spacing: 0.2px;
+    color: #F5F4F3;
+    padding: unset;
+  }
+
+  #game-overlay .score-desc {
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 22px;
+    text-align: right;
+    letter-spacing: 0.2px;
+    color: #F5F4F3;
+    padding: unset;
+    padding-left: 5px;
+  }
+
+  #game-overlay .game-hint {
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 26px;
+    letter-spacing: 0.2px;
+    text-decoration-line: underline;
+    color: #FFFFFF;
+    text-align: left;
+  }
+
+  .game-over .text-wrapper {
+    left: 7%;
+    top: 20%;
+    width: 86%;
+    height: 400px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  .game-over .title {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 32px;
+    text-align: center;
+    letter-spacing: 0.4px;
+    color: #222222;
+    margin: unset;
+    padding: 20px;
+  }
+
+  .game-over .description {
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 26px;
+    text-align: center;
+    letter-spacing: 0.2px;
+    color: #444444;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .game-over .link-background {
+    height: 44px;
+    width: 44px;
+  }
+
+  .game-over .link-item-container {
+    margin-top: 15px;
+  }
+
+  .game-over .link-icon {
+    padding: 12px;
+  }
+
+  .game-over .link-item {
+    height: 44px;
+    width: 44px;
+  }
+
+  .game-over .url-container {
+    margin-top: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .game-over .url-string {
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 26px;
+    letter-spacing: 0.2px;
+    color: #444444;
+  }
+
+  .game-over .url-copy {
+    height: 50px;
+  }
+}
