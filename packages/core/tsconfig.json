@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig",
+  "compilerOptions": {
+    "jsx": "react",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "lib": [
+      "dom", "es2015"
+    ],
+  },
+  "include": [
+    "./src/**/**/*"
+  ]
+}
