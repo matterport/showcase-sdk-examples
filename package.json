@@ -8,6 +8,7 @@
   },
   "name": "sdk_examples",
   "version": "1.0.0",
+  "private": true,
   "devDependencies": {
     "webpack-cli": "^3.1.0"
   },
