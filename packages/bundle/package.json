@@ -1,0 +1,5 @@
+{
+  "name": "@mp/bundle-sdk",
+  "version": "1.0.0",
+  "main": "js/showcase.js"
+}
