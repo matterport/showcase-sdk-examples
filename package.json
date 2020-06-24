@@ -29,6 +29,6 @@
     "packages/*"
   ],
   "config" : {
-    "bundle_version" : "3.0.35.31-25-g9563c7a6c"
+    "bundle_version" : "3.1.1.8-0-g023d0d5c6"
   }
 }

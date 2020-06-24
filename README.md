@@ -33,7 +33,7 @@ Run this when you first download the repo. You will need to provide a password w
 > yarn install-bundle
 yarn run v1.22.4
 $ yarn fetch-bundle && yarn expand-bundle
-$ curl https://static.matterport.com/misc/bundle/showcase/$npm_package_config_bundle_version/showcase-bundle.zip -o bundle.zip
+$ curl https://static.matterport.com/misc/bundle/showcase/3.1.1.8-0-g023d0d5c6/showcase-bundle.zip -o bundle.zip
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100 2322k  100 2322k    0     0  3796k      0 --:--:-- --:--:-- --:--:-- 3801k
