@@ -7,10 +7,12 @@
     - [Run the inspector app](#run-the-inspector-app)
     - [Run the virtual staging app](#run-the-virtual-staging-app)
     - [Run the magical bunny app](#run-the-magical-bunny-app)
+    - [Run the remote control app](#run-the-remote-control-app)
     - [Clean packages](#clean-packages)
     - [Make a prod build](#make-a-prod-build)
     - [Packages](#packages)
       - [vs-app](#vs-app)
+      - [rc-app](#rc-app)
       - [inspector](#inspector)
       - [easter](#easter)
       - [common](#common)
@@ -101,6 +103,20 @@ easter: ℹ ｢wds｣: webpack output is served from /
 easter: ℹ ｢wds｣: Content not from webpack is served from /Users/bguillermo/projects/sdk_examples/packages/easter
 ```
 
+### Run the remote control app
+```shell
+> yarn rc-app
+yarn run v1.22.4
+$ lerna run develop --scope=rc-app --stream
+lerna notice cli v3.3.2
+lerna info filter [ 'rc-app' ]
+lerna info Executing command in 1 package: "yarn run develop"
+rc-app: $ webpack-dev-server
+rc-app: ℹ ｢wds｣: Project is running at http://localhost:8000/
+rc-app: ℹ ｢wds｣: webpack output is served from /
+rc-app: ℹ ｢wds｣: Content not from webpack is served from /Users/bguillermo/projects/sdk_examples/packages/rc-app
+```
+
 ### Clean packages
 You will need to bootstrap after cleaning.
 ```shell
@@ -110,7 +126,10 @@ $ lerna clean --yes
 lerna notice cli v3.3.2
 lerna info clean removing /Users/bguillermo/projects/sdk_examples/packages/bundle/node_modules
 lerna info clean removing /Users/bguillermo/projects/sdk_examples/packages/common/node_modules
+lerna info clean removing /Users/bguillermo/projects/sdk_examples3/packages/core/node_modules
+lerna info clean removing /Users/bguillermo/projects/sdk_examples3/packages/easter/node_modules
 lerna info clean removing /Users/bguillermo/projects/sdk_examples/packages/inspector/node_modules
+lerna info clean removing /Users/bguillermo/projects/sdk_examples3/packages/rc-app/node_modules
 lerna info clean removing /Users/bguillermo/projects/sdk_examples/packages/vs-app/node_modules
 lerna success clean finished
 ✨  Done in 5.11s.
@@ -124,11 +143,12 @@ Hash: 95bb160f191dc13eb410
 Version: webpack 4.18.1
 Time: 1029ms
 ...
-lerna success run Ran npm script 'build-prod' in 3 packages:
+lerna success run Ran npm script 'build-prod' in 4 packages:
 lerna success - easter
 lerna success - inspector
+lerna success - rc-app
 lerna success - vs-app
-✨  Done in 38.83s.
+✨  Done in 53.27s.
 ```
 
 ### Packages
@@ -140,6 +160,10 @@ frameworks: [Reactjs](https://reactjs.org/) + [SDK Bundle](https://matterport.gi
 - local webcam
 - canvas
 - security camera
+
+#### rc-app
+frameworks: [Reactjs](https://reactjs.org/) + [Photon SDK](https://www.photonengine.com/sdks#sdkrealtimejavascript) + [SDK Embed](https://matterport.github.io/showcase-sdk/sdk_home.html)
+- an example that shows how to build a remote controlled showcase
 
 #### inspector
 frameworks: [Reactjs](https://reactjs.org/) + [RxJS](https://rxjs.dev/) + [SDK Bundle](https://matterport.github.io/showcase-sdk/sdkbundle_home.html)
