@@ -1,0 +1,127 @@
+
+.select-mode-container {
+  height: 60px;
+  margin-top: -30px;
+  width: 200px;
+  margin-left: -100px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-weight: bold;
+  font-size: 14px;
+  background-color: #ffffff;
+  border-radius: 3px;
+  border-width: thin;
+  border-style: solid;
+  border-color: #cccccc;
+}
+
+.select-mode-title {
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+}
+
+.select-mode-button, .set-model-button, .iframeoverlay-button, .observing-button {
+  color: #ffffff;
+  background-color: #000000;
+  margin: 5px;
+  width: 70px;
+  height: 30px;
+  border: none;
+}
+
+.select-mode-button:hover, .set-model-button:hover, .iframeoverlay-button:hover, .observing-button:hover {
+  background-color: #ff3158;
+}
+
+.set-model-container {
+  height: 200px;
+  margin-top: -100px;
+  width: 200px;
+  margin-left: -100px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 14px;
+  background-color: #ffffff;
+  text-align: center;
+}
+
+.set-model-title {
+  font-weight: bold;
+  margin: 10px;
+}
+
+.set-model-form {
+  margin: 5px;
+}
+
+.connecting-container {
+  height: 30px;
+  width: 120px;
+  transform: translate(-60px, 0px);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 14px;
+  text-align: center;
+}
+
+.connecting-title {
+  vertical-align: middle;
+  font-weight: bold;
+}
+
+.frame {
+  height: 100%;
+  width: 100%;
+  border-width: 0px;
+}
+
+.iframeoverlay-container, .observing-container {
+  height: 38px;
+  width: 137px;
+  position: absolute;
+  font-size: 14px;
+  background-color: #ffffff;
+  text-align: center;
+  top: 0px;
+  left: 0px;
+  margin: 5px;
+  padding: 5px;
+  border-radius: 3px;
+  display: flex;
+}
+
+.iframeoverlay-title, .observing-title {
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.iframeoverlay-details-container, .observing-details-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.select-host-container {
+  height: 200px;
+  margin-top: -100px;
+  width: 400px;
+  margin-left: -200px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 14px;
+  background-color: #ffffff;
+  text-align: center;
+}
+
+.select-host-row {
+  background-color: #f5f5f5;
+}
+
+.select-host-message {
+  top: 180px;
+  position: absolute;
+  display: inline-block;
+}
