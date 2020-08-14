@@ -1,22 +1,46 @@
-import * as React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import SceneView from './SceneView';
-import PropertyView from './Property';
-import FrameView from './Frame';
-import { ISdk } from '../Sdk';
-import { Object3D } from 'three';
-import TransformToolbar, { Selection } from './TransformToolbar';
-import SceneDropZone from './SceneDropZone';
-import { IScene, ISceneNode } from '../Scene';
-import { gridType, makeGrid } from '../Grid';
-import { Button } from '@material-ui/core';
-import { initComponents } from '@mp/common';
+import React, { Component } from 'react';
+import { SceneView } from './SceneView';
+import { SceneNodeView } from './SceneNodeView';
+import { FrameView } from './Frame';
+import { Selection, TransformToolbar } from './TransformToolbar';
+import { SceneDropZone } from './SceneDropZone';
+import {
+  ISceneNode,
+  IComponentEventSpy,
+  IInteractionEvent,
+  ComponentInteractionType,
+  IVector3,
+  IVector2,
+} from '@mp/common';
+import { WithStyles, withStyles } from '@material-ui/core/styles';
+import { Grid, Button } from '@material-ui/core';
+import { Vector3 } from 'three';
+import { MenuView, IMenuItem } from './MenuView';
+import { IContext, IDialogUser } from '../interfaces';
+import { AppContext } from '../AppContext';
+import { ISubscription } from '@mp/common';
+import { CameraView } from './CameraView';
+import { Menus, MenuItemDescriptor, MenuDescriptor } from './Menus';
+import { saveStringToFile } from '../utils';
 
-const useStyles = makeStyles({
+export const waitUntil = async (condition: () => boolean) => {
+  return new Promise(function (resolve, reject) {
+    let intervalId: number;
+    const checkCondition = () => {
+      if (condition()) {
+        clearInterval(intervalId);
+        resolve();
+      }
+    };
+    intervalId = window.setInterval(checkCondition, 30);
+  });
+};
+
+const styles = () => ({
   wrapper: {
     display: 'flex',
-    flexDirection: 'column',
-    height: '100vh',
+    flexDirection: 'column' as 'column',
+    height: 'calc(100vh - 36px)',
   },
   root: {
     background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
@@ -33,6 +57,7 @@ const useStyles = makeStyles({
     alignItems: 'flex-start',
     flexGrow: 1,
     padding: '8px',
+    height: 'calc(100vh - 132px)',
   },
   toolbar: {
     display: 'flex',
@@ -40,109 +65,238 @@ const useStyles = makeStyles({
     height: '80px',
   },
   button: {
-    height:'48px',
+    height: '48px',
     paddingTop: '10px',
     margin: '12px',
-  }
+  },
+  dropdown: {
+    height: '36px',
+  },
 });
 
-// Hmm, where have we seen this before
-export const saveBlobAsFile = (function () {
-  const URL = (window.URL || window.webkitURL);
-  const a = document.createElement('a');
-  document.body.appendChild(a);
-  a.style.display = 'none';
-  return (blob: Blob, fileName: string) => {
-    const url = URL.createObjectURL(blob);
-    a.href = url;
-    a.download = fileName;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-}());
+interface Props extends WithStyles<typeof styles> {}
 
-export default function SimpleMenu(props: { sdk: ISdk, scene: IScene }) {
-  const [scene, setScene] = React.useState<ISceneNode[]>([]);
-  const [selection, setSelection] = React.useState<ISceneNode>(null);
-  const widgetRef  = React.useRef(null);
+interface State {
+  scene: ISceneNode[];
+  cameraPosition: IVector3;
+  cameraRotation: IVector2;
+  selection: ISceneNode;
+  user: IDialogUser | null;
+}
 
-  React.useEffect(() => {
-    props.scene.objects.subscribe({
-      next: (v) => setScene(v)
-    });
-  }, []);
+class MainViewImpl extends Component<Props, State> {
+  context: IContext;
+  static contextType = AppContext;
+  private modelSid: string = null;
+  private spySubs: ISubscription[] = [];
 
-  const urlParams = new URLSearchParams(window.location.search);
-  let modelSid = 'j4RZx7ZGM6T';
-  if (urlParams.has('m')) {
-    modelSid = urlParams.get('m');
+  constructor(props: Props) {
+    super(props);
+
+    this.state = {
+      scene: [],
+      selection: null,
+      user: null,
+      cameraPosition: { x: 0, y: 0, z: 0 },
+      cameraRotation: { x: 0, y: 0 },
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    this.modelSid = 'j4RZx7ZGM6T';
+    if (urlParams.has('m')) {
+      this.modelSid = urlParams.get('m');
+    }
+
+    this.itemSelected = this.itemSelected.bind(this);
+    this.itemDoubleClick = this.itemDoubleClick.bind(this);
+    this.itemDeleted = this.itemDeleted.bind(this);
+    this.transformSelected = this.transformSelected.bind(this);
+    this.dropped = this.dropped.bind(this);
+    this.onSave = this.onSave.bind(this);
   }
 
-  const src = `./bundle/showcase.html?m=${modelSid}&play=1&qs=1`;
+  private itemSelected(item: ISceneNode|null) {
+    const widget = this.context.scene.widget;
+    const cameraInput = this.context.scene.cameraInput;
 
-  props.sdk.onChanged( async (theSdk: any)=> {
-    await Promise.all([
-      theSdk.Scene.register(gridType, makeGrid),
-      initComponents(theSdk),
-    ]);
-
-    let objects: Object3D[] = [];
-    try {
-      objects = await theSdk.Scene.query(['scene']);
-    }
-    catch(e) {
-      console.log(e);
-    }
-
-    const node = await theSdk.Scene.createNode();
-    widgetRef.current = node.addComponent('mp.transformControls', {
-      scene: objects,
-    });
-    node.start();
-
-//    setScene(objects);
-  });
-
-  const itemSelected = (item: ISceneNode) => {
-    console.log(item);
-    if (widgetRef.current && widgetRef.current.inputs.selection === item.obj3D) {
-      setSelection(null);
-      widgetRef.current.inputs.selection = null;
+    if (item === null) {
+      this.setState({
+        selection: null,
+      });
+      widget.inputs.selection = null;
+      cameraInput.inputs.focus = null;
     } else {
-      setSelection(item);
-      if (widgetRef.current) {
-        widgetRef.current.inputs.selection = item.obj3D;
+      this.setState({
+        selection: item,
+      });
+      if (widget) {
+        widget.inputs.selection = item;
       }
     }
-  };
+  }
 
-  const transformSelected = (selection: Selection) => {
-    widgetRef.current.inputs.mode = selection;
-  };
+  private itemDoubleClick(item: ISceneNode) {
+    const widget = this.context.scene.widget;
+    const cameraInput = this.context.scene.cameraInput;
 
-  const dropped = async (objects: string) => {
-    await props.scene.deserialize(objects);
-  };
+    this.setState({
+      selection: item,
+    });
+    if (widget) {
+      widget.inputs.selection = item;
+    }
+    cameraInput.inputs.focus = new Vector3().copy((item as any).obj3D.position);
+  }
 
-  const onSave = async () => {
-    const serialized = await props.scene.serialize();
-    const blob = new Blob([serialized], { type : 'text/plain;charset=utf-8' });
-    saveBlobAsFile(blob, 'scene.json');
-  };
+  private itemDeleted(item: ISceneNode) {
+    this.setState({
+      selection: null,
+    });
+    this.context.scene.widget.inputs.selection = null;
+    this.context.scene.cameraInput.inputs.focus = null;
+    this.context.scene.removeObject(item);
+    item.stop();
+  }
 
-  const classes = useStyles({});
-  return (
-    <div className={classes.wrapper}>
-      <div className={classes.toolbar}>
-        <TransformToolbar selectionChanged={transformSelected}></TransformToolbar>
-        <SceneDropZone cb={dropped}></SceneDropZone>
-        <Button onClick={() => onSave()} className={classes.button} variant='contained'>Save Scene</Button>
+  private transformSelected(selection: Selection) {
+    this.context.scene.widget.inputs.mode = selection;
+  }
+
+  private async dropped(objects: string) {
+    await this.context.scene.deserialize(objects);
+  }
+
+  private async onSave() {
+    const serialized = await this.context.scene.serialize();
+    saveStringToFile(serialized, 'scene.json');
+  }
+
+  componentDidMount() {
+    // setup the command factories
+    for (const menu of Menus) {
+      for (const item of menu.items) {
+        item.commandFactory = item.factoryMaker(this.context);
+      }
+    }
+
+    this.context.scene.objects.subscribe({
+      next: (v) => {
+        // unsubscribe from spy events
+        for (const sub of this.spySubs) {
+          sub.cancel();
+        }
+        this.spySubs = [];
+
+        class ClickSpy implements IComponentEventSpy<IInteractionEvent> {
+          public eventType = ComponentInteractionType.CLICK;
+          constructor(private mainView: MainViewImpl, private node: ISceneNode) {}
+          onEvent(payload: IInteractionEvent) {
+            this.mainView.itemSelected(this.node);
+          }
+        }
+
+        // resubscribe to spy events
+        // If the current selection isn't in the scene anymore, clear it.
+        let selectionInScene = false;
+        for (const node of v) {
+          if (node === this.state.selection) {
+            selectionInScene = true;
+          }
+
+          for (const component of node.componentIterator()) {
+            const sub = component.spyOnEvent(new ClickSpy(this, node));
+            this.spySubs.push(sub);
+          }
+        }
+
+        if (selectionInScene) {
+          this.setState({ scene: v });
+        }
+        else {
+          if (this.context.scene.widget) {
+            this.context.scene.widget.inputs.selection = null;
+          }
+          
+          if (this.context.scene.cameraInput) {
+            this.context.scene.cameraInput.inputs.focus = null;
+          }
+
+          this.setState({
+            scene: v,
+            selection: null,
+          });
+        }
+      },
+    });
+  }
+
+  render() {
+    const classes = this.props.classes;
+    const src = `./bundle/showcase.html?m=${this.modelSid}&play=1&qs=1&sm=2&sr=-2.87,-.04,-3.13&sp=-.09,3.83,-7.53`;
+
+    const topLevelMenus = Menus.map((menu: MenuDescriptor) => {
+      const items = menu.items.map((item: MenuItemDescriptor) => {
+        const menuItem: IMenuItem = {
+          title: item.title,
+          command: async () => {
+            const command = item.commandFactory([this.state.selection]);
+
+            this.setState({
+              user: command.dialogUser(),
+            });
+
+            await command.execute();
+
+            this.setState({
+              user: null,
+            });
+          },
+        };
+        return menuItem;
+      });
+
+      return {
+        label: menu.label,
+        items,
+      };
+    });
+
+    return (
+      <div>
+        <div>
+          <Grid container justify="flex-start" className={classes.dropdown}>
+            {
+              // We don't expect to change the menu dynamically so we will use the index as the key.
+              topLevelMenus.map((menu, index) => (
+                <MenuView key={index} title={menu.label} items={menu.items}></MenuView>
+              ))
+            }
+          </Grid>
+          <div className={classes.wrapper}>
+            <div className={classes.toolbar}>
+              <TransformToolbar selectionChanged={this.transformSelected}></TransformToolbar>
+              <SceneDropZone cb={this.dropped}></SceneDropZone>
+              <Button onClick={() => this.onSave()} className={classes.button} variant="contained">
+                Save Scene
+              </Button>
+              <CameraView></CameraView>
+            </div>
+            <div className={classes.container}>
+              <SceneView
+                scene={this.state.scene}
+                onSingleClick={this.itemSelected}
+                selectionDeleted={this.itemDeleted}
+                onDoubleClick={this.itemDoubleClick}
+              ></SceneView>
+              <FrameView src={src}></FrameView>
+              <SceneNodeView selection={this.state.selection}></SceneNodeView>
+            </div>
+          </div>
+        </div>
+        {this.state.user && this.state.user.jsx()}
       </div>
-      <div className={classes.container}>
-        <SceneView scene={scene} selectionChanged={itemSelected}></SceneView>
-        <FrameView src={src}></FrameView>
-        <PropertyView selection={selection}></PropertyView>
-      </div>
-    </div>
-  );
+    );
+  }
 }
+
+export const MainView = withStyles(styles, { withTheme: true })(MainViewImpl);

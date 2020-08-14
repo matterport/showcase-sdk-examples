@@ -35,6 +35,7 @@ import { toggleStateType, makeToggleState } from './sdk-components/ToggleState';
 import { canvasBorderType, makeCanvasBorder } from './sdk-components/CanvasBorder';
 import { canvasTextType, makeCanvasText } from './sdk-components/CanvasText';
 import { canvasImageType, makeCanvasImage } from './sdk-components/CanvasImage';
+import { cameraInputType, makeCameraInput } from './sdk-components/Camera';
 
 export const initComponents = async (sdk: any) => {
   await Promise.all([
@@ -58,6 +59,7 @@ export const initComponents = async (sdk: any) => {
     sdk.Scene.register(canvasBorderType, makeCanvasBorder),
     sdk.Scene.register(canvasTextType, makeCanvasText),
     sdk.Scene.register(canvasImageType, makeCanvasImage),
+    sdk.Scene.register(cameraInputType, makeCameraInput),
   ]);
 }
 

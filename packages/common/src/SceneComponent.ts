@@ -161,6 +161,20 @@ export enum ComponentInteractionType {
   HOVER = 'INTERACTION.HOVER',
   /** DRAG events (mousedown then move) */
   DRAG = 'INTERACTION.DRAG',
+  DRAG_BEGIN = 'INTERACTION.DRAG_BEGIN',
+  DRAG_END = 'INTERACTION.DRAG_END',
+  POINTER_MOVE = 'INTERACTION.POINTER_MOVE',
+  POINTER_BUTTON = 'INTERACTION.POINTER_BUTTON',
+  SCROLL = 'INTERACTION.SCROLL',
+  KEY = 'INTERACTION.KEY',
+  LONG_PRESS_START = 'INTERACTION.LONG_PRESS_START',
+  LONG_PRESS_END = 'INTERACTION.LONG_PRESS_END',
+  MULTI_SWIPE = 'INTERACTION.MULTI_SWIPE',
+  MULTI_SWIPE_END = 'INTERACTION.MULTI_SWIPE_END',
+  PINCH = 'INTERACTION.PINCH',
+  PINCH_END = 'INTERACTION.PINCH_END',
+  ROTATE = 'INTERACTION.ROTATE',
+  ROTATE_END = 'INTERACTION.ROTATE_END',
 }
 
 abstract class ComponentOutputReserved {
@@ -211,4 +225,200 @@ export interface IComponentEventSpy<T = unknown> {
  */
 export interface ISubscription {
   cancel(): void;
+}
+
+export interface IVector2 {
+  x: number;
+  y: number;
+}
+
+export interface IVector3 {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export enum PointerButton {
+  PRIMARY,
+  MIDDLE,
+  SECONDARY,
+  BACK,
+  FORWARD,
+  COUNT,
+}
+
+export enum PointerButtonMask {
+  NONE,
+  PRIMARY = 1 << PointerButton.PRIMARY,
+  SECONDARY = 1 << PointerButton.SECONDARY,
+  MIDDLE = 1 << PointerButton.MIDDLE,
+  BACK = 1 << PointerButton.BACK,
+  FORWARD = 1 << PointerButton.FORWARD,
+  ALL = (1 << PointerButton.COUNT) - 1,
+}
+
+export enum PointerDevice {
+  MOUSE = 'mouse',
+  TOUCH = 'touch',
+  PEN = 'pen',
+  GAMEPAD = 'gamepad',
+}
+
+/**
+ * Fired on every mouse down, provides current position/buttons down.
+ */
+export interface DragBeginEvent {
+  /** Current position */
+  readonly position: IVector2;
+  /** Buttons down during event */
+  readonly buttons: PointerButtonMask;
+}
+
+/**
+ * Fired only after the pointer has moved far enough from DragBeginEvent
+ */
+export interface DragEvent {
+  /** Current position */
+  readonly position: IVector2;
+  /** Delta moved since last drag event */
+  readonly delta: IVector2;
+  /** Buttons down during event */
+  readonly buttons: PointerButtonMask;
+}
+
+/**
+ * Fired on every mouse up, includes information about the difference between the DragBegin and current positions
+ */
+export interface DragEndEvent extends DragEvent {
+  /** duration since last DragEvent */
+  readonly timeSinceLastMove: number;
+
+  /** The delta between position, and the position from DragBeginEvent */
+  readonly fullDelta: IVector2;
+}
+
+export interface PointerMoveEvent {
+    readonly id: number;
+    readonly position: IVector2;
+    readonly buttons: PointerButtonMask;
+    readonly device: PointerDevice;
+}
+
+export interface PointerButtonEvent {
+    readonly id: number;
+    readonly position: IVector2;
+    readonly button: PointerButton;
+    readonly down: boolean;
+    readonly device: PointerDevice;
+}
+
+export interface ScrollEvent {
+  readonly position: IVector2;
+  readonly delta: IVector2;
+}
+
+export enum KeyState {
+  DOWN,
+  PRESSED,
+  UP,
+}
+
+export enum Keys{
+  ESCAPE = 27,
+  ZERO = 48,
+  ONE = 49,
+  TWO = 50,
+  THREE = 51,
+  FOUR = 52,
+  FIVE = 53,
+  SIX = 54,
+  SEVEN = 55,
+  EIGHT = 56,
+  NINE = 57,
+  LEFTARROW = 37,
+  UPARROW = 38,
+  RIGHTARROW = 39,
+  DOWNARROW = 40,
+  TAB = 9,
+  A = 65,
+  B = 66,
+  C = 67,
+  D = 68,
+  E = 69,
+  F = 70,
+  G = 71,
+  H = 72,
+  I = 73,
+  J = 74,
+  K = 75,
+  L = 76,
+  M = 77,
+  N = 78,
+  O = 79,
+  P = 80,
+  Q = 81,
+  R = 82,
+  S = 83,
+  T = 84,
+  U = 85,
+  V = 86,
+  W = 87,
+  X = 88,
+  Y = 89,
+  Z = 90,
+  SPACE = 32,
+  RETURN = 13,
+  DELETE = 46,
+  BACKSPACE = 8,
+  SEMICOLON = 186,
+  PLUSEQUALS = 187,
+  DASHUNDERSCORE = 189,
+  OPENBRACKET = 219,
+  SHIFT = 16,
+  ALT = 18,
+  CONTROL = 17,
+}
+
+export interface KeyEvent {
+  key: Keys;
+  state: KeyState;
+  modifiers: {
+    altKey: boolean,
+    shiftKey: boolean,
+    ctrlKey: boolean
+  };
+}
+
+export interface LongPressStartEvent {
+  readonly position: IVector2;
+  readonly buttons: PointerButtonMask;
+  readonly threshold: number;
+}
+
+export interface LongPressEndEvent {}
+
+export interface MultiSwipeEvent {
+  readonly pointerCount: number;
+  readonly position: IVector2;
+  readonly delta: IVector2;
+}
+
+export interface MultiSwipeEndEvent extends MultiSwipeEvent {
+  readonly timeSinceLastMove: number;
+}
+
+export interface PinchEvent {
+  readonly pinchDelta: number;
+}
+
+export interface PinchEndEvent extends PinchEvent {
+  readonly timeSinceLastMove: number;
+}
+
+export interface RotateEvent {
+  readonly rotateDelta: number;
+}
+
+export interface RotateEndEvent extends RotateEvent {
+  readonly timeSinceLastMove: number;
 }

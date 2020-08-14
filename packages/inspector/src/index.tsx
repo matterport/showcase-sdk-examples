@@ -1,16 +1,32 @@
 import * as ReactDOM from 'react-dom';
 import * as React from 'react';
-import Main from './components/Main';
+import { MainView } from './components/Main';
 import { makeSdk } from './Sdk';
 import { makeScene } from './Scene';
+import { IContext, IDialogUser } from './interfaces';
+import { AppContext } from './AppContext';
+import { BehaviorSubject } from 'rxjs';
 
-const sdk = makeSdk('sdk-iframe');
-sdk.init();
+const initialize = async () => {
+  const sdk = makeSdk('sdk-iframe');
+  sdk.init();
 
-const scene = makeScene(sdk);
+  const scene = makeScene(sdk);
+  const frameOverlay = new BehaviorSubject<IDialogUser|null>(null);
 
-ReactDOM.render(
-    <Main sdk={sdk} scene={scene}/>,
-    document.getElementById("content")
-);
+  const context: IContext = {
+    scene,
+    sdk,
+    frameOverlay,
+  };
+    
+  ReactDOM.render(
+    <AppContext.Provider
+      value={context}
+    >
+      <MainView/>
+    </AppContext.Provider>,
+    document.getElementById("content"));
+};
 
+initialize();

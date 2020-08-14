@@ -1,46 +1,26 @@
 import { BehaviorSubject } from 'rxjs';
 import { ISdk } from './Sdk';
-import { Vector3, Quaternion, Object3D } from 'three';
-
-export interface IComponentDefinition {
-  type: string;
-  name?: string;
-  inputs?: { [key: string]: any };
-  position: number[];
-  rotation: number[];
-  scale: number[];
-}
-
-export interface ISceneComponent {
-  inputs?: { [key: string]: any };
-  outputs?: { [key: string]: any };
-}
-
-export interface ISceneNode {
-  name: string;
-  readonly position: Vector3;
-  readonly quaternion: Quaternion;
-  readonly scale: Vector3;
-  addComponent(type: string, initial?: { [key: string]: any }): void;
-  start(): void;
-  stop(): void;
-  // need a way for external things to connect to the scene nodes Object3D.
-  // For now, directly exposing obj3D.
-  obj3D: Object3D;
-}
-
-export interface IScene {
-  readonly objects: BehaviorSubject<ISceneNode[]>;
-  deserialize(serialized: string): Promise<void>;
-  serialize(): Promise<string>;
-}
+import { Vector3, Quaternion, Matrix4, Euler } from 'three';
+import { initComponents, ComponentInteractionType } from '@mp/common';
+import { gridType, makeGrid } from './Grid';
+import { cameraInputType, CameraInputEvent } from '@mp/common/src/sdk-components/Camera';
+import { IScene, CameraPose } from './interfaces';
+import { SceneComponent, ISceneNode } from '@mp/common';
+import { splineCameraType, makeSplineCamera } from './SplineCamera';
+import { closeupViewType, makeCloseUpView } from './CloseupView';
 
 export const makeScene = (sdk: any): IScene => {
   return new Scene(sdk);
 };
 
 class Scene implements IScene {
-  constructor(private sdk: ISdk){}
+  public widget: SceneComponent|null = null;
+  public cameraInput: SceneComponent|null = null;
+
+  constructor(private sdk: ISdk){
+    this.setup = this.setup.bind(this);
+    sdk.onChanged(this.setup);
+  }
 
   private _objects: ISceneNode[] = [];
   private objectsSubject = new BehaviorSubject<ISceneNode[]>([]);
@@ -48,13 +28,83 @@ class Scene implements IScene {
     return this.objectsSubject;
   }
 
+  private _cameraPose: CameraPose = {
+    position: { x:0, y:0, z:0 },
+    rotation: { x: 0, y: 0 },
+    projection: [],
+  };
+  private cameraPoseSubject = new BehaviorSubject<CameraPose>(this._cameraPose);
+  public get cameraPose() {
+    return this.cameraPoseSubject;
+  }
+  
+  private async setup(sdk: any) {
+    sdk.Camera.pose.subscribe((pose: any) => {
+      this.cameraPoseSubject.next({
+        position: {
+          x: pose.position.x,
+          y: pose.position.y,
+          z: pose.position.z,
+        },
+        rotation: {
+          x: pose.rotation.x,
+          y: pose.rotation.y,
+        },
+        projection: pose.projection,
+      });
+    });
+
+    await Promise.all([
+      sdk.Scene.register(gridType, makeGrid),
+      sdk.Scene.register(splineCameraType, makeSplineCamera),
+      sdk.Scene.register(closeupViewType, makeCloseUpView),
+      initComponents(sdk),
+    ]);
+  
+    const node = await sdk.Scene.createNode();
+    this.widget = node.addComponent('mp.transformControls');
+    node.start();
+    await this.createCameraControl(sdk);
+
+    const grid = await sdk.Scene.createNode();
+    grid.name = 'Ground Plane';
+    grid.addComponent(gridType);
+    grid.start();
+  }
+
+  private async createCameraControl(theSdk: any) {
+    const cameraNode = await theSdk.Scene.createNode();
+    const cameraPose = await theSdk.Camera.getPose();
+    this.cameraInput = cameraNode.addComponent(cameraInputType);
+    const poseMatrix = new Matrix4();
+    poseMatrix.fromArray(cameraPose.projection)
+    this.cameraInput.inputs.startPose = {
+      position: new Vector3(cameraPose.position.x, cameraPose.position.y, cameraPose.position.z),
+      quaternion: new Quaternion().setFromEuler(new Euler(
+        cameraPose.rotation.x * Math.PI / 180,
+        cameraPose.rotation.y * Math.PI / 180,
+        cameraPose.rotation.z * Math.PI / 180,
+        'YXZ')),
+      projection: poseMatrix,
+    };
+    const cameraControl = cameraNode.addComponent('mp.camera', {
+      enabled: true,
+    });
+    cameraControl.bind('camera', this.cameraInput, 'camera');
+    const input = cameraNode.addComponent('mp.input', {
+      userNavigationEnabled: false,
+    }) as SceneComponent;
+    this.cameraInput.bindEvent(CameraInputEvent.DragBegin, input, ComponentInteractionType.DRAG_BEGIN);
+    this.cameraInput.bindEvent(CameraInputEvent.Drag, input, ComponentInteractionType.DRAG);
+    this.cameraInput.bindEvent(CameraInputEvent.DragEnd, input, ComponentInteractionType.DRAG_END);
+    this.cameraInput.bindEvent(CameraInputEvent.Key, input, ComponentInteractionType.KEY);
+    this.cameraInput.bindEvent(CameraInputEvent.Scroll, input, ComponentInteractionType.SCROLL);
+
+    cameraNode.start();
+  }
+
   public async deserialize(serialized: string) {
     const nodes: any[] = await this.sdk.sdk.Scene.deserialize(serialized);
-
-    const toRemove = this._objects.splice(0);
-    for (const remove of toRemove) {
-      remove.stop();
-    }
 
     const added: ISceneNode[] = [];
     for (const node of nodes) {
@@ -70,5 +120,26 @@ class Scene implements IScene {
 
   public async serialize(): Promise<string>  {
     return await this.sdk.sdk.Scene.serialize(this._objects);
+  }
+
+  public addObject(node: ISceneNode): void {
+    this._objects.push(node);
+    this.objectsSubject.next(this._objects);
+  }
+
+  public removeObject(node: ISceneNode): void {
+    const searchIndex = this._objects.findIndex((item) => item === node);
+    if (searchIndex !== -1) {
+      this._objects.splice(searchIndex, 1);
+      this.objectsSubject.next(this._objects);
+    }
+  }
+
+  public reset(): void {
+    for (const obj of this._objects) {
+      obj.stop();
+    }
+    this._objects = [];
+    this.objectsSubject.next(this._objects);
   }
 }

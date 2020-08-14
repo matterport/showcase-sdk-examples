@@ -1,6 +1,6 @@
 import { MeshBasicMaterial, LineSegments, Object3D, BoxGeometry, Mesh, LineBasicMaterial, EdgesGeometry,
   AnimationMixer, AnimationClip, AnimationAction } from 'three';
-import { SceneComponent, ComponentInteractionType, Intersect, ISceneNode } from '../SceneComponent';
+import { SceneComponent, ComponentInteractionType, ISceneNode } from '../SceneComponent';
 
 export interface IInteractionEvent {
   type: ComponentInteractionType;
@@ -52,7 +52,7 @@ export class OrientedBox extends SceneComponent {
 
   events = {
     [ComponentInteractionType.CLICK]: true,
-    [ComponentInteractionType.HOVER]: false,
+    [ComponentInteractionType.HOVER]: true,
     [ComponentInteractionType.DRAG]: false,
   };
 
@@ -72,12 +72,17 @@ export class OrientedBox extends SceneComponent {
     this.edgesClipNotVisible = makeMaterialOpacityClip(THREE, this.inputs.transitionTime, 1, 0);
   }
 
-  onEvent(interactionType: ComponentInteractionType, hit: Intersect | null): void {
+  onEvent(interactionType: ComponentInteractionType, eventData: unknown): void {
     if (interactionType === ComponentInteractionType.CLICK) {
       this.notify(ComponentInteractionType.CLICK, {
         type: interactionType,
         node: this.context.root,
         component: this,
+      });
+    }
+    if (interactionType === ComponentInteractionType.HOVER) {
+      this.notify(ComponentInteractionType.HOVER, {
+        hover: (<{hover: boolean;}>eventData).hover
       });
     }
   }
