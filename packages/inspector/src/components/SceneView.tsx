@@ -1,9 +1,9 @@
-import * as React from 'react';
+import React, { Component } from 'react';
 import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon';
-import { makeStyles, createStyles } from '@material-ui/core/styles';
+import { WithStyles, withStyles } from '@material-ui/core/styles';
 import TreeView from '@material-ui/lab/TreeView';
 import TreeItem from '@material-ui/lab/TreeItem';
-import { ISceneNode } from 'src/Scene';
+import { ISceneNode } from '@mp/common';
 
 function MinusSquare(props: SvgIconProps) {
   return (
@@ -23,59 +23,113 @@ function PlusSquare(props: SvgIconProps) {
   );
 }
 
-function CloseSquare(props: SvgIconProps) {
-  return (
-    <SvgIcon className="close" fontSize="inherit" {...props}>
-      {/* tslint:disable-next-line: max-line-length */}
-      <path d="M17.485 17.512q-.281.281-.682.281t-.696-.268l-4.12-4.147-4.12 4.147q-.294.268-.696.268t-.682-.281-.281-.682.294-.669l4.12-4.147-4.12-4.147q-.294-.268-.294-.669t.281-.682.682-.281.696 .268l4.12 4.147 4.12-4.147q.294-.268.696-.268t.682.281 .281.669-.294.682l-4.12 4.147 4.12 4.147q.294.268 .294.669t-.281.682zM22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0z" />
-    </SvgIcon>
-  );
+const styles = () => ({
+  root: {
+    flexGrow: 1,
+    minWidth: 300,
+    height: '100%',
+  },
+  paper: {
+    height: '100%',
+    alignItems: 'stretch',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: '#BBBBBB',
+  },
+});
+
+interface Props extends WithStyles<typeof styles> {
+  scene: ISceneNode[];
+  onSingleClick: (item: ISceneNode|null) => void;
+  onDoubleClick: (item: ISceneNode|null) => void;
+  selectionDeleted: (item: ISceneNode) => void;
 }
 
-const useStyles = makeStyles(
-  createStyles({
-    root: {
-      flexGrow: 1,
-      minWidth: 300,
-      height: '100%'
-    },
-    paper:  {
-      height: '100%',
-      alignItems: 'stretch',
-      borderStyle: 'solid',
-      borderWidth: '1px',
-      borderColor: '#BBBBBB',
-    },
-  }),
-);
+interface State {
+  selected: string;
+}
 
-export default function SceneTreeView(props: {scene: ISceneNode[], selectionChanged: (item: ISceneNode) => void}) {
-  const classes = useStyles({});
+class SceneTreeView extends Component<Props, State> {
+  private selectedId = '';
+  constructor(props: Props) {
+    super(props);
 
-  let count = 0;
-  const emitObject3D = (objects: ISceneNode[]) => {
-    return objects.map((object) => {
-      let name = object.name;
-      if (name === '') {
+    this.state = {
+      selected: '',
+    };
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onClick = this.onClick.bind(this);
+    this.onDoubleClick = this.onDoubleClick.bind(this);
+  }
 
-      }
-      count++;
-      return <TreeItem nodeId={`${count}`} key={`${count}`}  label={name} onClick={(e) => props.selectionChanged(object)}>
-      </TreeItem>;
+  private onKeyDown(event: React.KeyboardEvent, item: ISceneNode) {
+    if (event.keyCode === 8 && this.props.selectionDeleted) {
+      this.props.selectionDeleted(item);
+    }
+  }
+
+  private onClick(event: React.MouseEvent, nodeId: string, item: ISceneNode) {
+    let newNodeId = '';
+    if (nodeId !== this.selectedId) {
+      newNodeId = nodeId;
+    }
+    this.setState({
+      selected: newNodeId,
     });
-  };
+    
+    if (newNodeId === nodeId) {
+      this.props.onSingleClick(item);
+    }
+    else {
+      this.props.onSingleClick(null);
+    }
 
-  return (
-    <div className={classes.paper}>
-      <TreeView
-        className={classes.root}
-        defaultExpanded={['1']}
-        defaultCollapseIcon={<MinusSquare />}
-        defaultExpandIcon={<PlusSquare />}
-        defaultEndIcon={<CloseSquare />}
-      >
-      {emitObject3D(props.scene)}
-      </TreeView>
-    </div>
-  );
+    this.selectedId = newNodeId;
+  }
+
+  private onDoubleClick(event: React.MouseEvent, nodeId: string, item: ISceneNode) {
+    this.setState({
+      selected: nodeId,
+    });
+
+    this.props.onDoubleClick(item);
+  }
+
+  public render() {
+    const classes = this.props.classes;
+    let count = 0;
+    const emitObject3D = (objects: ISceneNode[]) => {
+      return objects.map((object) => {
+        count++;
+        const nodeId = count;
+        return (
+          <TreeItem
+            nodeId={`${nodeId}`}
+            key={`${nodeId}`}
+            label={object.name}
+            onKeyDown={(e) => this.onKeyDown(e, object)}
+            onClick={(e) => this.onClick(e, `${nodeId}`, object)}
+            onDoubleClick={(e) => this.onDoubleClick(e, `${nodeId}`, object)}
+          ></TreeItem>
+        );
+      });
+    };
+
+    return (
+      <div className={classes.paper}>
+        <TreeView
+          className={classes.root}
+          defaultExpanded={['3']}
+          defaultCollapseIcon={<MinusSquare />}
+          defaultExpandIcon={<PlusSquare />}
+          defaultEndIcon={['']}
+          selected={this.state.selected}
+        >
+          {emitObject3D(this.props.scene)}
+        </TreeView>
+      </div>
+    );
+  }
 }
+
+export const SceneView = withStyles(styles, { withTheme: true })(SceneTreeView);

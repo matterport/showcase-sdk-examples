@@ -5,6 +5,8 @@ import { AppState } from '../AppState';
 import { SceneLoader } from '../SceneLoader';
 import { ItemList } from './ItemList';
 import { ItemDesc } from 'src/types';
+import { cameraInputType } from '@mp/common/src/sdk-components/Camera';
+import { Vector3, Quaternion, Euler, Matrix4 } from 'three';
 
 const SelectedColor = 0xffff00;
 const SelectedOpacity = 0.1;
@@ -32,6 +34,7 @@ export class Main extends Component<Props, State> {
   private sdk: any = null;
   private scene: SceneLoader = null;
   private slots: SlotNode[] = [];
+  private cameraInput: SceneComponent;
 
   constructor(props: Props) {
     super(props);
@@ -41,11 +44,12 @@ export class Main extends Component<Props, State> {
     };
 
     this.handleListSelection = this.handleListSelection.bind(this);
-    this.handleOrientedBoxInteraction = this.handleOrientedBoxInteraction.bind(this);
   }
 
   async componentDidMount() {
     this.sdk = await GetSDK('sdk-iframe', sdkKey);
+    await initComponents(this.sdk);
+    await this.createCameraControl(this.sdk);
     await this.sdk.Scene.configure((renderer: any, three: any) => {
       renderer.physicallyCorrectLights = true;
       renderer.gammaFactor = 2.2;
@@ -55,12 +59,11 @@ export class Main extends Component<Props, State> {
       renderer.shadowMap.type = three.PCFSoftShadowMap;
 
     });
-    await initComponents(this.sdk);
     this.scene = new SceneLoader(this.sdk);
 
     const slots: SlotNode[] = [];
 
-    class InteractionHandler implements IComponentEventSpy<IInteractionEvent> {
+    class ClickSpy implements IComponentEventSpy<IInteractionEvent> {
       public eventType = ComponentInteractionType.CLICK;
       constructor(private mainComponent: Main){}
       onEvent(payload: IInteractionEvent) {
@@ -68,7 +71,16 @@ export class Main extends Component<Props, State> {
       }
     }
 
-    const handler = new InteractionHandler(this);
+    class HoverSpy implements IComponentEventSpy {
+      public eventType = ComponentInteractionType.HOVER;
+      constructor(private mainComponent: Main) {}
+      onEvent(payload: { hover: boolean; }) {
+        this.mainComponent.cameraInput.inputs.suppressClick = !payload.hover;
+      }
+    }
+
+    const clickSpy = new ClickSpy(this);
+    const hoverSpy = new HoverSpy(this);
     const findSlots = (node: ISceneNode) => {
       let slot: SceneComponent = null;
       let model: SceneComponent = null;
@@ -83,7 +95,8 @@ export class Main extends Component<Props, State> {
         }
         else if (component.componentType == orientedBoxType) {
           box = component as OrientedBox;
-          box.spyOnEvent(handler);
+          box.spyOnEvent(clickSpy);
+          box.spyOnEvent(hoverSpy);
           box.inputs.color = UnselectedColor;
           box.inputs.opacity = UnselectedOpacity;
         }
@@ -137,13 +150,22 @@ export class Main extends Component<Props, State> {
                 lastSlotNode.boxComponent.inputs.lineOpacity = UnselectedLineOpacity;
               }
 
-              this.setState({
-                slotNode: slot,
-              })
+              if (lastSlotNode === slot) {
+                this.cameraInput.inputs.focus = null;
 
-              slot.boxComponent.inputs.color = SelectedColor;
-              slot.boxComponent.inputs.opacity = SelectedOpacity;
-              slot.boxComponent.inputs.lineOpacity = SelectedLineOpacity;
+                this.setState({
+                  slotNode: null,
+                });
+              } else {
+                this.setState({
+                  slotNode: slot,
+                })
+
+                slot.boxComponent.inputs.color = SelectedColor;
+                slot.boxComponent.inputs.opacity = SelectedOpacity;
+                slot.boxComponent.inputs.lineOpacity = SelectedLineOpacity;
+                this.cameraInput.inputs.focus = node.position;
+              }
             }
           }
         }
@@ -181,6 +203,26 @@ export class Main extends Component<Props, State> {
         <Frame src={src}></Frame>
       </div>
     );
+  }
+
+  async createCameraControl(theSdk: any) {
+    const cameraNode = await theSdk.Scene.createNode();
+    const cameraPose = await theSdk.Camera.getPose();
+    this.cameraInput = cameraNode.addComponent(cameraInputType);
+    // convert sdk pose to THREE.js objects
+    this.cameraInput.inputs.startPose = {
+      position: new Vector3(cameraPose.position.x, cameraPose.position.y, cameraPose.position.z),
+      quaternion: new Quaternion().setFromEuler(new Euler(
+        cameraPose.rotation.x * Math.PI / 180,
+        cameraPose.rotation.y * Math.PI / 180,
+        (cameraPose.rotation.z || 0) * Math.PI / 180,
+        'YXZ')),
+      projection: new Matrix4().fromArray(cameraPose.projection).transpose(),
+    };
+    const cameraControl = cameraNode.addComponent('mp.camera');
+    cameraControl.bind('camera', this.cameraInput, 'camera');
+
+    cameraNode.start();
   }
 }
 

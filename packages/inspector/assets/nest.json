@@ -1,0 +1,49 @@
+{
+  "version": "1.0",
+  "payload": {
+    "objects": [
+      {
+        "name": "nest",
+        "position": { "x": -3.22, "y": 1.371, "z": 3.7805},
+        "rotation": { "x": 0, "y": 180,"z": 0 },
+        "scale": { "x": 1, "y": 1,"z": 1 },
+        "components": [
+          {
+            "type": "mp.daeLoader",
+            "inputs": {
+              "url": "https://static.matterport.com/showcase-sdk/examples/assets-1.0-2-g6b74572/assets/models/iot/nest-1/model.dae",
+              "localScale": { "x": 0.04, "y": 0.04, "z": 0.04 },
+              "localRotation": { "x": 0, "y": 0, "z": 0 }
+            }
+          },
+          {
+            "type": "mp.planeRenderer"
+          },
+          {
+            "type": "mp.canvasRenderer",
+            "inputs": {
+              "textureRes": {
+                "w": 1024,
+                "h": 1024
+              }
+            }
+          },
+          {
+            "type": "mp.nestThermostat"
+          }
+        ],
+        "bindings": [
+          [3, "loadingState", 0, "loadingState"],
+          [1, "texture", 2, "texture"],
+          [2, "painter", 3, "painter"],
+          [3, "texture", 2, "texture"],
+          [1, "visible", 3, "visible"]
+        ],
+        "events": [
+          [3, "hover", 0, "INTERACTION.HOVER"],
+          [2, "repaint", 3, "repaint"]
+        ]
+      }
+    ]
+  }
+}

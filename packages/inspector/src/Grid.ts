@@ -48,11 +48,6 @@ class Grid extends SceneComponent {
 		grid.material.transparent = true;
     obj3D.add(grid);
 
-    const light = new THREE.HemisphereLight(0xffffff, 0xffffff, 1.0);
-    light.position.set( 0, 10, 0 );
-
-    obj3D.add(light);
-
     var uniforms = {
       "topColor": { value: new THREE.Color( 0x001144 ) },
       "bottomColor": { value: new THREE.Color( 0xffffff ) },
