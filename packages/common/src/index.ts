@@ -36,6 +36,8 @@ import { canvasBorderType, makeCanvasBorder } from './sdk-components/CanvasBorde
 import { canvasTextType, makeCanvasText } from './sdk-components/CanvasText';
 import { canvasImageType, makeCanvasImage } from './sdk-components/CanvasImage';
 import { cameraInputType, makeCameraInput } from './sdk-components/Camera';
+import { fresnelExampleType, makeFresnelExample } from './sdk-components/FresnelExample';
+import { shadowExampleType, makeShadowExample } from './sdk-components/ShadowExample';
 
 export const initComponents = async (sdk: any) => {
   await Promise.all([
@@ -60,6 +62,8 @@ export const initComponents = async (sdk: any) => {
     sdk.Scene.register(canvasTextType, makeCanvasText),
     sdk.Scene.register(canvasImageType, makeCanvasImage),
     sdk.Scene.register(cameraInputType, makeCameraInput),
+    sdk.Scene.register(fresnelExampleType, makeFresnelExample),
+    sdk.Scene.register(shadowExampleType, makeShadowExample),
   ]);
 }
 
