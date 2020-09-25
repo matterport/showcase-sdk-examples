@@ -198,7 +198,8 @@ class SecurityCamera extends SceneComponent {
     const THREE = this.context.three;
 
     // TODO (scene query): this is very brittle and hardcoded but is the only way to get room geometries until we have a better way to query the scene graph
-    const roomMesh = this.outputs.objectRoot.parent.parent.getObjectByName('mesh_group_1') as Mesh;
+    const floorMesh = this.outputs.objectRoot.parent.parent.getObjectByName('FloorMesh:0');
+    const roomMesh = floorMesh.children[0] as Mesh;
 
     updateHighlightUniforms(this.projector, this.highlightUniforms);
     this.highlightUniforms.color.value.setHex(this.inputs.color);
