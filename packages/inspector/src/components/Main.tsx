@@ -11,6 +11,7 @@ import {
   ComponentInteractionType,
   IVector3,
   IVector2,
+  sdkKey,
 } from '@mp/common';
 import { WithStyles, withStyles } from '@material-ui/core/styles';
 import { Grid, Button } from '@material-ui/core';
@@ -87,7 +88,7 @@ interface State {
 class MainViewImpl extends Component<Props, State> {
   context: IContext;
   static contextType = AppContext;
-  private modelSid: string = null;
+  private queryString: string = '';
   private spySubs: ISubscription[] = [];
 
   constructor(props: Props) {
@@ -102,10 +103,15 @@ class MainViewImpl extends Component<Props, State> {
     };
 
     const urlParams = new URLSearchParams(window.location.search);
-    this.modelSid = 'j4RZx7ZGM6T';
-    if (urlParams.has('m')) {
-      this.modelSid = urlParams.get('m');
+    if (!urlParams.has('m')) {
+      urlParams.set('m', 'j4RZx7ZGM6T');
     }
+    // ensure applicationKey is inserted into the bundle query string
+    if (!urlParams.has('applicationKey')) {
+      urlParams.set('applicationKey', sdkKey);
+    }
+
+    this.queryString = urlParams.toString();
 
     this.itemSelected = this.itemSelected.bind(this);
     this.itemDoubleClick = this.itemDoubleClick.bind(this);
@@ -232,7 +238,7 @@ class MainViewImpl extends Component<Props, State> {
 
   render() {
     const classes = this.props.classes;
-    const src = `./bundle/showcase.html?m=${this.modelSid}&play=1&qs=1&sm=2&sr=-2.87,-.04,-3.13&sp=-.09,3.83,-7.53`;
+    const src = `./bundle/showcase.html?${this.queryString}&play=1&qs=1&sm=2&sr=-2.87,-.04,-3.13&sp=-.09,3.83,-7.53`;
 
     const topLevelMenus = Menus.map((menu: MenuDescriptor) => {
       const items = menu.items.map((item: MenuItemDescriptor) => {

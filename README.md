@@ -29,7 +29,7 @@ See <https://nodejs.org/en/> and <https://classic.yarnpkg.com/en/docs/install> f
 > If you need a key, you can request one at our [developer site](https://matterport.github.io/showcase-sdk/index.html).
 
 ### Setup monorepo root
-Run this when you first download the repo. You will need to provide a password when excuting the `install-bundle` script.
+Run these two commands when you first download the repo.
 ```shell
 > yarn install
 > yarn install-bundle
@@ -41,7 +41,6 @@ $ curl https://static.matterport.com/showcase-sdk/bundle/3.1.8.2-12-g86e1cdce6/s
 100 3108k  100 3108k    0     0  7599k      0 --:--:-- --:--:-- --:--:-- 7599k
 $ unzip -o bundle.zip -d ./packages/bundle
 Archive:  bundle.zip
-[bundle.zip] version.txt password:
  extracting: ./packages/bundle/version.txt
  ...
 ```

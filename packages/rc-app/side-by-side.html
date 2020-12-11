@@ -1,0 +1,26 @@
+<head>
+  <style>
+    body {
+      margin: 0px;
+      width: 400px;
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <iframe id='iframe0' frameborder="0" scrolling="no" width="400px" height="600px" align="left"> </iframe>
+  </div>
+  
+  <div>
+    <iframe id='iframe1' frameborder="0" scrolling="no" width="400px" height="600px" align="right"></iframe>
+  </div>
+  <script>
+    var urlParams = new URLSearchParams(window.location.search);
+    var queryString = urlParams.toString();
+    var url0 = `./index.html?${queryString}`;
+    document.getElementById('iframe0').setAttribute('src', url0);
+    document.getElementById('iframe1').setAttribute('src', url0);
+  </script>
+</body>
+

@@ -1,4 +1,3 @@
-import { sdkKey } from '@mp/common';
 import { Interpreter } from 'xstate';
 
 import { onActorPropertiesChangedEvent, waitUntil, PhotonClient } from '../PhotonClient';
@@ -24,7 +23,7 @@ export class RemoteSimulator {
   private inRotation: boolean = false;
   private lastFrame: Frame|null = null;
 
-  constructor(private photonClient: PhotonClient) {
+  constructor(private photonClient: PhotonClient, private applicationKey: string) {
     this.onEnterIdle = this.onEnterIdle.bind(this);
     this.onEnterInitialized = this.onEnterInitialized.bind(this);
     this.onEnterSimulating = this.onEnterSimulating.bind(this);
@@ -66,7 +65,7 @@ export class RemoteSimulator {
   };
 
   private onEnterInitialized = async () => {
-    this.sdk = await (window as any).MP_SDK.connect(this.iframe, sdkKey, '3.4');
+    this.sdk = await (window as any).MP_SDK.connect(this.iframe, this.applicationKey, '3.4');
     console.log('%c MP SDK Connected', 'background: #DADADA; color: #222222;', this.sdk);
 
     let appState: any = null;

@@ -40,6 +40,10 @@ module.exports = {
         from: 'lib/photon/Photon-Javascript_SDK.js',
         to: 'js/photon.js'
       },
+      {
+        from: 'side-by-side.html',
+        to: 'side-by-side.html'
+      }
     ]),
   ],
   devServer: {
