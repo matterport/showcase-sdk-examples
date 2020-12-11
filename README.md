@@ -25,8 +25,7 @@ Your development environment will need node.js and yarn installed.
 
 See <https://nodejs.org/en/> and <https://classic.yarnpkg.com/en/docs/install> for installation instructions specific to your environment.
 
-> To run the examples, you will need to replace the existing developer key strings with your own. The existing key is `2d4dfb9fd6414902b663c25a6c767cfa`.<br>
-> If you need a key, you can request one at our [developer site](https://matterport.github.io/showcase-sdk/index.html).
+> To run these examples, you will need to generate a sandboxed sdk key for your Matterport account. See [Matterport Developer Tools Pricing and Availability](https://support.matterport.com/hc/en-us/articles/360057506813-Matterport-Developer-Tools-Pricing-and-Availability).
 
 ### Setup monorepo root
 Run these two commands when you first download the repo.
