@@ -6,10 +6,16 @@ import { makeScene } from './Scene';
 import { IContext, IDialogUser } from './interfaces';
 import { AppContext } from './AppContext';
 import { BehaviorSubject } from 'rxjs';
+import { sdkKey } from "@mp/common";
 
 const initialize = async () => {
   const sdk = makeSdk('sdk-iframe');
-  sdk.init();
+  const urlParams = new URLSearchParams(window.location.search);
+  let applicationKey = sdkKey;
+  if (urlParams.has('applicationKey')) {
+    applicationKey = urlParams.get('applicationKey');
+  }
+  sdk.init(applicationKey);
 
   const scene = makeScene(sdk);
   const frameOverlay = new BehaviorSubject<IDialogUser|null>(null);

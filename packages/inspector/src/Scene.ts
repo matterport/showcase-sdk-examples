@@ -93,6 +93,7 @@ class Scene implements IScene {
     cameraControl.bind('camera', this.cameraInput, 'camera');
     const input = cameraNode.addComponent('mp.input', {
       userNavigationEnabled: false,
+      unfiltered: false,
     }) as SceneComponent;
     this.cameraInput.bindEvent(CameraInputEvent.DragBegin, input, ComponentInteractionType.DRAG_BEGIN);
     this.cameraInput.bindEvent(CameraInputEvent.Drag, input, ComponentInteractionType.DRAG);

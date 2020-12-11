@@ -35,6 +35,8 @@ export class Main extends Component<Props, State> {
   private scene: SceneLoader = null;
   private slots: SlotNode[] = [];
   private cameraInput: SceneComponent;
+  private src: string;
+  private applicationKey: string;
 
   constructor(props: Props) {
     super(props);
@@ -43,11 +45,25 @@ export class Main extends Component<Props, State> {
       slotNode: null,
     };
 
+    // Forward url params.
+    const params = objectFromQuery();
+    params.m = params.m || 'j4RZx7ZGM6T';
+    params.play = params.play || '1';
+    params.qs = params.qs || '1';
+    params.sr = params.sr || '-.15';
+    params.ss = params.ss || '25';
+    // ensure applicationKey is inserted into the bundle query string
+    params.applicationKey = params.applicationKey || sdkKey;
+    this.applicationKey = params.applicationKey;
+
+    const queryString = Object.keys(params).map((key) => key + '=' + params[key]).join('&');
+    this.src = `./bundle/showcase.html?${queryString}`;
+
     this.handleListSelection = this.handleListSelection.bind(this);
   }
 
   async componentDidMount() {
-    this.sdk = await GetSDK('sdk-iframe', sdkKey);
+    this.sdk = await GetSDK('sdk-iframe', this.applicationKey);
     await initComponents(this.sdk);
     await this.createCameraControl(this.sdk);
     await this.sdk.Scene.configure((renderer: any, three: any) => {
@@ -174,17 +190,6 @@ export class Main extends Component<Props, State> {
   }
 
   render() {
-    // Forward url params.
-    const params = objectFromQuery();
-    params.m = params.m || 'j4RZx7ZGM6T';
-    params.play = params.play || '1';
-    params.qs = params.qs || '1';
-    params.sr = params.sr || '-.15';
-    params.ss = params.ss || '25';
-
-    const queryString = Object.keys(params).map((key) => key + '=' + params[key]).join('&');
-    const src = `./bundle/showcase.html?${queryString}`;
-
     let filteredItems: ItemDesc[] = [];
     const { slotNode } = this.state;
 
@@ -200,7 +205,7 @@ export class Main extends Component<Props, State> {
     return (
       <div className='main'>
         <ItemList items={filteredItems} onSelected={this.handleListSelection}></ItemList>
-        <Frame src={src}></Frame>
+        <Frame src={this.src}></Frame>
       </div>
     );
   }

@@ -28,6 +28,8 @@ export class IFrameOverlay extends Component<Props, {}> {
   context: IContext;
   static contextType = ClientContext;
   private iframeRef: RefObject<HTMLIFrameElement>;
+  private queryString: string = '';
+  private apiHost: string = 'https://my.matterport.com';
 
   constructor(props: Props) {
     super(props);
@@ -35,6 +37,19 @@ export class IFrameOverlay extends Component<Props, {}> {
     this.state = {};
     this.onStopped = this.onStopped.bind(this);
     this.iframeRef = createRef();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('m', this.props.sid);
+
+
+    this.apiHost = urlParams.get('apiHost') || 'https://my.matterport.com';
+
+    // not needed as a url param.
+    urlParams.delete('apiHost');
+    urlParams.delete('applicationKey');
+
+    this.queryString = urlParams.toString();
+
   }
 
   componentDidMount() {
@@ -62,7 +77,7 @@ export class IFrameOverlay extends Component<Props, {}> {
   }
 
   render(): JSX.Element {
-    const url = `https://my.matterport.com/show?m=${this.props.sid}&title=0&qs=1&hr=0&brand=0&help=0&play=1&dh=0&fp=0`;
+    const url = `${this.apiHost}/show?${this.queryString}&title=0&qs=1&hr=0&brand=0&help=0&play=1&dh=0&fp=0`;
     return (
       <div className="frame">
         <IFrame2 ref={this.iframeRef} src={url}></IFrame2>

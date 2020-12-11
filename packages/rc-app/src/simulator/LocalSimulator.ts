@@ -2,7 +2,6 @@ import { PhotonClient, waitUntil } from '../PhotonClient';
 import { Interpreter } from 'xstate';
 import { FSMSchema, FSMEvent, makeSimulationFSM } from './SimulationFSM';
 import { CameraPose, Event, Frame, IVector3 } from '../types';
-import { sdkKey } from '@mp/common';
 import { LocalTime } from '../time/LocalTime';
 
 const sendEvent = (photonClient: PhotonClient, type: string, step: number, args: IArguments) => {
@@ -44,7 +43,7 @@ export class LocalSimulator {
   private time: LocalTime;
   private tmp: IVector3 = { x: 0, y: 0, z: 0};
 
-  constructor(private photonClient: PhotonClient) {
+  constructor(private photonClient: PhotonClient, private applicationKey: string) {
     this.onTick = this.onTick.bind(this);
 
     this.fsm = makeSimulationFSM(
@@ -72,7 +71,7 @@ export class LocalSimulator {
   };
 
   private onEnterInitialized = async () => {
-    this.sdk = await (window as any).MP_SDK.connect(this.iframe, sdkKey, '3.4');
+    this.sdk = await (window as any).MP_SDK.connect(this.iframe, this.applicationKey, '3.4');
     console.log('%c MP SDK Connected', 'background: #DADADA; color: #222222;', this.sdk);
 
     let appState: any = null;

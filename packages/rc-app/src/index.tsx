@@ -9,10 +9,14 @@ import { Main } from './components/Main';
 import { IContext } from './types';
 import { RemoteSimulator } from './simulator/RemoteSimulator';
 import { LocalSimulator } from './simulator/LocalSimulator';
+import { sdkKey } from '@mp/common';
+
+const urlParams = new URLSearchParams(window.location.search);
+const applicationKey = urlParams.get('applicationKey') || sdkKey;
 
 const photonClient = new PhotonClient();
-const hostSimulator = new LocalSimulator(photonClient);
-const clientSimulator = new RemoteSimulator(photonClient);
+const hostSimulator = new LocalSimulator(photonClient, applicationKey);
+const clientSimulator = new RemoteSimulator(photonClient, applicationKey);
 
 const context: IContext = {
   photonClient: photonClient,

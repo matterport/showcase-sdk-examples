@@ -7,12 +7,5 @@ dist
 version.txt
 bundle.zip
 
-packages/bundle/css
-packages/bundle/cursors
-packages/bundle/fonts
-packages/bundle/images
-packages/bundle/js
-packages/bundle/locale
-packages/bundle/terms
-packages/bundle/showcase.html
-packages/bundle/version.txt
+packages/bundle/*
+!package.json

@@ -56,11 +56,26 @@ export class MainView extends Component<{}, State> {
   // hard coding the total number of bunnies to win
   private winningCaptureTotal = 10;
   private rootRef: React.RefObject<HTMLDivElement>;
+  private queryString: string = '';
+  private sdkKey: string = sdkKey;
 
   constructor(props: {}) {
     super(props);
     this.rootRef = React.createRef<HTMLDivElement>();
 
+    const urlParams = new URLSearchParams(window.location.search);
+    if (!urlParams.has('m')) {
+      urlParams.set('m', ModelSid);
+    }
+    // ensure applicationKey is inserted into the bundle query string
+    if (urlParams.has('applicationKey')) {
+      this.sdkKey = urlParams.get('applicationKey');
+    }
+    else {
+      urlParams.set('applicationKey', this.sdkKey);
+    }
+
+    this.queryString = urlParams.toString();
     this.state = {
       currentScene: SceneIds.Welcome,
       sceneConfig: null,
@@ -68,7 +83,7 @@ export class MainView extends Component<{}, State> {
   }
 
   async componentDidMount() {
-    this.sdk = await GetSDK('sdk-iframe', sdkKey);
+    this.sdk = await GetSDK('sdk-iframe', this.sdkKey);
 
     const iframeElement = document.getElementById('sdk-iframe') as HTMLIFrameElement;    
     const stylesheet = document.createElement("link");
@@ -150,7 +165,7 @@ export class MainView extends Component<{}, State> {
   }
 
   render() {
-    const src = `./bundle/showcase.html?m=${ModelSid}&play=1&title=0&vr=0&fp=0&qs=1&dh=0&sr=3.08,-.02&ss=92&maxmeshq=256&maxtileq=2048&maxztileq=2048`;
+    const src = `./bundle/showcase.html?${this.queryString}&play=1&title=0&vr=0&fp=0&qs=1&dh=0&sr=3.08,-.02&ss=92&maxmeshq=256&maxtileq=2048&maxztileq=2048`;
     const { currentScene, sceneConfig } = this.state;
 
     const renderState = function() {
