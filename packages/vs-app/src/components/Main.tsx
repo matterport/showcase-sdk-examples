@@ -6,7 +6,7 @@ import { SceneLoader } from '../SceneLoader';
 import { ItemList } from './ItemList';
 import { ItemDesc } from 'src/types';
 import { cameraInputType } from '@mp/common/src/sdk-components/Camera';
-import { Vector3, Quaternion, Euler, Matrix4 } from 'three';
+import { Vector3, Quaternion, Euler, Matrix4, Vector2 } from 'three';
 
 const SelectedColor = 0xffff00;
 const SelectedOpacity = 0.1;
@@ -66,7 +66,7 @@ export class Main extends Component<Props, State> {
     this.sdk = await GetSDK('sdk-iframe', this.applicationKey);
     await initComponents(this.sdk);
     await this.createCameraControl(this.sdk);
-    await this.sdk.Scene.configure((renderer: any, three: any) => {
+    await this.sdk.Scene.configure((renderer: any, three: any, composer: any) => {
       renderer.physicallyCorrectLights = true;
       renderer.gammaFactor = 2.2;
       renderer.gammaOutput = true;
@@ -74,6 +74,8 @@ export class Main extends Component<Props, State> {
       renderer.shadowMap.bias = 0.0001;
       renderer.shadowMap.type = three.PCFSoftShadowMap;
 
+      const bloomPass = new three.UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+      composer.addPass(bloomPass);
     });
     this.scene = new SceneLoader(this.sdk);
 
