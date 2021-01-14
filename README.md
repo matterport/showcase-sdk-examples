@@ -27,6 +27,8 @@ See <https://nodejs.org/en/> and <https://classic.yarnpkg.com/en/docs/install> f
 
 > To run these examples, you will need to generate a sandboxed sdk key for your Matterport account. See [Matterport Developer Tools Pricing and Availability](https://support.matterport.com/hc/en-us/articles/360057506813-Matterport-Developer-Tools-Pricing-and-Availability).
 
+The password for the beta versions of bundle: gOJKDpxNiMCtdlnXs
+
 ### Setup monorepo root
 Run these two commands when you first download the repo.
 ```shell
