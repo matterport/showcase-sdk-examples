@@ -6,7 +6,7 @@ import { SceneLoader } from '../SceneLoader';
 import { ItemList } from './ItemList';
 import { ItemDesc } from 'src/types';
 import { cameraInputType } from '@mp/common/src/sdk-components/Camera';
-import { Vector3, Quaternion, Euler, Matrix4, Vector2 } from 'three';
+import { Vector3, Quaternion, Euler, Matrix4 } from 'three';
 
 const SelectedColor = 0xffff00;
 const SelectedOpacity = 0.1;
@@ -74,7 +74,7 @@ export class Main extends Component<Props, State> {
       renderer.shadowMap.bias = 0.0001;
       renderer.shadowMap.type = three.PCFSoftShadowMap;
 
-      const bloomPass = new three.UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+      const bloomPass = new three.GlitchPass();
       composer.addPass(bloomPass);
     });
     this.scene = new SceneLoader(this.sdk);

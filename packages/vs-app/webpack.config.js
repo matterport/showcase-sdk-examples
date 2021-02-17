@@ -34,9 +34,25 @@ mode: 'development',
     new CopyPlugin([
       {
         from: 'node_modules/@mp/bundle-sdk',
-        to: 'bundle'
+        to: 'bundle',
       },
-      { from: 'assets', to: 'assets'}
+      { from: 'assets', to: 'assets'},
+    ]),
+    new CopyPlugin([
+      {
+        from: 'node_modules/@mp/bundle-sdk/showcase.html',
+        to: 'bundle/showcase.html',
+        transform: (content) => {
+          let src = content.toString('utf8');
+          src = src.replace("{\"apiHost\":\"https://my.matterport.com\",\"pointerPreventDefault\":false}", JSON.stringify({
+            apiHost: 'https://my.matterport.com',
+            pointerPreventDefault: false,
+            useEffectComposer: true,
+          }));
+          return src;
+        },
+        force: true,
+      },
     ]),
   ],
   devServer: {
