@@ -10,6 +10,8 @@ import {
   makeAddDirectionalLightFactory,
   makeAddPointLightFactory,
 } from '../commands/AddLights';
+import { makeBoxSourceFactory, makeCylinderSourceFactory, makeSphereSourceFactory } from '../commands/AddSource';
+import { makeSaveSourcesFactory } from '../commands/SaveSources';
 
 export type MenuItemDescriptor = {
   title: string;
@@ -62,6 +64,18 @@ export const Menus: MenuDescriptor[] = [
         title: 'Point Light',
         factoryMaker: makeAddPointLightFactory,
       },
+      {
+        title: 'Sphere Source',
+        factoryMaker: makeSphereSourceFactory,
+      },
+      {
+        title: 'Box Source',
+        factoryMaker: makeBoxSourceFactory,
+      },
+      {
+        title: 'Cylinder Source',
+        factoryMaker: makeCylinderSourceFactory,
+      }
     ],
   },
   {
@@ -75,6 +89,10 @@ export const Menus: MenuDescriptor[] = [
         title: 'Closeup of selection',
         factoryMaker: makeCloseupViewFactory,
       },
+      {
+        title: 'Save Sources as array',
+        factoryMaker: makeSaveSourcesFactory,
+      }
     ]
   },
 ];

@@ -16,7 +16,7 @@ const styles = () => ({
     marginRight: '6px',
   },
   textField: {
-    width: 260,
+    width: 160,
     fontSize: '9pt',
     padding: '6px',
   },

@@ -1,3 +1,5 @@
+import { interfaceVersion } from "@mp/common";
+
 export interface ISdk {
   init(applicationKey: string): void;
   sdk: any;
@@ -21,7 +23,7 @@ class Sdk implements ISdk {
       if (iframe && (iframe as any).contentWindow.MP_SDK) {
         clearInterval(intervalId);
 
-        (iframe as any).contentWindow.MP_SDK.connect(iframe, applicationKey, '3.5').then((sdk: any) => {
+        (iframe as any).contentWindow.MP_SDK.connect(iframe, applicationKey, interfaceVersion).then((sdk: any) => {
           that.sdk = sdk;
           console.log(that.sdk);
           if (that.callback) {
