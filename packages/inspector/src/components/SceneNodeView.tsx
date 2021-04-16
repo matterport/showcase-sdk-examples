@@ -10,10 +10,10 @@ const styles = () => ({
     flexGrow: 1,
     height: '100%',
     alignItems: 'stretch',
-    minWidth: 400,
+    minWidth: 250,
     overflowX: 'hidden' as 'hidden',
     overflowY: 'auto' as 'auto',
-    maxWidth: 400,
+    maxWidth: 264,
   },
 });
 

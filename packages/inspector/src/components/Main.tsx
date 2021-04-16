@@ -14,7 +14,7 @@ import {
   sdkKey,
 } from '@mp/common';
 import { WithStyles, withStyles } from '@material-ui/core/styles';
-import { Grid, Button } from '@material-ui/core';
+import { Grid, Button, Tabs, Tab } from '@material-ui/core';
 import { Vector3 } from 'three';
 import { MenuView, IMenuItem } from './MenuView';
 import { IContext, IDialogUser } from '../interfaces';
@@ -30,7 +30,7 @@ export const waitUntil = async (condition: () => boolean) => {
     const checkCondition = () => {
       if (condition()) {
         clearInterval(intervalId);
-        resolve();
+        resolve(true);
       }
     };
     intervalId = window.setInterval(checkCondition, 30);
@@ -73,6 +73,15 @@ const styles = () => ({
   dropdown: {
     height: '36px',
   },
+  tabPanel: {
+    maxHeight: '100%',
+    overflowY: 'auto' as 'auto',
+    minWidth: 266,
+  },
+  tab: {
+    minWidth: 125,
+    padding: 0,
+  }
 });
 
 interface Props extends WithStyles<typeof styles> {}
@@ -83,6 +92,7 @@ interface State {
   cameraRotation: IVector2;
   selection: ISceneNode;
   user: IDialogUser | null;
+  tabIndex: number;
 }
 
 class MainViewImpl extends Component<Props, State> {
@@ -100,6 +110,7 @@ class MainViewImpl extends Component<Props, State> {
       user: null,
       cameraPosition: { x: 0, y: 0, z: 0 },
       cameraRotation: { x: 0, y: 0 },
+      tabIndex: 0,
     };
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -119,6 +130,7 @@ class MainViewImpl extends Component<Props, State> {
     this.transformSelected = this.transformSelected.bind(this);
     this.dropped = this.dropped.bind(this);
     this.onSave = this.onSave.bind(this);
+    this.onTabChanged = this.onTabChanged.bind(this);
   }
 
   private itemSelected(item: ISceneNode|null) {
@@ -236,6 +248,12 @@ class MainViewImpl extends Component<Props, State> {
     });
   }
 
+  private onTabChanged(event: React.ChangeEvent, index: number) {
+    this.setState({
+      tabIndex: index,
+    });
+  }
+
   render() {
     const classes = this.props.classes;
     const src = `./bundle/showcase.html?${this.queryString}&play=1&qs=1&sm=2&sr=-2.87,-.04,-3.13&sp=-.09,3.83,-7.53`;
@@ -288,14 +306,27 @@ class MainViewImpl extends Component<Props, State> {
               <CameraView></CameraView>
             </div>
             <div className={classes.container}>
-              <SceneView
-                scene={this.state.scene}
-                onSingleClick={this.itemSelected}
-                selectionDeleted={this.itemDeleted}
-                onDoubleClick={this.itemDoubleClick}
-              ></SceneView>
               <FrameView src={src}></FrameView>
-              <SceneNodeView selection={this.state.selection}></SceneNodeView>
+                
+                <div className={classes.tabPanel}>
+                  <Tabs value={this.state.tabIndex} onChange={this.onTabChanged} aria-label="simple tabs example" variant='standard'>
+                    <Tab label="Nodes" value={0} className={classes.tab}/>
+                    <Tab label="Props" value={1} className={classes.tab}/>
+                  </Tabs>
+                  {this.state.tabIndex === 0 ?
+                    <SceneView
+                      scene={this.state.scene}
+                      onSingleClick={this.itemSelected}
+                      selectionDeleted={this.itemDeleted}
+                      onDoubleClick={this.itemDoubleClick}
+                    >
+                    </SceneView> : null
+                  }
+                  {this.state.tabIndex === 1 ?
+                    <SceneNodeView selection={this.state.selection}></SceneNodeView> : null
+                  }
+              </div>
+
             </div>
           </div>
         </div>

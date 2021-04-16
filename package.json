@@ -21,6 +21,7 @@
     "vs-app": "lerna run develop --scope=vs-app --stream",
     "easter": "lerna run develop --scope=easter --stream",
     "rc-app": "lerna run develop --scope=rc-app --stream",
+    "embed-examples": "lerna run develop --scope=embed-examples --stream",
     "build-tools": "tsc --outDir ./tools/dist ./tools/echo.ts",
     "fetch-bundle": "curl https://static.matterport.com/showcase-sdk/bundle/$npm_package_config_bundle_version/showcase-bundle.zip -o bundle.zip",
     "expand-bundle": "unzip -o bundle.zip -d ./packages/bundle",
@@ -31,6 +32,6 @@
     "packages/*"
   ],
   "config" : {
-    "bundle_version" : "3.1.33.13-14-gb10ecafc1"
+    "bundle_version" : "3.1.38.10-14-gaf0ef87a5"
   }
 }

@@ -8,6 +8,7 @@
     - [Run the virtual staging app](#run-the-virtual-staging-app)
     - [Run the magical bunny app](#run-the-magical-bunny-app)
     - [Run the remote control app](#run-the-remote-control-app)
+    - [Run the embed sdk examples](#run-the-embed-sdk-examples)
     - [Clean packages](#clean-packages)
     - [Make a prod build](#make-a-prod-build)
     - [Packages](#packages)
@@ -36,7 +37,7 @@ Run these two commands when you first download the repo.
 > yarn install-bundle
 yarn run v1.22.4
 $ yarn fetch-bundle && yarn expand-bundle
-$ curl https://static.matterport.com/showcase-sdk/bundle/3.1.33.13-14-gb10ecafc1/showcase-bundle.zip -o bundle.zip
+$ curl https://static.matterport.com/showcase-sdk/bundle/3.1.38.10-14-gaf0ef87a5/showcase-bundle.zip -o bundle.zip
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100 3108k  100 3108k    0     0  7599k      0 --:--:-- --:--:-- --:--:-- 7599k
@@ -117,6 +118,22 @@ rc-app: ℹ ｢wds｣: webpack output is served from /
 rc-app: ℹ ｢wds｣: Content not from webpack is served from /Users/bguillermo/projects/sdk_examples/packages/rc-app
 ```
 
+### Run the embed sdk examples
+```shell
+> yarn embed-examples
+yarn run v1.22.5
+$ lerna run develop --scope=embed-examples --stream
+lerna notice cli v3.22.1
+lerna notice filter including "embed-examples"
+lerna info filter [ 'embed-examples' ]
+lerna info Executing command in 1 package: "yarn run develop"
+embed-examples: warning package.json: No license field
+embed-examples: $ webpack-dev-server
+embed-examples: ℹ ｢wds｣: Project is running at http://localhost:8000/
+embed-examples: ℹ ｢wds｣: webpack output is served from /
+embed-examples: ℹ ｢wds｣: Content not from webpack is served from /Users/bguillermo/projects/sdk_examples/packages/embed-examples/dist
+```
+
 ### Clean packages
 You will need to bootstrap after cleaning.
 ```shell
@@ -128,6 +145,7 @@ lerna info clean removing /Users/bguillermo/projects/sdk_examples/packages/bundl
 lerna info clean removing /Users/bguillermo/projects/sdk_examples/packages/common/node_modules
 lerna info clean removing /Users/bguillermo/projects/sdk_examples3/packages/core/node_modules
 lerna info clean removing /Users/bguillermo/projects/sdk_examples3/packages/easter/node_modules
+lerna info clean removing /Users/bguillermo/projects/sdk_examples2/packages/embed-examples/node_modules
 lerna info clean removing /Users/bguillermo/projects/sdk_examples/packages/inspector/node_modules
 lerna info clean removing /Users/bguillermo/projects/sdk_examples3/packages/rc-app/node_modules
 lerna info clean removing /Users/bguillermo/projects/sdk_examples/packages/vs-app/node_modules
@@ -143,8 +161,9 @@ Hash: 95bb160f191dc13eb410
 Version: webpack 4.18.1
 Time: 1029ms
 ...
-lerna success run Ran npm script 'build-prod' in 4 packages:
+lerna success run Ran npm script 'build-prod' in 5 packages:
 lerna success - easter
+lerna success - embed-examples
 lerna success - inspector
 lerna success - rc-app
 lerna success - vs-app

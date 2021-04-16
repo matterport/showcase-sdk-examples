@@ -1,5 +1,5 @@
 import { SceneComponent, ComponentOutput } from '../SceneComponent';
-import { Object3D, AnimationMixer, AnimationAction, LoopOnce, AnimationClip, Mesh, Texture, MeshLambertMaterial } from 'three';
+import { Object3D, AnimationMixer, AnimationAction, LoopOnce, AnimationClip, Mesh, Texture, MeshLambertMaterial, LineSegments } from 'three';
 import { IPainter2d } from './CanvasRenderer';
 import { PlaneRenderer, Size } from './PlaneRenderer';
 
@@ -78,10 +78,11 @@ class NestThermostat extends SceneComponent implements IPainter2d {
   onInputsUpdated() {
     const THREE = this.context.three;
     if (this.inputs.loadingState === 'Loaded') {
+      const lines: LineSegments[] = [];
       this.daeComponent.outputs.objectRoot.traverse((obj: Object3D) => {
-        // we dont want line segments
+        // we dont want line segments, track them and remove them.
         if (obj.type === 'LineSegments') {
-          obj.visible = false;
+          lines.push(obj as LineSegments);
         }
         else if (obj.type === 'Mesh') {
           this.mesh = obj as Mesh;
@@ -92,6 +93,11 @@ class NestThermostat extends SceneComponent implements IPainter2d {
             this.mesh.material = newMaterial;
           }
         }
+      });
+
+      // remove the line segments.
+      lines.forEach((line: LineSegments) => {
+        line.parent.remove(line);
       });
     }
   }

@@ -1,4 +1,4 @@
-import THREE from "three"
+import THREE, { Scene } from 'three';
 import { Dict } from '@mp/core';
 
 /**
@@ -201,6 +201,7 @@ export type ComponentContext = {
   root: ISceneNode;
   renderer: THREE.WebGLRenderer;
   user: Dict;
+  scene: Scene;
 };
 
 /**

@@ -12,6 +12,7 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@mp/bundle-sdk": "^1.0.0",
     "@mp/common": "^1.0.0",
+    "@mp/core": "^1.0.0",
     "@tweenjs/tween.js": "^18.6.0",
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.3",
@@ -20,7 +21,7 @@
     "react-dom": "^16.11.0",
     "react-dropzone": "^10.2.0",
     "rxjs": "^6.5.3",
-    "three": "^0.115.0",
+    "three": "^0.124.0",
     "typescript": "^3.7.5",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"
