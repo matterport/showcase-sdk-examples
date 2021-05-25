@@ -1,0 +1,33 @@
+:root {
+  --transition-duration: 0.5s
+}
+
+iframe {
+  border-width: 0px;
+  border-style: none;
+  height: 100vh;
+  width: 100%;
+}
+
+#text {
+  background-color: #222222;
+  padding: 10px;
+  color: #f5f4f3;
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  font-size: larger;
+  transform: translateX(-50%);
+}
+
+.hidden {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s var(--transition-duration), opacity var(--transition-duration) linear;
+}
+
+.visible {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity var(--transition-duration) linear;
+}

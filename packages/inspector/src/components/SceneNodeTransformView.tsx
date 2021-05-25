@@ -89,7 +89,7 @@ class SceneNodeTransformViewImpl extends Component<Props, State> {
           switchMap(() => [this.props.selection]),
           map<ISceneNode, IVector3>((value: ISceneNode) => {
             euler.setFromQuaternion(value.quaternion);
-            return { x: MathUtils.radToDeg(euler.x), y: MathUtils.radToDeg(euler.y), z: MathUtils.radToDeg(euler.x) };
+            return { x: MathUtils.radToDeg(euler.x), y: MathUtils.radToDeg(euler.y), z: MathUtils.radToDeg(euler.z) };
           }),
           distinctUntilChanged((a: IVector3, b: IVector3) => a.x === b.x && a.y === b.y && a.z === b.z)
         )

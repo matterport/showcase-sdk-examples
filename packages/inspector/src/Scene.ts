@@ -1,13 +1,14 @@
 import { BehaviorSubject } from 'rxjs';
 import { ISdk } from './Sdk';
 import { Vector3, Quaternion, Matrix4, Euler } from 'three';
-import { initComponents, ComponentInteractionType } from '@mp/common';
+import { initComponents, ComponentInteractionType, sphereSourceType } from '@mp/common';
 import { gridType, makeGrid } from './Grid';
 import { cameraInputType, CameraInputEvent } from '@mp/common/src/sdk-components/Camera';
 import { IScene, CameraPose } from './interfaces';
 import { SceneComponent, ISceneNode } from '@mp/common';
 import { splineCameraType, makeSplineCamera } from './SplineCamera';
 import { closeupViewType, makeCloseUpView } from './CloseupView';
+import { boxSourceType } from '@mp/common/src/sdk-components/BoxSource';
 
 export const makeScene = (sdk: any): IScene => {
   return new Scene(sdk);
@@ -16,6 +17,7 @@ export const makeScene = (sdk: any): IScene => {
 class Scene implements IScene {
   public widget: SceneComponent|null = null;
   public cameraInput: SceneComponent|null = null;
+  public sensor: any = null;
 
   constructor(private sdk: ISdk){
     this.setup = this.setup.bind(this);
@@ -60,6 +62,8 @@ class Scene implements IScene {
       sdk.Scene.register(closeupViewType, makeCloseUpView),
       initComponents(sdk),
     ]);
+    this.sensor = await sdk.Sensor.createSensor(sdk.Sensor.SensorType.CAMERA);
+    this.sensor.showDebug(true);
   
     const node = await sdk.Scene.createNode();
     this.widget = node.addComponent('mp.transformControls');
@@ -83,7 +87,7 @@ class Scene implements IScene {
       quaternion: new Quaternion().setFromEuler(new Euler(
         cameraPose.rotation.x * Math.PI / 180,
         cameraPose.rotation.y * Math.PI / 180,
-        cameraPose.rotation.z * Math.PI / 180,
+        0,
         'YXZ')),
       projection: poseMatrix,
     };
@@ -105,10 +109,16 @@ class Scene implements IScene {
   }
 
   public async deserialize(serialized: string) {
-    const nodes: any[] = await this.sdk.sdk.Scene.deserialize(serialized);
+    const nodes: ISceneNode[] = await this.sdk.sdk.Scene.deserialize(serialized);
 
     const added: ISceneNode[] = [];
     for (const node of nodes) {
+      for (const component of node.componentIterator()) {
+        // If the component is a source component, then set inputs.sensor
+        if (component.componentType === sphereSourceType || component.componentType === boxSourceType) {
+          component.inputs.sensor = this.sensor;
+        }
+      }
       node.start();
       added.push(node);
     }
@@ -142,5 +152,9 @@ class Scene implements IScene {
     }
     this._objects = [];
     this.objectsSubject.next(this._objects);
+    this.sensor.dispose();
+    this.sdk.sdk.Sensor.createSensor(this.sdk.sdk.Sensor.SensorType.CAMERA).then((sensor: any) => {
+      this.sensor = sensor;
+    });
   }
 }

@@ -14,6 +14,7 @@ export * from './sdk-components/VideoStreamCapture';
 export * from './sdk-components/NestThermostat';
 export * from './sdk-components/RoomShadow';
 export * from './sdk-components/ClockPainter';
+export * from './sdk-components/SphereSource';
 
 import { orientedBoxType, makeOrientedBox } from './sdk-components/OrientedBox';
 import { slotType, makeSlot } from './sdk-components/Slot';
@@ -36,6 +37,9 @@ import { canvasBorderType, makeCanvasBorder } from './sdk-components/CanvasBorde
 import { canvasTextType, makeCanvasText } from './sdk-components/CanvasText';
 import { canvasImageType, makeCanvasImage } from './sdk-components/CanvasImage';
 import { cameraInputType, makeCameraInput } from './sdk-components/Camera';
+import { makeSphereSource, sphereSourceType } from './sdk-components/SphereSource';
+import { boxSourceType, makeBoxSource } from './sdk-components/BoxSource';
+import { cylinderSourceType, makeCylinderSource } from './sdk-components/CylinderSource';
 
 export const initComponents = async (sdk: any) => {
   await Promise.all([
@@ -60,9 +64,13 @@ export const initComponents = async (sdk: any) => {
     sdk.Scene.register(canvasTextType, makeCanvasText),
     sdk.Scene.register(canvasImageType, makeCanvasImage),
     sdk.Scene.register(cameraInputType, makeCameraInput),
+    sdk.Scene.register(sphereSourceType, makeSphereSource(sdk)),
+    sdk.Scene.register(boxSourceType, makeBoxSource(sdk)),
+    sdk.Scene.register(cylinderSourceType, makeCylinderSource(sdk)),
   ]);
 }
 
 export const assetVersion = '1.0-2-g6b74572';
 export const cdnUrl = `https://static.matterport.com/showcase-sdk/examples/assets-${assetVersion}/assets`;
 export const sdkKey = '2d4dfb9fd6414902b663c25a6c767cfa';
+export const interfaceVersion = '3.10';

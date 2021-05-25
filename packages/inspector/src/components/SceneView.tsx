@@ -26,8 +26,10 @@ function PlusSquare(props: SvgIconProps) {
 const styles = () => ({
   root: {
     flexGrow: 1,
-    minWidth: 300,
+    minWidth: 250,
+    maxWidth: 264,
     height: '100%',
+    overflowY: 'auto' as 'auto',
   },
   paper: {
     height: '100%',

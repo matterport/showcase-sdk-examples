@@ -18,6 +18,7 @@ export interface IScene {
   readonly cameraPose: BehaviorSubject<CameraPose>;
   readonly widget: SceneComponent|null;
   readonly cameraInput: SceneComponent|null;
+  readonly sensor: any;
 
   /**
    * This function deserializes the provided string into scene nodes.

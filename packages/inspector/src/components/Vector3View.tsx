@@ -15,9 +15,9 @@ const styles = () => ({
     paddingTop: '12px',
   },
   textField: {
-    width: 60,
+    width: 30,
     fontSize: '9pt',
-    padding: '6px',
+    padding: '1px',
   },
 });
 

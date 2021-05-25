@@ -123,7 +123,14 @@ export class OrientedBox extends SceneComponent {
       linewidth: 1,
       opacity: this.inputs.lineOpacity,
     }));
-    this.root.add(this.edges);
+    
+    // put the edges object directly in the scene graph so that they dont intercept
+    // raycasts. The edges object will need to be removed if this component is destroyed.
+    const obj3D = (this.context.root as any).obj3D as Object3D;
+    const worldPos = new this.context.three.Vector3();
+    obj3D.getWorldPosition(worldPos);
+    this.edges.position.copy(worldPos);
+    this.context.scene.add(this.edges);
   }
 
   onInputsUpdated(oldInputs: Inputs) {

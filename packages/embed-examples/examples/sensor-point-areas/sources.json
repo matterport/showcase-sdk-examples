@@ -1,0 +1,182 @@
+[
+  {
+    "type": "sensor.sourcetype.box",
+    "options": {
+      "center": {
+        "x": -6.328773538957192,
+        "y": 1.2645817572659763,
+        "z": 7.470580580534019
+      },
+      "size": {
+        "x": 5.1,
+        "y": 2.5,
+        "z": 3.6
+      },
+      "userData": {
+        "id": "Guest Room"
+      }
+    }
+  },
+  {
+    "type": "sensor.sourcetype.box",
+    "options": {
+      "center": {
+        "x": -8.917427103356058,
+        "y": 1.3130126616830808,
+        "z": 1.7982931632148111
+      },
+      "size": {
+        "x": 1.5,
+        "y": 2.5,
+        "z": 1.3
+      },
+      "userData": {
+        "id": "Shower"
+      }
+    }
+  },
+  {
+    "type": "sensor.sourcetype.box",
+    "options": {
+      "center": {
+        "x": -8.243995648255293,
+        "y": 1.3809079578062626,
+        "z": 5.028722683304125
+      },
+      "size": {
+        "x": 1.7,
+        "y": 2.5,
+        "z": 0.9
+      },
+      "userData": {
+        "id": "Toilet"
+      }
+    }
+  },
+  {
+    "type": "sensor.sourcetype.box",
+    "options": {
+      "center": {
+        "x": -8.01512772041869,
+        "y": 1.3473662703804479,
+        "z": 2.8495978934246446
+      },
+      "size": {
+        "x": 3.2,
+        "y": 2.5,
+        "z": 3.4
+      },
+      "userData": {
+        "id": "Bathroom"
+      }
+    }
+  },
+  {
+    "type": "sensor.sourcetype.box",
+    "options": {
+      "center": {
+        "x": -0.06908380774912815,
+        "y": 1.305243608846709,
+        "z": 0.07077912018687582
+      },
+      "size": {
+        "x": 3.4,
+        "y": 2.5,
+        "z": 3
+      },
+      "userData": {
+        "id": "Living Room"
+      }
+    }
+  },
+  {
+    "type": "sensor.sourcetype.box",
+    "options": {
+      "center": {
+        "x": -3.2965438206536373,
+        "y": 2.032718785575968,
+        "z": 0.04179048603792046
+      },
+      "size": {
+        "x": 2.2,
+        "y": 4,
+        "z": 1.6
+      },
+      "userData": {
+        "id": "Front Door"
+      }
+    }
+  },
+  {
+    "type": "sensor.sourcetype.box",
+    "options": {
+      "center": {
+        "x": -1.0644665391660868,
+        "y": 1.4270183432919503,
+        "z": 6.701293798150196
+      },
+      "size": {
+        "x": 4.4,
+        "y": 2.5,
+        "z": 5.2
+      },
+      "userData": {
+        "id": "Family Room"
+      }
+    }
+  },
+  {
+    "type": "sensor.sourcetype.box",
+    "options": {
+      "center": {
+        "x": 5.871212838948768,
+        "y": 1.400763060979906,
+        "z": 6.777743840295724
+      },
+      "size": {
+        "x": 3.7,
+        "y": 2.6,
+        "z": 7.6
+      },
+      "userData": {
+        "id": "Kitchen"
+      }
+    }
+  },
+  {
+    "type": "sensor.sourcetype.box",
+    "options": {
+      "center": {
+        "x": 7.020610206615631,
+        "y": 1.312582527962432,
+        "z": 0.47577342877707407
+      },
+      "size": {
+        "x": 1.5,
+        "y": 2.5,
+        "z": 3.3
+      },
+      "userData": {
+        "id": "Office"
+      }
+    }
+  },
+  {
+    "type": "sensor.sourcetype.box",
+    "options": {
+      "center": {
+        "x": 3.9310310154893155,
+        "y": 1.3855723171329912,
+        "z": 0.35887605007941703
+      },
+      "size": {
+        "x": 3.5,
+        "y": 2.5,
+        "z": 1.3
+      },
+      "userData": {
+        "id": "Utility Room"
+      }
+    }
+  }
+]
