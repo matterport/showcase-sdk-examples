@@ -151,7 +151,8 @@ class CloseupView extends SceneComponent {
         qEnd.copy(q);
       })
       .onUpdate((obj, tm) => {
-        THREE.Quaternion.slerp(qStart, qEnd, this.camera.quaternion, tm);
+        this.camera.quaternion.copy(qStart);
+        this.camera.quaternion.slerp(qEnd, tm);
       })
       .onComplete(() => {
         this.camera.quaternion.copy(qEnd);

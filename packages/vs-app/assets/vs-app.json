@@ -468,11 +468,8 @@
             "type": "mp.tuner",
             "inputs": {
               "urls": [
-                "https://bfmbusisecure-i.akamaihd.net/hls/live/265375/876450612001/BFMBusinessS/video_0/video_0.m3u8",
                 "https://video2archives.earthcam.com/archives/_definst_/MP4:permanent/14162/2019/07/22/1300.mp4/chunklist_w1401431259.m3u8",
                 "https://nmxlive.akamaized.net/hls/live/529965/Live_1/index.m3u8",
-                "https://tv5styleen-i.akamaihd.net/hls/live/631650/tv5styleen/tv5style_eng_1200.m3u8",
-                "https://play.cdn.enetres.net/16011939C62D44ED91350508FB25828B021/021/playlist.m3u8",
                 "https://br_hdslive-f.akamaihd.net/i/bfssued_germany@119890/index_3776_av-p.m3u8"
               ]
             },

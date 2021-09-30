@@ -10,6 +10,8 @@
   "version": "1.0.0",
   "private": true,
   "devDependencies": {
+    "cross-var": "^1.1.0",
+    "decompress-cli": "^2.0.0",
     "webpack-cli": "^3.1.0"
   },
   "scripts": {
@@ -23,15 +25,15 @@
     "rc-app": "lerna run develop --scope=rc-app --stream",
     "embed-examples": "lerna run develop --scope=embed-examples --stream",
     "build-tools": "tsc --outDir ./tools/dist ./tools/echo.ts",
-    "fetch-bundle": "curl https://static.matterport.com/showcase-sdk/bundle/$npm_package_config_bundle_version/showcase-bundle.zip -o bundle.zip",
-    "expand-bundle": "unzip -o bundle.zip -d ./packages/bundle",
+    "fetch-bundle": "cross-var curl https://static.matterport.com/showcase-sdk/bundle/$npm_package_config_bundle_version/showcase-bundle.zip -o bundle.zip",
+    "expand-bundle": "yarn decompress bundle.zip --out-dir=./packages/bundle",
     "install-bundle": "yarn fetch-bundle && yarn expand-bundle",
     "test": "lerna run test --stream"
   },
   "workspaces": [
     "packages/*"
   ],
-  "config" : {
-    "bundle_version" : "3.1.38.10-15-g5a5323ef0"
+  "config": {
+    "bundle_version": "3.1.46.18-6-gbc4c5114b"
   }
 }
