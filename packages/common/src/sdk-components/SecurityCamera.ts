@@ -1,6 +1,6 @@
 import { Object3D, Mesh, PerspectiveCamera,
   MeshBasicMaterial, BoxGeometry, ShaderMaterial, LineBasicMaterial, EdgesGeometry,
-  Euler, Vector3, Matrix4, Color, AnimationMixer } from 'three';
+  AnimationMixer, Color, Matrix4, Vector3 } from 'three';
 import { SceneComponent } from '../SceneComponent';
 
 interface Inputs {
@@ -56,7 +56,7 @@ class SecurityCamera extends SceneComponent {
 
     this.root.position.set(this.inputs.localPosition.x, this.inputs.localPosition.y, this.inputs.localPosition.z);
 
-    const euler = new Euler(this.inputs.localRotation.x * Math.PI / 180, this.inputs.localRotation.y * Math.PI / 180, this.inputs.localRotation.z * Math.PI / 180, 'YXZ');
+    const euler = new THREE.Euler(this.inputs.localRotation.x * Math.PI / 180, this.inputs.localRotation.y * Math.PI / 180, this.inputs.localRotation.z * Math.PI / 180, 'YXZ');
     this.pivot.quaternion.setFromEuler(euler);
 
     const aspect = this.inputs.aspect;
@@ -149,20 +149,24 @@ class SecurityCamera extends SceneComponent {
     const nearHalfHeight = nearHalfWidth / this.inputs.aspect;
     const farHalfHeight = farHalfWidth / this.inputs.aspect;
 
-    for (const vertex of boxGeometry.vertices) {
-      if (vertex.z > 0) {
+    const positions = boxGeometry.getAttribute('position');
+
+    for (let i = 0; i<positions.count; i++ ) {
+      const vertexZ = positions.getZ(i);
+      const vertexX = positions.getX(i);
+      const vertexY = positions.getY(i);
+      if (vertexZ > 0) {
         // back of the camera
-        vertex.setX(vertex.x * nearHalfWidth);
-        vertex.setY(vertex.y * nearHalfHeight);
+        positions.setX(i, vertexX * nearHalfWidth)
+        positions.setY(i, vertexY * nearHalfHeight);
       }
       else {
         // front of the camera
-        vertex.setX(vertex.x * farHalfWidth);
-        vertex.setY(vertex.y * farHalfHeight);
+        positions.setX(i, vertexX * farHalfWidth)
+        positions.setY(i, vertexY * farHalfHeight);
       }
-      vertex.setZ(vertex.z - 0.5 * frustumLength - this.inputs.nearPlane);
+      positions.setZ(i, vertexZ - 0.5 * frustumLength - this.inputs.nearPlane);
     }
-    boxGeometry.verticesNeedUpdate = true;
 
     var boxMaterial: MeshBasicMaterial = new THREE.MeshBasicMaterial({
       color: this.inputs.color,

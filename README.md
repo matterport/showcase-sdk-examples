@@ -41,10 +41,8 @@ $ curl https://static.matterport.com/showcase-sdk/bundle/3.1.38.10-15-g5a5323ef0
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100 3108k  100 3108k    0     0  7599k      0 --:--:-- --:--:-- --:--:-- 7599k
-$ unzip -o bundle.zip -d ./packages/bundle
-Archive:  bundle.zip
- extracting: ./packages/bundle/version.txt
- ...
+$ yarn decompress bundle.zip --out-dir=packages/bundle
+$ ...
 ```
 
 ### Setup packages
