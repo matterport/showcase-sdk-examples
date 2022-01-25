@@ -18,7 +18,7 @@ export class PhotonClient extends Photon.LoadBalancing.LoadBalancingClient {
       return;
     }
 
-    this.connectToRegionMaster('usw');
+    this.connectToRegionMaster('us');
 
     await waitUntil(() => this.state === Photon.LoadBalancing.LoadBalancingClient.State.JoinedLobby);
   }
