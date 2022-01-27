@@ -22,7 +22,7 @@
     "react-dom": "^16.11.0",
     "react-dropzone": "^10.2.0",
     "rxjs": "^6.5.3",
-    "three": "^0.128.0",
+    "three": "^0.137.0",
     "typescript": "^3.7.5",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"
