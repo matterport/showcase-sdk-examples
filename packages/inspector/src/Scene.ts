@@ -9,6 +9,7 @@ import { SceneComponent, ISceneNode } from '@mp/common';
 import { splineCameraType, makeSplineCamera } from './SplineCamera';
 import { closeupViewType, makeCloseUpView } from './CloseupView';
 import { boxSourceType } from '@mp/common/src/sdk-components/BoxSource';
+import { volPlayerType } from '@mp/common/src/sdk-components/VolPlayer';
 
 export const makeScene = (sdk: any): IScene => {
   return new Scene(sdk);
@@ -73,6 +74,7 @@ class Scene implements IScene {
     const grid = await sdk.Scene.createNode();
     grid.name = 'Ground Plane';
     grid.addComponent(gridType);
+    grid.addComponent(volPlayerType);
     grid.start();
   }
 

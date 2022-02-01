@@ -15,6 +15,7 @@ export * from './sdk-components/NestThermostat';
 export * from './sdk-components/RoomShadow';
 export * from './sdk-components/ClockPainter';
 export * from './sdk-components/SphereSource';
+export * from './sdk-components/VolPlayer';
 
 import { orientedBoxType, makeOrientedBox } from './sdk-components/OrientedBox';
 import { slotType, makeSlot } from './sdk-components/Slot';
@@ -40,6 +41,7 @@ import { cameraInputType, makeCameraInput } from './sdk-components/Camera';
 import { makeSphereSource, sphereSourceType } from './sdk-components/SphereSource';
 import { boxSourceType, makeBoxSource } from './sdk-components/BoxSource';
 import { cylinderSourceType, makeCylinderSource } from './sdk-components/CylinderSource';
+import { volPlayerType, makeVolPlayer } from './sdk-components/VolPlayer';
 
 export const initComponents = async (sdk: any) => {
   await Promise.all([
@@ -67,6 +69,7 @@ export const initComponents = async (sdk: any) => {
     sdk.Scene.register(sphereSourceType, makeSphereSource(sdk)),
     sdk.Scene.register(boxSourceType, makeBoxSource(sdk)),
     sdk.Scene.register(cylinderSourceType, makeCylinderSource(sdk)),
+    sdk.Scene.register(volPlayerType, makeVolPlayer(sdk)),
   ]);
 }
 
