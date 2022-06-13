@@ -169,7 +169,7 @@ lerna success - vs-app
 ```
 
 ### Packages
-The repository is a [Lerna](https://lerna.js.org/) monorepo with the following local packages:
+The repository is a [Lerna](https://lerna.js.org/) monorepo. This means that the package.json dependencies at the root of the repository are shared with each of the individual packages. Please keep in mind that not all root-level dependencies are used by all examples. The packages include:
 
 #### vs-app
 frameworks: [Reactjs](https://reactjs.org/) + [SDK Bundle](https://matterport.github.io/showcase-sdk/sdkbundle_home.html)
@@ -197,7 +197,7 @@ frameworks: [Reactjs](https://reactjs.org/) + [Phaser](https://phaser.io/) + [SD
 - matterport observable library
 
 #### bundle
-- showcase sdk bundle
+- showcase sdk bundle is created when running `yarn install-bundle` and used by the examples
 
 ### License
 See the [MATTERPORT SAMPLE SDK CODE LICENSE AGREEMENT](LICENSE) file for license rights and limitations for this repository.
