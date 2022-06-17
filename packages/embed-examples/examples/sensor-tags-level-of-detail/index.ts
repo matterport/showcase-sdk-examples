@@ -110,7 +110,7 @@ const main = async () => {
 
   sensor.readings.subscribe({
     onCollectionUpdated: (sourceCollection: any) => {
-      const inRange = [];
+      const inRange: any[] = [];
       for (const [source, reading] of sourceCollection) {
         if (reading.inRange) {
           const search = inRange.find((element) => {

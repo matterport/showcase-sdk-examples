@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import { WithStyles, withStyles } from '@material-ui/core';
 import { Subscription, timer } from 'rxjs';
 import { ISceneNode, IVector3 } from '@mp/common';
 import { switchMap, map, distinctUntilChanged } from 'rxjs/operators';
 import { MathUtils, Euler } from 'three';
 import { Vector3View } from './Vector3View';
+import styled from '@emotion/styled';
 
 const defaultVector3 = { x: 0, y: 0, z: 0 };
 const defaultScale = { x: 1, y: 1, z: 1 };
 
-const styles = () => ({
+const styles = {
   container: {
     alignItems: 'stretch',
     padding: 6,
@@ -18,9 +18,10 @@ const styles = () => ({
     borderWidth: '1px',
     borderColor: '#BBBBBB',
   },
-});
+};
 
-interface Props extends WithStyles<typeof styles> {
+const ContainerDiv = styled.div(styles.container);
+interface Props {
   selection: ISceneNode;
 }
 
@@ -30,7 +31,7 @@ interface State {
   scale: IVector3;
 }
 
-class SceneNodeTransformViewImpl extends Component<Props, State> {
+export class SceneNodeTransformView extends Component<Props, State> {
   private posSub: Subscription = null;
   private scaleSub: Subscription = null;
   private rotSub: Subscription = null;
@@ -119,7 +120,6 @@ class SceneNodeTransformViewImpl extends Component<Props, State> {
   }
 
   render() {
-    const classes = this.props.classes;
     const { position, rotation, scale } = this.state;
 
     if (this.props.selection !== null) {
@@ -129,13 +129,11 @@ class SceneNodeTransformViewImpl extends Component<Props, State> {
     }
 
     return (
-      <div className={classes.container}>
+      <ContainerDiv>
         <Vector3View x={position.x} y={position.y} z={position.z} label="Position"></Vector3View>
         <Vector3View x={rotation.x} y={rotation.y} z={rotation.z} label="Rotation"></Vector3View>
         <Vector3View x={scale.x} y={scale.y} z={scale.z} label="Scale"></Vector3View>
-      </div>
+      </ContainerDiv>
     );
   }
 }
-
-export const SceneNodeTransformView = withStyles(styles, { withTheme: true })(SceneNodeTransformViewImpl);

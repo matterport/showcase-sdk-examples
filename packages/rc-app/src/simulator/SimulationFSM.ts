@@ -1,4 +1,9 @@
-import { interpret, Machine } from 'xstate';
+import { AnyEventObject, BaseActionObject, createMachine, interpret, Interpreter, ResolveTypegenMeta, TypegenDisabled } from 'xstate';
+
+export type FSMInterpreter = Interpreter<unknown, any, AnyEventObject,
+  { value: any; context: unknown; },
+  ResolveTypegenMeta<TypegenDisabled, AnyEventObject, BaseActionObject, any>
+>;
 
 export interface FSMSchema {
   states: {
@@ -22,9 +27,9 @@ export const makeSimulationFSM = (
   onEnterInitializing: Callback,
   onEnterSimulating: Callback,
   onExitSimulating: Callback
-) => {
+): FSMInterpreter => {
   return interpret(
-    Machine<unknown, FSMSchema, FSMEvent>(
+    createMachine(
       {
         initial: 'idle',
         states: {

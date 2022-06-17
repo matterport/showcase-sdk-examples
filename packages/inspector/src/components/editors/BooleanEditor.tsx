@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Typography, WithStyles, withStyles, Checkbox } from '@material-ui/core';
+import { Typography, Checkbox } from '@mui/material';
 import { RowMargin } from './sharedCss';
+import styled from '@emotion/styled';
 
-const styles = () => ({
+const styles ={
   container: {
     display: 'flex',
     width: '100%',
@@ -21,16 +22,17 @@ const styles = () => ({
   checkbox: {
     padding: '0px',
   }
-});
+};
+const ContainerDiv = styled.div(styles.container);
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   label?: string;
   value: boolean;
   readonly: boolean;
   onChanged?: (newValue: boolean) => void;
 }
 
-class BooleanEditorImpl extends Component<Props> {
+export class BooleanEditor extends Component<Props> {
   constructor(props: Props) {
     super(props);
 
@@ -47,27 +49,22 @@ class BooleanEditorImpl extends Component<Props> {
   }
 
   render() {
-    const classes = this.props.classes;
-
     let label: JSX.Element = null;
     if (this.props.label) {
-      label = <Typography className={classes.label}>{this.props.label}</Typography>;
+      label = <Typography sx={styles.label}>{this.props.label}</Typography>;
     } else {
       label = <div></div>;
     }
 
     return (
-      <div className={classes.container}>
+      <ContainerDiv>
         {label}
-        <Checkbox
-          className={classes.checkbox}
+        <Checkbox sx={styles.checkbox}
           checked={this.props.value}
           onChange={this.handlePropertyChange}
           disabled={this.props.readonly}
         />
-      </div>
+      </ContainerDiv>
     );
   }
 }
-
-export const BooleanEditor = withStyles(styles, { withTheme: true })(BooleanEditorImpl);

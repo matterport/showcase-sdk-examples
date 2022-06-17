@@ -1,6 +1,5 @@
 import { PhotonClient, waitUntil } from '../PhotonClient';
-import { Interpreter } from 'xstate';
-import { FSMSchema, FSMEvent, makeSimulationFSM } from './SimulationFSM';
+import { makeSimulationFSM, FSMInterpreter } from './SimulationFSM';
 import { CameraPose, Event, Frame, IVector3 } from '../types';
 import { LocalTime } from '../time/LocalTime';
 
@@ -34,7 +33,7 @@ const frameFromPose = (step: number, pose: CameraPose): Frame => {
 }
 
 export class LocalSimulator {
-  private fsm: Interpreter<unknown, FSMSchema, FSMEvent> = null;
+  private fsm: FSMInterpreter = null;
   private iframe: HTMLIFrameElement = null;
   private sdk: any = null;
   private cameraPose: CameraPose = null;

@@ -1,12 +1,12 @@
 import React, { Component, createRef, MouseEvent } from 'react';
-import { withStyles, WithStyles, Theme } from '@material-ui/core/styles';
-import { Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem, Button } from '@material-ui/core';
+import { Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem, Button } from '@mui/material';
+import styled from '@emotion/styled';
 
-const styles = (theme: Theme) => ({
+const styles = {
   root:  {
   },
   paper: {
-    marginRight: theme.spacing(2),
+    marginRight: '16px', // theme.spacing(2) originally
   },
   popper: {
     zIndex: 100,
@@ -14,8 +14,8 @@ const styles = (theme: Theme) => ({
   button: {
     textTransform: 'none' as 'none',
   }
-});
-
+};
+const RootDiv = styled.div(styles.root);
 interface State {
   open: boolean;
 }
@@ -25,12 +25,12 @@ export interface IMenuItem {
   command: () => Promise<void>;
 }
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   title: string;
   items: IMenuItem[];
 };
 
-class MenuImpl extends Component<Props, State> {
+export class MenuView extends Component<Props, State> {
   private buttonRef: React.RefObject<HTMLButtonElement>;
 
   constructor(props: Props){
@@ -51,12 +51,12 @@ class MenuImpl extends Component<Props, State> {
     });
   }
 
-  private handleSelect(event: MouseEvent<EventTarget>, menuItem: IMenuItem) {
+  private handleSelect(event: MouseEvent | TouchEvent, menuItem: IMenuItem) {
     this.handleClose(event);
     menuItem.command();
   }
 
-  private handleClose(event: MouseEvent<EventTarget>) {
+  private handleClose(event: any) {
     if (this.buttonRef.current && this.buttonRef.current.contains(event.target as HTMLElement)) {
       return;
     }
@@ -76,17 +76,15 @@ class MenuImpl extends Component<Props, State> {
   }
 
   public render() {
-    const { classes } = this.props;
-
     const items = this.props.items.map((item: IMenuItem) => {
-      return <MenuItem onClick={(e: MouseEvent<EventTarget>) => this.handleSelect(e, item)} key={item.title}>{item.title}</MenuItem>;
+      return <MenuItem onClick={(e: MouseEvent<HTMLElement>) => this.handleSelect(e, item)} key={item.title}>{item.title}</MenuItem>;
     });
 
     return (
-      <div className={classes.root}>
+      <RootDiv>
         <Button
           ref={this.buttonRef}
-          className={classes.button}
+          sx={styles.button}
           aria-controls={open ? 'menu-list-grow' : undefined}
           aria-haspopup="true"
           onClick={this.handleToggle}
@@ -94,7 +92,7 @@ class MenuImpl extends Component<Props, State> {
           {this.props.title}
         </Button>
         <Popper
-          className={classes.popper}
+          sx={styles.popper}
           open={this.state.open}
           anchorEl={this.buttonRef.current}
           role={undefined}
@@ -107,7 +105,7 @@ class MenuImpl extends Component<Props, State> {
               {...TransitionProps}
               style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
             >
-              <Paper className={classes.paper}>
+              <Paper sx={styles.paper}>
                 <ClickAwayListener onClickAway={this.handleClose}>
                   <MenuList autoFocusItem={this.state.open} id="menu-list-grow" onKeyDown={this.handleListKeyDown}>
                     {items}
@@ -117,9 +115,7 @@ class MenuImpl extends Component<Props, State> {
             </Grow>
           )}
         </Popper>
-      </div>
+      </RootDiv>
     );
   }
 }
-
-export const MenuView = withStyles(styles, { withTheme: true })(MenuImpl);

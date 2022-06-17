@@ -18,7 +18,7 @@ mode: 'development',
         test: /\.(ts|tsx)$/,
         loader: 'ts-loader'
       },
-      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
+      { enforce: "pre", test: /\.js$/, use: ["source-map-loader"] },
       {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
@@ -31,16 +31,18 @@ mode: 'development',
       title: 'Development',
       template: 'index.html'
     }),
-    new CopyPlugin([
+    new CopyPlugin({patterns: [
       {
         from: 'node_modules/@mp/bundle-sdk',
         to: 'bundle',
       },
       { from: 'assets', to: 'assets'}
-    ]),
+    ]}),
   ],
   devServer: {
     port: 8000,
-    writeToDisk: true
+    devMiddleware: {
+      writeToDisk: true
+    }
   }
 }

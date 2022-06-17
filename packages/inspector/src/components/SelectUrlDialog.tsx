@@ -1,19 +1,19 @@
 import React, { Component, RefObject, createRef } from 'react';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
 import { IDialogUser } from '../interfaces';
 
-const styles = () => ({
+const styles = {
   dialog: {
     width: '400px',
   }
-});
-
-interface Props extends WithStyles<typeof styles> {
-  user: IDialogUser|null;
 };
 
-class SelectUrlDialogImpl extends Component<Props> {
+interface Props {
+  user: IDialogUser|null;
+  children: React.ReactNode;
+};
+
+export class SelectUrlDialog extends Component<Props> {
   private inputRef: RefObject<HTMLInputElement>;
   constructor(props: Props){
     super(props);
@@ -34,8 +34,6 @@ class SelectUrlDialogImpl extends Component<Props> {
   };
 
   public render() {
-    const classes = this.props.classes;
-
     return (
       <Dialog
         open={this.props.user !== null}
@@ -44,7 +42,7 @@ class SelectUrlDialogImpl extends Component<Props> {
       >
         <DialogTitle id="alert-dialog-title">{"Select model url"}</DialogTitle>
         <DialogContent
-          className={classes.dialog}
+          sx={styles.dialog}
         >
           <TextField
             inputRef={this.inputRef}
@@ -68,5 +66,3 @@ class SelectUrlDialogImpl extends Component<Props> {
     );
   }
 }
-
-export const SelectUrlDialog = withStyles(styles, { withTheme: true })(SelectUrlDialogImpl);

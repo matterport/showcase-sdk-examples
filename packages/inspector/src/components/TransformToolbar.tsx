@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { Theme, WithStyles, withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import { Grid, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { cdnUrl } from '@mp/common';
+import styled from '@emotion/styled';
+
 
 export enum Selection {
   Translate = 'translate',
@@ -11,8 +10,8 @@ export enum Selection {
   Scale = 'scale',
 }
 
-const styles2 = (theme: Theme) => ({
-  root: {
+const styles = {
+  root: { //is this used?
     background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
     border: 0,
     borderRadius: 3,
@@ -26,9 +25,10 @@ const styles2 = (theme: Theme) => ({
     display: 'flex',
     paddingLeft: '8px',
   },
-});
+};
+const ControlsDiv = styled.div(styles.controls);
 
-interface Props extends WithStyles<typeof styles2> {
+interface Props {
   selectionChanged: (item: Selection) => void;
 }
 
@@ -36,7 +36,7 @@ interface State {
   selection: Selection;
 }
 
-class TransformToolbarImpl extends Component<Props, State> {
+export class TransformToolbar extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -58,9 +58,8 @@ class TransformToolbarImpl extends Component<Props, State> {
   };
 
   render() {
-    const classes = this.props.classes;
     return (
-      <div className={classes.controls}>
+      <ControlsDiv>
         <Grid container spacing={2}>
           <Grid item sm={12} md={6}>
             <div>
@@ -84,9 +83,7 @@ class TransformToolbarImpl extends Component<Props, State> {
           </Grid>
           
         </Grid>
-      </div>
+      </ControlsDiv>
     );
   }
 }
-
-export const TransformToolbar = withStyles(styles2, { withTheme: true })(TransformToolbarImpl);

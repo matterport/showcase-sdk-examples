@@ -1,25 +1,15 @@
 import React, { Component } from 'react';
-import { WithStyles, withStyles } from '@material-ui/core/styles';
+import styled from '@emotion/styled';
 
-const styles = () => ({
-  root: {
-    position: 'absolute' as 'absolute',
-  }
-});
+const AbsoluteDiv = styled.div`position: absolute;`;
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   onClose: () => void;
 }
-
-class CancelCloseupImpl extends Component<Props> {
+export class CancelCloseup extends Component<Props> {
   render() {
-    const { classes } = this.props;
-    return (
-      <div className={classes.root}>
-        <button onClick={this.props.onClose}>Close View</button>
-      </div>
-    );
+    return <AbsoluteDiv>
+      <button onClick={this.props.onClose}>CloseView</button>
+    </AbsoluteDiv>;
   }
 }
-
-export const CancelCloseup = withStyles(styles, { withTheme: true })(CancelCloseupImpl);

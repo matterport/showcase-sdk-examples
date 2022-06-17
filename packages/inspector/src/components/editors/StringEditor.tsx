@@ -1,9 +1,10 @@
 import React, { Component, createRef } from 'react';
-import { TextField, Typography, WithStyles, withStyles } from '@material-ui/core';
+import { TextField, Typography } from '@mui/material';
 import { RowMargin } from './sharedCss';
 import { Keys } from '@mp/common';
+import styled from '@emotion/styled';
 
-const styles = () => ({
+const styles = {
   container: {
     display: 'flex',
     width: '100%',
@@ -25,9 +26,10 @@ const styles = () => ({
     width: '25px',
     minWidth: '25px'
   },
-});
+};
+const ContainerDiv = styled.div(styles.container);
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   label?: string;
   value: string;
   readonly: boolean;
@@ -38,7 +40,7 @@ interface State {
   value: string;
 }
 
-class StringEditorImpl extends Component<Props, State> {
+export class StringEditor extends Component<Props, State> {
   private inputRef: React.RefObject<HTMLInputElement>;
 
   constructor(props: Props) {
@@ -98,18 +100,17 @@ class StringEditorImpl extends Component<Props, State> {
   }
 
   render() {
-    const classes = this.props.classes;
     const value = this.state.editing ? this.state.value : this.props.value;
 
     let label: JSX.Element = null;
     if (this.props.label) {
-      label = <Typography className={classes.label}>{this.props.label}</Typography>;
+      label = <Typography sx={styles.label}>{this.props.label}</Typography>;
     } else {
       label = <div></div>;
     }
 
     return (
-      <div className={classes.container}>
+      <ContainerDiv>
         {label}
         <TextField
           inputRef={this.inputRef}
@@ -123,14 +124,10 @@ class StringEditorImpl extends Component<Props, State> {
           margin="none"
           InputProps={{
             disabled: this.props.readonly,
-            classes: {
-              input: classes.textField,
-            },
+            sx: { input: styles.textField },
           }}
         />
-      </div>
+      </ContainerDiv>
     );
   }
 }
-
-export const StringEditor = withStyles(styles, { withTheme: true })(StringEditorImpl);

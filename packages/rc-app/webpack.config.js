@@ -22,7 +22,7 @@ module.exports = {
         test: /\.(ts|tsx)$/,
         loader: 'ts-loader'
       },
-      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
+      { enforce: "pre", test: /\.js$/, use: ["source-map-loader"] },
       {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
@@ -35,7 +35,7 @@ module.exports = {
       title: 'Development',
       template: 'index.html'
     }),
-    new CopyPlugin([
+    new CopyPlugin({patterns: [
       {
         from: 'lib/photon/Photon-Javascript_SDK.js',
         to: 'js/photon.js'
@@ -44,10 +44,12 @@ module.exports = {
         from: 'side-by-side.html',
         to: 'side-by-side.html'
       }
-    ]),
+    ]}),
   ],
   devServer: {
     port: 8000,
-    writeToDisk: true
+    devMiddleware: {
+      writeToDisk: true
+    }
   }
 }

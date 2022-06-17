@@ -1,4 +1,4 @@
-import * as ReactDOM from 'react-dom';
+import * as ReactDOMClient from 'react-dom/client';
 import * as React from 'react';
 import { MainView } from './components/Main';
 import { makeSdk } from './Sdk';
@@ -25,14 +25,16 @@ const initialize = async () => {
     sdk,
     frameOverlay,
   };
-    
-  ReactDOM.render(
-    <AppContext.Provider
-      value={context}
-    >
-      <MainView/>
-    </AppContext.Provider>,
-    document.getElementById("content"));
+
+  const container = document.getElementById("content");
+  const root = ReactDOMClient.createRoot(container);
+  root.render(
+      <AppContext.Provider
+        value={context}
+      >
+        <MainView/>
+      </AppContext.Provider>
+  );
 };
 
 initialize();

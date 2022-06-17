@@ -18,6 +18,7 @@ const transitionMap: {[scendId: string]: {[eventId: string]: string}} = {
 function handleEvent(event: string, config: ISceneConfig) {
   let activeSceneKey: string = null;
   for (const scene of config.game.scene.scenes) {
+    if (typeof scene.sys.config == "string" ) { continue; }
     if (config.game.scene.isActive(scene.sys.config.key)) {
       activeSceneKey = scene.sys.config.key;
       break;

@@ -1,6 +1,8 @@
 import * as React from 'react';
-import * as ReactDom from 'react-dom';
+import * as ReactDOMClient from 'react-dom/client';
 import { MainView } from './react-components/MainView';
 import './main.css';
 
-ReactDom.render(<MainView/>, document.getElementById("content"));
+const container = document.getElementById("content");
+const root = ReactDOMClient.createRoot(container);
+root.render(<MainView/>);

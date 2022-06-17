@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { WithStyles, withStyles } from '@material-ui/core/styles';
 import Dropzone from 'react-dropzone';
+import styled from '@emotion/styled';
 
-const styles = () => ({
+const styles = {
   root: {
     width: '200px',
     height: '60px',
@@ -21,13 +21,14 @@ const styles = () => ({
   text: {
     margin: '12px',
   }
-});
-
-interface Props extends WithStyles<typeof styles> {
+};
+const RootDiv = styled.div(styles.root);
+const TextP = styled.p(styles.text);
+interface Props {
   cb: (serialized: string) => void;
 }
 
-class SceneDropZoneImpl extends Component<Props> {
+export class SceneDropZone extends Component<Props> {
   constructor(props: Props) {
     super(props);
 
@@ -44,21 +45,18 @@ class SceneDropZoneImpl extends Component<Props> {
     reader.readAsText(acceptedFiles[0]);
   };
 
-  render() {
-    const classes = this.props.classes;
+  render() {;
     return (
       <Dropzone onDrop={this.onDropHandler}>
         {({getRootProps, getInputProps}) => (
           <section>
-            <div className={classes.root} {...getRootProps()}>
+            <RootDiv {...getRootProps()}>
               <input {...getInputProps()} />
-              <p className={classes.text}>Import scene files by dropping them here.</p>
-            </div>
+              <TextP>Import scene files by dropping them here.</TextP>
+            </RootDiv>
           </section>
         )}
       </Dropzone>
     );
   }
 }
-
-export const SceneDropZone = withStyles(styles, { withTheme: true })(SceneDropZoneImpl);

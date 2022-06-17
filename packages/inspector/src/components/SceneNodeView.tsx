@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { WithStyles, withStyles } from '@material-ui/core';
 import { ISceneNode } from '@mp/common';
 import { ComponentView } from './ComponentView';
 import { SceneNodeTransformView } from './SceneNodeTransformView';
 import { JsxBuffer } from '../utils';
+import styled from '@emotion/styled';
 
-const styles = () => ({
+const styles = {
   container: {
     flexGrow: 1,
     height: '100%',
@@ -15,20 +15,18 @@ const styles = () => ({
     overflowY: 'auto' as 'auto',
     maxWidth: 264,
   },
-});
-
-interface Props extends WithStyles<typeof styles> {
+};
+const ContainerDiv = styled.div(styles.container);
+interface Props {
   selection: ISceneNode;
 }
 
-class SceneNodeViewImpl extends Component<Props> {
+export class SceneNodeView extends Component<Props> {
   constructor(props: Props) {
     super(props);
   }
 
   render() {
-    const classes = this.props.classes;
-
     const componentBuffer = new JsxBuffer('components');
     if (this.props.selection) {
       for (const component of this.props.selection.componentIterator()) {
@@ -37,12 +35,10 @@ class SceneNodeViewImpl extends Component<Props> {
     }
 
     return (
-      <div className={classes.container}>
+      <ContainerDiv>
         <SceneNodeTransformView selection={this.props.selection}></SceneNodeTransformView>
         {componentBuffer.elements}
-      </div>
+      </ContainerDiv>
     );
   }
 }
-
-export const SceneNodeView = withStyles(styles, { withTheme: true })(SceneNodeViewImpl);

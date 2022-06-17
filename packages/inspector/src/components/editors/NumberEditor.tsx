@@ -1,8 +1,9 @@
 import React, { Component, createRef } from 'react';
-import { TextField, Typography, WithStyles, withStyles } from '@material-ui/core';
+import { TextField, Typography } from '@mui/material';
 import { RowMargin } from './sharedCss';
+import styled from '@emotion/styled';
 
-const styles = () => ({
+const styles = {
   container: {
     display: 'flex',
     width: '100%',
@@ -24,9 +25,10 @@ const styles = () => ({
     width: '25px',
     minWidth: '25px'
   }
-});
+};
+const ContainerDiv = styled.div(styles.container);
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   label?: string;
   value: number;
   readonly: boolean;
@@ -37,7 +39,7 @@ interface State {
   value: number;
 }
 
-class NumberEditorImpl extends Component<Props, State> {
+export class NumberEditor extends Component<Props, State> {
   private inputRef: React.RefObject<HTMLInputElement>;
 
   constructor(props: Props) {
@@ -99,19 +101,18 @@ class NumberEditorImpl extends Component<Props, State> {
   }
 
   render() {
-    const classes = this.props.classes;
     const value = this.state.editing ? this.state.value : this.props.value;
 
     let label: JSX.Element = null;
     if (this.props.label) {
-      label = <Typography className={classes.label}>{this.props.label}</Typography>;
+      label = <Typography sx={styles.label}>{this.props.label}</Typography>;
     }
     else {
       label = <div></div>;
     }
 
     return (
-      <div className={classes.container}>
+      <ContainerDiv>
         {label}
         <TextField
           inputRef={this.inputRef}
@@ -126,14 +127,10 @@ class NumberEditorImpl extends Component<Props, State> {
           type='number'
           InputProps={{
             disabled: this.props.readonly,
-            classes: {
-              input: classes.textField,
-            },
+            sx: {input: styles.textField},
           }}
         />
-      </div>
+      </ContainerDiv>
     );
   }
 }
-
-export const NumberEditor = withStyles(styles, { withTheme: true })(NumberEditorImpl);

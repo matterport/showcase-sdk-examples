@@ -7,9 +7,11 @@
     "build-dev": "webpack --mode=development"
   },
   "dependencies": {
-    "@material-ui/core": "^4.11.0",
-    "@material-ui/icons": "^4.9.1",
-    "@material-ui/lab": "^4.0.0-alpha.56",
+    "@mui/material": "^5.8.4",
+    "@mui/lab": "^5.0.0-alpha.86",
+    "@mui/icons-material": "^5.8.4",
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled":"^11.9.3",
     "@mp/bundle-sdk": "^1.0.0",
     "@mp/common": "^1.0.0",
     "@mp/core": "^1.0.0",

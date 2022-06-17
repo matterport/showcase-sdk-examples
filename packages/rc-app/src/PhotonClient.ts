@@ -74,7 +74,7 @@ export const waitUntil = (condition: () => boolean) => {
     const intervalId = setInterval(() => {
       if (condition()) {
         clearInterval(intervalId);
-        resolve();
+        resolve(undefined);
       }
     }, 30);
   });

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { IContext, IDialogUser } from '../interfaces';
 import { AppContext } from '../AppContext';
+import styled from '@emotion/styled';
 
-const styles = () => ({
+const styles = {
   root:  {
     width: '100%',
     alignItems: 'stretch',
@@ -16,9 +16,12 @@ const styles = () => ({
     height: '100%',
     width: '100%',
   },
-});
+};
 
-interface Props extends WithStyles<typeof styles> {
+const FrameIframe = styled.iframe(styles.frame);
+const RootDiv = styled.div(styles.root);
+
+interface Props {
   src: string;
 };
 
@@ -26,7 +29,7 @@ interface State {
   user: IDialogUser|null;
 }
 
-class FrameViewImpl extends Component<Props, State> {
+export class FrameView extends Component<Props, State> {
   context: IContext;
   static contextType = AppContext;
 
@@ -46,16 +49,13 @@ class FrameViewImpl extends Component<Props, State> {
   }
   
   public render() {
-    const { classes } = this.props;
     const { user } = this.state;
 
     return (
-      <div className={classes.root}>
+      <RootDiv>
         { this.state.user && user.jsx()}
-        <iframe id='sdk-iframe' className={classes.frame} src={this.props.src + '&title=0&qs=1&hr=0&brand=0&help=0'}></iframe>
-      </div>
+        <FrameIframe id='sdk-iframe' src={this.props.src + '&title=0&qs=1&hr=0&brand=0&help=0'}></FrameIframe>
+      </RootDiv>
     );
   }
 }
-
-export const FrameView = withStyles(styles, { withTheme: true })(FrameViewImpl);

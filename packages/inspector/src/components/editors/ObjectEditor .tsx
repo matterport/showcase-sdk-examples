@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { Typography, WithStyles, withStyles } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { StringEditor } from './StringEditor';
 import { NumberEditor } from './NumberEditor';
 import { BooleanEditor } from './BooleanEditor';
 import { RowMargin } from './sharedCss';
 import { JsxBuffer } from '../../utils';
+import styled from '@emotion/styled';
 
-const styles = () => ({
+const styles = {
   container: {
     display: 'flex',
     width: '100%',
@@ -28,9 +29,11 @@ const styles = () => ({
     width: '25px',
     minWidth: '25px',
   },
-});
+};
+const ContainerDiv = styled.div(styles.container);
+const IndentDiv = styled.div(styles.indent);
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   label: string;
   object: any;
   indent: number;
@@ -38,7 +41,7 @@ interface Props extends WithStyles<typeof styles> {
   onChanged?: (property: string, newValue: any) => void;
 }
 
-class ObjectEditorImpl extends Component<Props> {
+export class ObjectEditor extends Component<Props> {
   constructor(props: Props) {
     super(props);
     this.onPropertyChanged = this.onPropertyChanged.bind(this);
@@ -49,13 +52,11 @@ class ObjectEditorImpl extends Component<Props> {
   }
 
   render() {
-    const classes = this.props.classes;
-
     // let key = 0;
     const properties = new JsxBuffer('properties');
     const labelIndents = new JsxBuffer('labelIndent');
     const propertyIndents = new JsxBuffer('propIndent');
-    const spacer = <div className={classes.indent}></div>;
+    const spacer = <IndentDiv></IndentDiv>;
 
     for (let i = 0; i < this.props.indent; i++) {
       labelIndents.push(spacer);
@@ -65,17 +66,17 @@ class ObjectEditorImpl extends Component<Props> {
 
     if (!this.props.object) {
       return (
-        <div className={classes.container}>
+        <ContainerDiv>
           {labelIndents.elements}
-          <Typography className={this.props.classes.index}>{this.props.label}</Typography>
-          <Typography className={this.props.classes.textField}>Null</Typography>
-        </div>
+          <Typography sx={styles.index}>{this.props.label}</Typography>
+          <Typography sx={styles.textField}>Null</Typography>
+        </ContainerDiv>
       );
     } else {
       properties.push(
         <div>
           {labelIndents.elements}
-          <Typography className={this.props.classes.index}>{this.props.label}</Typography>
+          <Typography sx={styles.index}>{this.props.label}</Typography>
           <div></div>
         </div>
       );
@@ -89,39 +90,39 @@ class ObjectEditorImpl extends Component<Props> {
 
       if (typeof value === 'string') {
         properties.push(
-          <div className={classes.container}>
+          <ContainerDiv>
             {propertyIndents.elements}
-            <Typography className={this.props.classes.index}>{property}</Typography>
+            <Typography sx={styles.index}>{property}</Typography>
             <StringEditor
               value={value}
               readonly={this.props.readonly || readonlyClass}
-              onChanged={(newValue) => this.onPropertyChanged(property, newValue)}
+              onChanged={(newValue: any) => this.onPropertyChanged(property, newValue)}
             ></StringEditor>
-          </div>
+          </ContainerDiv>
         );
       } else if (typeof value === 'number') {
         properties.push(
-          <div className={classes.container}>
+          <ContainerDiv>
             {propertyIndents.elements}
-            <Typography className={this.props.classes.index}>{property}</Typography>
+            <Typography sx={styles.index}>{property}</Typography>
             <NumberEditor
               value={value}
               readonly={this.props.readonly || readonlyClass}
-              onChanged={(newValue) => this.onPropertyChanged(property, newValue)}
+              onChanged={(newValue: any) => this.onPropertyChanged(property, newValue)}
             ></NumberEditor>
-          </div>
+          </ContainerDiv>
         );
       } else if (typeof value === 'boolean') {
         properties.push(
-          <div className={classes.container}>
+          <ContainerDiv>
             {propertyIndents.elements}
-            <Typography className={this.props.classes.index}>{property}</Typography>
+            <Typography sx={styles.index}>{property}</Typography>
             <BooleanEditor
               value={value}
               readonly={this.props.readonly || readonlyClass}
               onChanged={(newValue) => this.onPropertyChanged(property, newValue)}
             ></BooleanEditor>
-          </div>
+          </ContainerDiv>
         );
       }
     }
@@ -129,5 +130,3 @@ class ObjectEditorImpl extends Component<Props> {
     return <div>{properties.elements}</div>;
   }
 }
-
-export const ObjectEditor = withStyles(styles, { withTheme: true })(ObjectEditorImpl);

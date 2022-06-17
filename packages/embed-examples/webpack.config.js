@@ -102,7 +102,7 @@ module.exports = function(config) {
           test: /\.(ts|tsx)$/,
           loader: 'ts-loader'
         },
-        { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
+        { enforce: "pre", test: /\.js$/, use: ["source-map-loader"] },
         {
           test: /\.css$/i,
           use: ['style-loader', 'css-loader'],
@@ -111,9 +111,11 @@ module.exports = function(config) {
     },
     plugins: computePlugins(),
     devServer: {
-      contentBase: path.join(__dirname, 'dist'),
       port: 8000,
-      writeToDisk: true
+      static: path.join(__dirname, 'dist'),
+      devMiddleware: {
+        writeToDisk: true
+      }
     }
   }
 

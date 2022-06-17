@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { WithStyles, withStyles } from '@material-ui/core/styles';
 import { FloatView } from './FloatView';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
+import styled from '@emotion/styled';
 
-const styles = () => ({
+const styles = {
   rowGroup: {
     display: 'flex',
     width: '100%',
@@ -19,34 +19,32 @@ const styles = () => ({
     fontSize: '9pt',
     padding: '1px',
   },
-});
+};
+const TextFieldDiv = styled.div(styles.textField);
+const RowGroupDiv = styled.div(styles.rowGroup);
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
   label: string;
   x: number;
   y: number;
   z: number;
 }
 
-class Vector3ViewImpl extends Component<Props> {
+export class Vector3View extends Component<Props> {
   constructor(props: Props) {
     super(props);
   }
 
   render() {
-    const classes = this.props.classes;
-
     return (
-      <div className={classes.rowGroup}>
-        <div className={classes.textField}>
-          <Typography className={classes.label}>{this.props.label}</Typography>
-        </div>
+      <RowGroupDiv>
+        <TextFieldDiv>
+          <Typography sx={styles.label}>{this.props.label}</Typography>
+        </TextFieldDiv>
         <FloatView value={this.props.x}></FloatView>
         <FloatView value={this.props.y}></FloatView>
         <FloatView value={this.props.z}></FloatView>
-      </div>
+      </RowGroupDiv>
     );
   }
 }
-
-export const Vector3View = withStyles(styles, { withTheme: true })(Vector3ViewImpl);

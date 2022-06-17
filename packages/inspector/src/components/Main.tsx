@@ -13,8 +13,8 @@ import {
   IVector2,
   sdkKey,
 } from '@mp/common';
-import { WithStyles, withStyles } from '@material-ui/core/styles';
-import { Grid, Button, Tabs, Tab } from '@material-ui/core';
+//import { WithStyles, withStyles } from '@material-ui/core/styles';
+import { Grid, Button, Tabs, Tab } from '@mui/material';
 import { Vector3 } from 'three';
 import { MenuView, IMenuItem } from './MenuView';
 import { IContext, IDialogUser } from '../interfaces';
@@ -23,6 +23,7 @@ import { ISubscription } from '@mp/common';
 import { CameraView } from './CameraView';
 import { Menus, MenuItemDescriptor, MenuDescriptor } from './Menus';
 import { saveStringToFile } from '../utils';
+import styled from '@emotion/styled';
 
 export const waitUntil = async (condition: () => boolean) => {
   return new Promise(function (resolve, reject) {
@@ -37,7 +38,7 @@ export const waitUntil = async (condition: () => boolean) => {
   });
 };
 
-const styles = () => ({
+const styles = {
   wrapper: {
     display: 'flex',
     flexDirection: 'column' as 'column',
@@ -71,6 +72,7 @@ const styles = () => ({
     margin: '12px',
   },
   dropdown: {
+    justify: 'flex-start',
     height: '36px',
   },
   tabPanel: {
@@ -82,9 +84,14 @@ const styles = () => ({
     minWidth: 125,
     padding: 0,
   }
-});
+};
 
-interface Props extends WithStyles<typeof styles> {}
+const WrapperDiv = styled.div(styles.wrapper);
+const ContainerDiv = styled.div(styles.container);
+const ToolbarDiv = styled.div(styles.toolbar);
+const TabPanelDiv = styled.div(styles.tabPanel);
+
+interface Props {}
 
 interface State {
   scene: ISceneNode[];
@@ -95,7 +102,7 @@ interface State {
   tabIndex: number;
 }
 
-class MainViewImpl extends Component<Props, State> {
+export class MainView extends Component<Props, State> {
   context: IContext;
   static contextType = AppContext;
   private queryString: string = '';
@@ -207,7 +214,7 @@ class MainViewImpl extends Component<Props, State> {
 
         class ClickSpy implements IComponentEventSpy<IInteractionEvent> {
           public eventType = ComponentInteractionType.CLICK;
-          constructor(private mainView: MainViewImpl, private node: ISceneNode) {}
+          constructor(private mainView: MainView, private node: ISceneNode) {}
           onEvent(payload: IInteractionEvent) {
             this.mainView.itemSelected(this.node);
           }
@@ -255,7 +262,6 @@ class MainViewImpl extends Component<Props, State> {
   }
 
   render() {
-    const classes = this.props.classes;
     const src = `./bundle/showcase.html?${this.queryString}&play=1&qs=1&sm=2&sr=-2.87,-.04,-3.13&sp=-.09,3.83,-7.53`;
 
     const topLevelMenus = Menus.map((menu: MenuDescriptor) => {
@@ -288,7 +294,7 @@ class MainViewImpl extends Component<Props, State> {
     return (
       <div>
         <div>
-          <Grid container justify="flex-start" className={classes.dropdown}>
+          <Grid container sx={styles.dropdown}>
             {
               // We don't expect to change the menu dynamically so we will use the index as the key.
               topLevelMenus.map((menu, index) => (
@@ -296,22 +302,22 @@ class MainViewImpl extends Component<Props, State> {
               ))
             }
           </Grid>
-          <div className={classes.wrapper}>
-            <div className={classes.toolbar}>
+          <WrapperDiv>
+            <ToolbarDiv>
               <TransformToolbar selectionChanged={this.transformSelected}></TransformToolbar>
               <SceneDropZone cb={this.dropped}></SceneDropZone>
-              <Button onClick={() => this.onSave()} className={classes.button} variant="contained">
+              <Button onClick={() => this.onSave()} sx={styles.button} variant="contained">
                 Save Scene
               </Button>
               <CameraView></CameraView>
-            </div>
-            <div className={classes.container}>
+            </ToolbarDiv>
+            <ContainerDiv>
               <FrameView src={src}></FrameView>
                 
-                <div className={classes.tabPanel}>
+                <TabPanelDiv>
                   <Tabs value={this.state.tabIndex} onChange={this.onTabChanged} aria-label="simple tabs example" variant='standard'>
-                    <Tab label="Nodes" value={0} className={classes.tab}/>
-                    <Tab label="Props" value={1} className={classes.tab}/>
+                    <Tab label="Nodes" value={0} sx={styles.tab}/>
+                    <Tab label="Props" value={1} sx={styles.tab}/>
                   </Tabs>
                   {this.state.tabIndex === 0 ?
                     <SceneView
@@ -325,15 +331,13 @@ class MainViewImpl extends Component<Props, State> {
                   {this.state.tabIndex === 1 ?
                     <SceneNodeView selection={this.state.selection}></SceneNodeView> : null
                   }
-              </div>
+              </TabPanelDiv>
 
-            </div>
-          </div>
+            </ContainerDiv>
+          </WrapperDiv>
         </div>
         {this.state.user && this.state.user.jsx()}
       </div>
     );
   }
 }
-
-export const MainView = withStyles(styles, { withTheme: true })(MainViewImpl);

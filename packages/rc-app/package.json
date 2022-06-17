@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@mp/common": "^1.0.0",
-    "eventemitter3": "^4.0.4",
+    "eventemitter3": "^4.0.7",
     "rc-table": "^7.8.0",
-    "xstate": "^4.10.0"
+    "xstate": "^4.32.1"
   },
   "devDependencies": {
     "@types/jest": "^26.0.0",

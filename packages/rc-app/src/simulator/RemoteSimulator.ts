@@ -1,16 +1,14 @@
-import { Interpreter } from 'xstate';
-
 import { onActorPropertiesChangedEvent, waitUntil, PhotonClient } from '../PhotonClient';
 import { StateLog } from './StateLog';
 import { CameraPose, Event, Frame } from '../types';
-import { makeSimulationFSM, FSMSchema, FSMEvent } from './SimulationFSM';
+import { makeSimulationFSM, FSMInterpreter } from './SimulationFSM';
 import { RemoteTime } from '../time/RemoteTime';
 
 /**
  * The class controls the showcase via the sdk by consuming events from the sdk event source.
  */
 export class RemoteSimulator {
-  private fsm: Interpreter<unknown, FSMSchema, FSMEvent> = null;
+  private fsm: FSMInterpreter = null;
   private iframe: HTMLIFrameElement = null;
   private sdk: any = null;
   private cameraPose: CameraPose = null;

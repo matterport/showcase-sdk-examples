@@ -1,7 +1,7 @@
 import './main.css';
 
 import React from 'react';
-import * as ReactDom from 'react-dom';
+import * as ReactDOMClient from 'react-dom/client';
 
 import { PhotonClient } from './PhotonClient';
 import { ClientContext } from './components/Context';
@@ -24,9 +24,10 @@ const context: IContext = {
   sdkHost: hostSimulator,
 };
 
-ReactDom.render(
+const container = document.getElementById("content");
+const root = ReactDOMClient.createRoot(container);
+root.render(
   <ClientContext.Provider value={context}>
     <Main />
-  </ClientContext.Provider>,
-  document.getElementById('content')
+  </ClientContext.Provider>
 );
