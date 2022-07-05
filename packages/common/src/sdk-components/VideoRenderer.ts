@@ -49,7 +49,7 @@ class VideoRenderer extends SceneComponent {
     this.texture = new THREE.VideoTexture(this.video);
     this.texture.minFilter = THREE.LinearFilter;
     this.texture.magFilter = THREE.LinearFilter;
-    this.texture.format = THREE.RGBFormat;
+    this.texture.format = THREE.RGBAFormat;
 
     this.outputs.texture = this.texture;
     this.video.play();

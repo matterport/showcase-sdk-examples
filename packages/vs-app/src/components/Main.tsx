@@ -68,8 +68,7 @@ export class Main extends Component<Props, State> {
     await this.createCameraControl(this.sdk);
     await this.sdk.Scene.configure((renderer: any, three: any) => {
       renderer.physicallyCorrectLights = true;
-      renderer.gammaFactor = 2.2;
-      renderer.gammaOutput = true;
+      renderer.outputEncoding = three.sRGBEncoding;
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.bias = 0.0001;
       renderer.shadowMap.type = three.PCFSoftShadowMap;

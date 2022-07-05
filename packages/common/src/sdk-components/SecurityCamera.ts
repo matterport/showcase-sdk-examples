@@ -138,7 +138,8 @@ class SecurityCamera extends SceneComponent {
         geom.translate(a.x, a.y, a.z);
         geoms.push(geom);
       }
-      return THREE.BufferGeometryUtils.mergeBufferGeometries(geoms);
+      // API to be updated in bundle - JSSDK-1222
+      return (THREE as any).mergeBufferGeometries(geoms);
     }
 
     const frustumLength = this.inputs.farPlane - this.inputs.nearPlane;
@@ -177,7 +178,6 @@ class SecurityCamera extends SceneComponent {
       depthWrite: false,
     });
     this.box = new THREE.Mesh(boxGeometry, boxMaterial);
-
     const edgesGeometry = edgesToCylinders(new THREE.EdgesGeometry(boxGeometry), 0.015);
     this.edges = new THREE.Mesh(edgesGeometry, new THREE.MeshBasicMaterial({
       color: 0xffffff,

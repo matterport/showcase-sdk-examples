@@ -19,8 +19,8 @@
     "css-loader": "^6.7.1",
     "style-loader": "^3.3.1",
 
-    "three": "^0.128.0",
-    "@types/three": "^0.128.0",
+    "three": "^0.139.2",
+    "@types/three": "^0.139.0",
     "react": "^18.0.0",
     "@types/react": "^18.0.0",
     "react-dom": "^18.0.0",
@@ -29,6 +29,7 @@
   "scripts": {
     "bootstrap": "lerna bootstrap && lerna link",
     "clean": "lerna clean --yes",
+    "clean-install": "yarn clean ; yarn install ; yarn install-bundle ; yarn bootstrap",
     "build-all-dev": "lerna run build-dev",
     "build-all-prod": "lerna run build-prod",
 
@@ -47,6 +48,6 @@
     "packages/*"
   ],
   "config": {
-    "bundle_version": "3.1.46.18-6-gbc4c5114b"
+    "bundle_version": "3.1.68.12-7-g858688944a"
   }
 }

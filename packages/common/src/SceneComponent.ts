@@ -94,6 +94,20 @@ export abstract class SceneComponent extends SceneComponentPrivate {
   onTick?(tickDelta: number): void;
 
   /**
+   * @reserved
+   * A dictionary of events that will be handled by this component's `onEvent`. Every component is guaranteed to have all of the `InteractionSelection` keys:
+   *  `events[InteractionSelection.CLICK]`, `events[InteractionSelection.HOVER]`, `events[InteractionSelection.DRAG]`
+   * Note: registering to receive `InteractionSelection.HOVER` will produce both `InteractionType.HOVER` and `InteractionType.UNHOVER` in `onEvent`.
+   */
+  events: Record<string, boolean>;
+
+  /**
+  * @reserved
+  * A dictionary of events that will be emitted by this component.
+  */
+  emits?: Record<string, boolean>;
+
+  /**
    * This event is called once right before the scene node has stopped.
    */
   onDestroy?(): void;

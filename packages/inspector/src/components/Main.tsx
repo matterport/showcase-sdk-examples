@@ -229,6 +229,7 @@ export class MainView extends Component<Props, State> {
           }
 
           for (const component of node.componentIterator()) {
+            if (!component.emits || !(component.emits[ComponentInteractionType.CLICK])) continue;
             const sub = component.spyOnEvent(new ClickSpy(this, node));
             this.spySubs.push(sub);
           }

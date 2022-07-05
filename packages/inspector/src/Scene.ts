@@ -77,6 +77,10 @@ class Scene implements IScene {
   }
 
   private async createCameraControl(theSdk: any) {
+    // camera override only works in dollhouse, so wait until we're in that mode
+    await theSdk.Mode.current.waitUntil(
+      (mode: any) => mode === theSdk.Mode.Mode.DOLLHOUSE
+    );
     const cameraNode = await theSdk.Scene.createNode();
     const cameraPose = await theSdk.Camera.getPose();
     this.cameraInput = cameraNode.addComponent(cameraInputType);

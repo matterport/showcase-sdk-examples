@@ -1,5 +1,5 @@
 import { SceneComponent, ComponentOutput } from '../SceneComponent';
-import { WebGLRenderTarget, Texture } from 'three';
+import type { Texture } from 'three';
 import { Size } from './PlaneRenderer';
 
 export interface IPainter2d {
@@ -22,7 +22,6 @@ type Events = {
 class CanvasRenderer extends SceneComponent {
   private canvas: HTMLCanvasElement;
   private renderContext2D: CanvasRenderingContext2D;
-  private renderTarget: WebGLRenderTarget;
 
   inputs: Inputs = {
     painter: null,
@@ -43,15 +42,10 @@ class CanvasRenderer extends SceneComponent {
     // set up canvas 2d context
     this.canvas = document.createElement('canvas');
     this.renderContext2D = this.canvas.getContext('2d');
-
-    // create three.js objects to render
-    this.renderTarget = new THREE.WebGLRenderTarget(this.inputs.textureRes.w, this.inputs.textureRes.h);
-    this.renderTarget.texture.image = this.renderContext2D.canvas;
+    this.outputs.texture = new THREE.CanvasTexture(this.canvas);
 
     this.resize(this.inputs.textureRes);
     this.repaint();
-
-    this.outputs.texture = this.renderTarget.texture;
   }
 
   onInputsUpdated(oldInputs: Inputs) {
@@ -65,28 +59,26 @@ class CanvasRenderer extends SceneComponent {
     }
   }
 
-  onEvent(eventType: string, eventData: unknown) {
+  onEvent(eventType: string, _eventData: unknown) {
     if (eventType === 'repaint') {
       this.repaint();
     }
   }
 
   onDestroy() {
+    this.outputs.texture.dispose();
     this.outputs.texture = null;
-    this.renderTarget.dispose();
   }
 
   private resize(size: Size) {
     this.canvas.width = size.w;
     this.canvas.height = size.h;
-    this.renderTarget.width = size.w;
-    this.renderTarget.height = size.h;
   }
 
   private repaint() {
     if (this.inputs.painter) {
       this.inputs.painter.paint(this.renderContext2D, this.inputs.textureRes);
-      this.renderTarget.texture.needsUpdate = true;
+      this.outputs.texture.needsUpdate = true;
     }
   }
 
