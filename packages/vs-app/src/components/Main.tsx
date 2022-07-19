@@ -155,33 +155,29 @@ export class Main extends Component<Props, State> {
     if (interactionType === ComponentInteractionType.CLICK) {
       // select this node
       for (const slot of this.slots) {
-        if (slot.node === node) {
-          for (const componentSearch of node.componentIterator()) {
-            if (componentSearch === component) {
-              const lastSlotNode = this.state.slotNode;
-              if (lastSlotNode) {
-                lastSlotNode.boxComponent.inputs.color = UnselectedColor;
-                lastSlotNode.boxComponent.inputs.opacity = UnselectedOpacity;
-                lastSlotNode.boxComponent.inputs.lineOpacity = UnselectedLineOpacity;
-              }
+        if (slot.boxComponent === component) {
+          const lastSlotNode = this.state.slotNode;
+          if (lastSlotNode) {
+            lastSlotNode.boxComponent.inputs.color = UnselectedColor;
+            lastSlotNode.boxComponent.inputs.opacity = UnselectedOpacity;
+            lastSlotNode.boxComponent.inputs.lineOpacity = UnselectedLineOpacity;
+          }
 
-              if (lastSlotNode === slot) {
-                this.cameraInput.inputs.focus = null;
+          if (lastSlotNode === slot) {
+            this.cameraInput.inputs.focus = null;
 
-                this.setState({
-                  slotNode: null,
-                });
-              } else {
-                this.setState({
-                  slotNode: slot,
-                })
+            this.setState({
+              slotNode: null,
+            });
+          } else {
+            this.setState({
+              slotNode: slot,
+            })
 
-                slot.boxComponent.inputs.color = SelectedColor;
-                slot.boxComponent.inputs.opacity = SelectedOpacity;
-                slot.boxComponent.inputs.lineOpacity = SelectedLineOpacity;
-                this.cameraInput.inputs.focus = node.position;
-              }
-            }
+            slot.boxComponent.inputs.color = SelectedColor;
+            slot.boxComponent.inputs.opacity = SelectedOpacity;
+            slot.boxComponent.inputs.lineOpacity = SelectedLineOpacity;
+            this.cameraInput.inputs.focus = node.position;
           }
         }
       }

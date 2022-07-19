@@ -2,7 +2,7 @@ import { Dict } from '@mp/core';
 import { SceneEvents } from '../scenes/SceneEvents';
 import { SceneComponent } from '@mp/common';
 import { Camera, Vector3 } from 'three';
-import { IAnalytics, IGameState } from '../interfaces';
+import { IGameState } from '../interfaces';
 import { Events } from 'phaser';
 
 class BunnyCaptureComponent extends SceneComponent {
@@ -50,11 +50,6 @@ class BunnyCaptureComponent extends SceneComponent {
       this.capturePoint.y = -(this.capturePoint.y - 1) * 0.5 * size.h;
 
       this.eventBus.emit(SceneEvents.StartRabbit, this.capturePoint);
-      
-      const analytics: IAnalytics = (this.context.root as any).analytics;
-      analytics.track('sdk_bunny_capture', {
-        captured: this.gameState.captured.value,
-      });
 
       if (newCaptured >= this.gameState.total.value) {
           const that = this;

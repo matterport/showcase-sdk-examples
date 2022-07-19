@@ -85,7 +85,7 @@ export class MainView extends Component<{}, State> {
   async componentDidMount() {
     this.sdk = await GetSDK('sdk-iframe', this.sdkKey);
 
-    const iframeElement = document.getElementById('sdk-iframe') as HTMLIFrameElement;    
+    const iframeElement = document.getElementById('sdk-iframe') as HTMLIFrameElement;
     const stylesheet = document.createElement("link");
     stylesheet.rel = 'stylesheet';
     stylesheet.type = 'text/css';
@@ -94,14 +94,9 @@ export class MainView extends Component<{}, State> {
 
     let phaserCanvas: HTMLCanvasElement = document.getElementById('phaser-canvas') as HTMLCanvasElement;
 
-    const analyticsNode = await this.sdk.Scene.createNode();
+    const container = iframeElement.contentDocument.querySelector<HTMLDivElement>('#canvas-container');
 
-    let container: HTMLElement = null;
-    await this.sdk.Scene.configure(function(renderer: any) {
-      container = renderer.domElement.parentElement;
-    });
-
-    var config: Types.Core.GameConfig = {
+    const config: Types.Core.GameConfig = {
       type: Phaser.CANVAS,
       parent: container,
       scene: [WelcomeScene, TutorialScene, GameScene, GameOverScene],
@@ -131,7 +126,7 @@ export class MainView extends Component<{}, State> {
       eventBus,
       gameState: gameState,
       sdk: this.sdk,
-      analytics: analyticsNode.analytics,
+      analytics: { async track() {}},
     };
 
     await Promise.all([

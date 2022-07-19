@@ -104,7 +104,7 @@ export class GameView extends Component<Props, State> {
       canvas: this.canvasRef.current,
       width: this.canvasRef.current.clientWidth,
       height: this.canvasRef.current.clientHeight,
-      
+
       transparent: true,
     };
 
@@ -144,7 +144,6 @@ export class GameView extends Component<Props, State> {
   }
 
   onHintClicked() {
-    this.props.config.analytics.track('sdk_bunny_hint');
     this.props.config.eventBus.emit(SceneEvents.DisplayHint);
   }
 
