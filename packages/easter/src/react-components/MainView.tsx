@@ -125,8 +125,7 @@ export class MainView extends Component<{}, State> {
       game: this.game,
       eventBus,
       gameState: gameState,
-      sdk: this.sdk,
-      analytics: { async track() {}},
+      sdk: this.sdk
     };
 
     await Promise.all([

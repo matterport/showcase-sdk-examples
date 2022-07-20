@@ -1,5 +1,5 @@
 import { Events, Game } from 'phaser';
-import { ObservableValue, Dict } from '@mp/core';
+import { ObservableValue } from '@mp/core';
 
 /**
  * Dependencies passed around to scenes and react components.
@@ -9,7 +9,6 @@ export interface ISceneConfig {
   eventBus: Events.EventEmitter;
   gameState: IGameState;
   sdk: any;
-  analytics: IAnalytics;
 }
 
 
@@ -19,8 +18,4 @@ export interface IGameState {
   readonly total: ObservableValue<number>;
   readonly captured: ObservableValue<number>;
   readonly debug: ObservableValue<boolean>;
-}
-
-export interface IAnalytics {
-  track(event: string, data?: Dict<any>): Promise<void>;
 }

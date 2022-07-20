@@ -46,16 +46,9 @@ export class GameOverView extends Component<Props, {}> {
     document.execCommand('copy');
     window.getSelection()!.removeAllRanges();
     this.urlFieldRef.blur();
-    this.props.config.analytics.track('sdk_bunny_share', {
-      shareMedium: ShareMedium.MAIL,
-    });
   }
 
   private openShareWindow = (shareMedium: ShareMedium) => {
-    this.props.config.analytics.track('sdk_bunny_share', {
-      shareMedium,
-    });
-
     const { width, height } = shareWindow[shareMedium];
     const urls = getShareUrls(window.location.href, 'title', 'image');
     const shareUrl = urls[shareMedium];
@@ -80,7 +73,7 @@ export class GameOverView extends Component<Props, {}> {
           <div className='description'>Be sure to click and share this activity with your friends and help us reach our goal of $5,000 for United Way NYC! &nbsp;&nbsp;
             <a href='https://matterport.com/blog/tumble-down-rabbit-hole-immersed-wonderland' target="_blank">Click here to learn more.</a>
           </div>
-          
+
           <div className='link-item-container'>
             <div className='link-item'>
               <div className='link-background' onClick={this.onFacebookClicked}>
