@@ -5,6 +5,9 @@ const CopyPlugin = require('copy-webpack-plugin');
 module.exports = {
 mode: 'development',
   entry: './src/index.tsx',
+  optimization: {
+    minimize: false
+  },
   output: {
     filename: 'js/[name].bundle.js'
   },
