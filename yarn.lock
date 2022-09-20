@@ -10280,9 +10280,9 @@ write-pkg@^4.0.0:
     write-json-file "^3.2.0"
 
 ws@^7.4.6:
-  version "7.5.8"
-  resolved "https://registry.npmjs.org/ws/-/ws-7.5.8.tgz"
-  integrity sha512-ri1Id1WinAX5Jqn9HejiGb8crfRio0Qgu8+MtL36rlTA6RLsMdWt1Az/19A2Qij6uSHUMphEFaTKa4WG+UNHNw==
+  version "7.5.9"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.9.tgz#54fa7db29f4c7cec68b1ddd3a89de099942bb591"
+  integrity sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==
 
 ws@^8.4.2:
   version "8.8.0"
