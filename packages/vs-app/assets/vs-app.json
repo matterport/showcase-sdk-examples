@@ -469,9 +469,7 @@
             "inputs": {
               "urls": [
                 "https://video2archives.earthcam.com/archives/_definst_/MP4:permanent/14162/2019/07/22/1300.mp4/chunklist_w1401431259.m3u8",
-                "https://www.bloomberg.com/media-manifest/streams/us.m3u8",
-                "http://iphone-streaming.ustream.tv/uhls/1524/streams/live/iphone/playlist.m3u8",
-                "https://2-fss-2.streamhoster.com/pl_140/amlst:200914-1298290/playlist.m3u8?DVR"
+                "https://www.bloomberg.com/media-manifest/streams/us.m3u8"
               ]
             },
             "events": {
