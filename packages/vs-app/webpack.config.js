@@ -1,15 +1,17 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const path = require('path');
 
 module.exports = {
-mode: 'development',
+  mode: 'development',
   entry: './src/index.tsx',
   optimization: {
     minimize: false
   },
   output: {
-    filename: 'js/[name].bundle.js'
+    filename: 'js/[name].bundle.js',
+    path: path.resolve(__dirname, "dist")
   },
   devtool: 'source-map',
   resolve: {
