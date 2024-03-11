@@ -28,7 +28,10 @@ See <https://nodejs.org/en/> and <https://classic.yarnpkg.com/en/docs/install> f
 
 > To run these examples, you will need to generate a sandboxed sdk key for your Matterport account. See [Matterport Developer Tools Pricing and Availability](https://support.matterport.com/hc/en-us/articles/360057506813-Matterport-Developer-Tools-Pricing-and-Availability).
 
-The password for the beta versions of bundle: gOJKDpxNiMCtdlnXs
+> You will need to insert your SDK Key into the following line in packages/common/src/index.ts:
+
+export const sdkKey = 'YOUR SDK KEY HERE';
+
 
 ### Setup monorepo root
 Run these two commands when you first download the repo.
@@ -37,7 +40,7 @@ Run these two commands when you first download the repo.
 > yarn install-bundle
 yarn run v1.22.4
 $ yarn fetch-bundle && yarn expand-bundle
-$ curl https://static.matterport.com/showcase-sdk/bundle/3.1.38.10-15-g5a5323ef0/showcase-bundle.zip -o bundle.zip
+$ curl https://static.matterport.com/showcase-sdk/bundle/24.2.1_webgl-99-g397d2e031f/showcase-bundle.zip -o bundle.zip
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100 3108k  100 3108k    0     0  7599k      0 --:--:-- --:--:-- --:--:-- 7599k
@@ -71,7 +74,7 @@ inspector: warning package.json: "inspector" is also the name of a node core mod
 inspector: $ webpack-dev-server
 inspector: ℹ ｢wds｣: Project is running at http://localhost:8000/
 inspector: ℹ ｢wds｣: webpack output is served from /
-inspector: ℹ ｢wds｣: Content not from webpack is served from /Users/bguillermo/projects/sdk_examples/packages/inspector
+inspector: ℹ ｢wds｣: Content not from webpack is served from /Users/[Username]/projects/sdk_examples/packages/inspector
 ```
 
 ### Run the virtual staging app
@@ -85,7 +88,7 @@ lerna info Executing command in 1 package: "yarn run develop"
 vs-app: $ webpack-dev-server
 vs-app: ℹ ｢wds｣: Project is running at http://localhost:8000/
 vs-app: ℹ ｢wds｣: webpack output is served from /
-vs-app: ℹ ｢wds｣: Content not from webpack is served from /Users/bguillermo/projects/sdk_examples/packages/vs-app
+vs-app: ℹ ｢wds｣: Content not from webpack is served from /Users/[Username]/projects/sdk_examples/packages/vs-app
 ```
 
 ### Run the magical bunny app
@@ -99,7 +102,7 @@ lerna info Executing command in 1 package: "yarn run develop"
 easter: $ webpack-dev-server
 easter: ℹ ｢wds｣: Project is running at http://localhost:8000/
 easter: ℹ ｢wds｣: webpack output is served from /
-easter: ℹ ｢wds｣: Content not from webpack is served from /Users/bguillermo/projects/sdk_examples/packages/easter
+easter: ℹ ｢wds｣: Content not from webpack is served from /Users/[Username]/projects/sdk_examples/packages/easter
 ```
 
 ### Run the remote control app
@@ -113,7 +116,7 @@ lerna info Executing command in 1 package: "yarn run develop"
 rc-app: $ webpack-dev-server
 rc-app: ℹ ｢wds｣: Project is running at http://localhost:8000/
 rc-app: ℹ ｢wds｣: webpack output is served from /
-rc-app: ℹ ｢wds｣: Content not from webpack is served from /Users/bguillermo/projects/sdk_examples/packages/rc-app
+rc-app: ℹ ｢wds｣: Content not from webpack is served from /Users/[Username]/projects/sdk_examples/packages/rc-app
 ```
 
 ### Run the embed sdk examples
@@ -129,7 +132,7 @@ embed-examples: warning package.json: No license field
 embed-examples: $ webpack-dev-server
 embed-examples: ℹ ｢wds｣: Project is running at http://localhost:8000/
 embed-examples: ℹ ｢wds｣: webpack output is served from /
-embed-examples: ℹ ｢wds｣: Content not from webpack is served from /Users/bguillermo/projects/sdk_examples/packages/embed-examples/dist
+embed-examples: ℹ ｢wds｣: Content not from webpack is served from /Users/[Username]/projects/sdk_examples/packages/embed-examples/dist
 ```
 
 ### Clean packages
@@ -139,14 +142,14 @@ You will need to bootstrap after cleaning.
 yarn run v1.21.1
 $ lerna clean --yes
 lerna notice cli v3.3.2
-lerna info clean removing /Users/bguillermo/projects/sdk_examples/packages/bundle/node_modules
-lerna info clean removing /Users/bguillermo/projects/sdk_examples/packages/common/node_modules
-lerna info clean removing /Users/bguillermo/projects/sdk_examples3/packages/core/node_modules
-lerna info clean removing /Users/bguillermo/projects/sdk_examples3/packages/easter/node_modules
-lerna info clean removing /Users/bguillermo/projects/sdk_examples2/packages/embed-examples/node_modules
-lerna info clean removing /Users/bguillermo/projects/sdk_examples/packages/inspector/node_modules
-lerna info clean removing /Users/bguillermo/projects/sdk_examples3/packages/rc-app/node_modules
-lerna info clean removing /Users/bguillermo/projects/sdk_examples/packages/vs-app/node_modules
+lerna info clean removing /Users/[Username]/projects/sdk_examples/packages/bundle/node_modules
+lerna info clean removing /Users/[Username]/projects/sdk_examples/packages/common/node_modules
+lerna info clean removing /Users/[Username]/projects/sdk_examples/packages/core/node_modules
+lerna info clean removing /Users/[Username]/projects/sdk_examples/packages/easter/node_modules
+lerna info clean removing /Users/[Username]/projects/sdk_examples/packages/embed-examples/node_modules
+lerna info clean removing /Users/[Username]/projects/sdk_examples/packages/inspector/node_modules
+lerna info clean removing /Users/[Username]/projects/sdk_examples/packages/rc-app/node_modules
+lerna info clean removing /Users/[Username]/projects/sdk_examples/packages/vs-app/node_modules
 lerna success clean finished
 ✨  Done in 5.11s.
 ```

@@ -184,7 +184,9 @@ export class MainView extends Component<Props, State> {
   }
 
   private transformSelected(selection: Selection) {
-    this.context.scene.widget.inputs.mode = selection;
+    if (selection !== null) {
+      this.context.scene.widget.inputs.mode = selection;
+    }
   }
 
   private async dropped(objects: string) {
@@ -242,7 +244,7 @@ export class MainView extends Component<Props, State> {
           if (this.context.scene.widget) {
             this.context.scene.widget.inputs.selection = null;
           }
-          
+
           if (this.context.scene.cameraInput) {
             this.context.scene.cameraInput.inputs.focus = null;
           }
@@ -314,7 +316,7 @@ export class MainView extends Component<Props, State> {
             </ToolbarDiv>
             <ContainerDiv>
               <FrameView src={src}></FrameView>
-                
+
                 <TabPanelDiv>
                   <Tabs value={this.state.tabIndex} onChange={this.onTabChanged} aria-label="simple tabs example" variant='standard'>
                     <Tab label="Nodes" value={0} sx={styles.tab}/>

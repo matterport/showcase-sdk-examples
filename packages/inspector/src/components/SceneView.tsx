@@ -70,7 +70,7 @@ export class SceneView extends Component<Props, State> {
     this.setState({
       selected: newNodeId,
     });
-    
+
     if (newNodeId === nodeId) {
       this.props.onSingleClick(item);
     }
@@ -100,9 +100,9 @@ export class SceneView extends Component<Props, State> {
             nodeId={`${nodeId}`}
             key={`${nodeId}`}
             label={object.name}
-            onKeyDown={(e) => this.onKeyDown(e, object)}
-            onClick={(e) => this.onClick(e, `${nodeId}`, object)}
-            onDoubleClick={(e) => this.onDoubleClick(e, `${nodeId}`, object)}
+            onKeyDown={(e: React.KeyboardEvent<HTMLElement>) => this.onKeyDown(e, object)}
+            onClick={(e: React.MouseEvent<HTMLElement>) => this.onClick(e, `${nodeId}`, object)}
+            onDoubleClick={(e: React.MouseEvent<HTMLElement>) => this.onDoubleClick(e, `${nodeId}`, object)}
           ></TreeItem>
         );
       });

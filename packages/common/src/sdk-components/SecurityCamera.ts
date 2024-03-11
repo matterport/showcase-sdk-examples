@@ -1,6 +1,8 @@
-import { Object3D, Mesh, PerspectiveCamera,
+import {
+  Object3D, Mesh, PerspectiveCamera, BufferAttribute,
   MeshBasicMaterial, BoxGeometry, ShaderMaterial, LineBasicMaterial, EdgesGeometry,
-  AnimationMixer, Color, Matrix4, Vector3 } from 'three';
+  AnimationMixer, Color, Matrix4, Vector3
+} from 'three';
 import { SceneComponent } from '../SceneComponent';
 
 interface Inputs {
@@ -39,7 +41,7 @@ class SecurityCamera extends SceneComponent {
     nearPlane: 0.1,
     farPlane: 4,
     horizontalFOV: 80,
-    aspect: 16/9,
+    aspect: 16 / 9,
     localPosition: { x: 0, y: 0, z: 0 },
     localRotation: { x: 0, y: 0, z: 0 },
     color: 0xffffff,
@@ -53,7 +55,6 @@ class SecurityCamera extends SceneComponent {
     this.pivot = new THREE.Object3D();
     this.root.add(this.pivot);
     this.outputs.objectRoot = this.root;
-
     this.root.position.set(this.inputs.localPosition.x, this.inputs.localPosition.y, this.inputs.localPosition.z);
 
     const euler = new THREE.Euler(this.inputs.localRotation.x * Math.PI / 180, this.inputs.localRotation.y * Math.PI / 180, this.inputs.localRotation.z * Math.PI / 180, 'YXZ');
@@ -85,7 +86,7 @@ class SecurityCamera extends SceneComponent {
   onTick(delta: number) {
     updateHighlightUniforms(this.projector, this.highlightUniforms);
     if (this.mixer) {
-      this.mixer.update(delta/1000);
+      this.mixer.update(delta / 1000);
     }
   }
 
@@ -121,17 +122,19 @@ class SecurityCamera extends SceneComponent {
     }
 
     function edgesToCylinders(edgesGeometry: EdgesGeometry, thickness: number) {
-      const {position} = edgesGeometry.attributes;
-      const {array, count} = position;
+
+      // Casting as a BufferAttribute, due to Types issue to be resolved in THREE.JS r160
+      const vertices = (edgesGeometry.attributes.position as BufferAttribute).array;
+      const count = edgesGeometry.attributes.position.count;
       const r = thickness / 2;
       const geoms = [];
       for (let i = 0; i < count * 3 - 1; i += 6) {
-        const a = new THREE.Vector3(array[i], array[i + 1], array[i + 2]);
-        const b = new THREE.Vector3(array[i + 3], array[i + 4], array[i + 5]);
+        const a = new THREE.Vector3(vertices[i], vertices[i + 1], vertices[i + 2]);
+        const b = new THREE.Vector3(vertices[i + 3], vertices[i + 4], vertices[i + 5]);
 
         const vec = new THREE.Vector3().subVectors(b, a);
         const len = vec.length();
-        const geom = new THREE.CylinderBufferGeometry(r, r, len, 8);
+        const geom = new THREE.CylinderGeometry(r, r, len, 8);
         geom.translate(0, len / 2, 0);
         geom.rotateX(Math.PI / 2);
         geom.lookAt(vec);
@@ -150,9 +153,11 @@ class SecurityCamera extends SceneComponent {
     const nearHalfHeight = nearHalfWidth / this.inputs.aspect;
     const farHalfHeight = farHalfWidth / this.inputs.aspect;
 
-    const positions = boxGeometry.getAttribute('position');
+    // Casting as a BufferAttribute, due to Types issue with GLBufferAttribute
+    // to be resolved in THREE.JS r160
+    const positions = boxGeometry.getAttribute('position') as BufferAttribute;
 
-    for (let i = 0; i<positions.count; i++ ) {
+    for (let i = 0; i < positions.count; i++) {
       const vertexZ = positions.getZ(i);
       const vertexX = positions.getX(i);
       const vertexY = positions.getY(i);

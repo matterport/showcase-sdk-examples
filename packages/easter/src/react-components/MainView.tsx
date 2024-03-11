@@ -136,7 +136,8 @@ export class MainView extends Component<{}, State> {
       this.sdk.Scene.register(bunnyCaptureType, createBunnyCaptureClosure(gameState, eventBus, this.sdk)),
     ]);
 
-    const nodes = await this.sdk.Scene.deserialize(JSON.stringify(bunnies));
+    const object = await this.sdk.Scene.deserialize(JSON.stringify(bunnies));
+    const nodes = [...object.nodeIterator()];
 
     // set initial values of capture state
     gameState.captured.value = 0;

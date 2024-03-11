@@ -9,7 +9,7 @@ export class SceneLoader {
 
   /**
    * Load the scene for a given model.
-   * 
+   *
    * @param sid sid of the model, used to lookup the scene.
    * @param callback an optional callback which is called once for scene node created.
    */
@@ -24,8 +24,9 @@ export class SceneLoader {
       return;
     }
 
-    const nodesToStart: ISceneNode[] = await this.sdk.Scene.deserialize(JSON.stringify(scene));
-    
+    const sceneObject = await this.sdk.Scene.deserialize(JSON.stringify(scene));
+    const nodesToStart = [...sceneObject.nodeIterator()];
+
     if (callback) {
       for (const node of nodesToStart) {
         callback(node);
