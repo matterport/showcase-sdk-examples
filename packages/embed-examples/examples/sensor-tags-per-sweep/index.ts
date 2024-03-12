@@ -1,16 +1,17 @@
 import { clearMesssage, connect, setMessage } from '../common';
+import type { MpSdk } from '../common/sdk';
 import '../common/main.css';
 
-let tags: string[]|null = null;
+let tags: string[] | null = null;
 let sub: any = null;
 
-const addTags = async (sdk: any) => {
+const addTags = async (sdk: MpSdk) => {
   if (tags) {
     return;
   }
 
   sub = sdk.Sweep.data.subscribe({
-    onCollectionUpdated: async (collection: {[key: string]: any}) => {
+    onCollectionUpdated: async (collection: { [key: string]: any }) => {
       const tagInfos: any[] = Object.keys(collection).map((key: string) => {
         const sweep = collection[key];
         return {
@@ -31,9 +32,9 @@ const addTags = async (sdk: any) => {
             g: 0.0,
             b: 1.0,
           },
-        }
+        };
       });
-      tags = await sdk.Mattertag.add(tagInfos) as string[];
+      tags = (await sdk.Tag.add(...tagInfos)) as string[];
       sub.cancel();
     },
   });
@@ -41,13 +42,13 @@ const addTags = async (sdk: any) => {
 
 const removeTags = async (sdk: any) => {
   if (tags !== null) {
-    sdk.Mattertag.remove(tags);
+    sdk.Tag.remove(tags);
     tags = null;
   }
-}
+};
 
 const main = async () => {
-  const sdk = await connect({
+  const sdk: MpSdk = await connect({
     urlParams: {
       qs: '1',
       play: '1',
@@ -62,7 +63,7 @@ const main = async () => {
     origin: { x: -0.629, y: 1, z: 5.909 },
     radius: 2.5,
     userData: {
-      id: "Displaying a tag over every sweep",
+      id: 'Displaying a tag over every sweep',
     },
   });
 
@@ -85,12 +86,11 @@ const main = async () => {
       if (inRange.length > 0) {
         setMessage(textElement, inRange.toString());
         addTags(sdk);
-      }
-      else {
+      } else {
         clearMesssage(textElement);
         removeTags(sdk);
       }
-    }
+    },
   });
 };
 

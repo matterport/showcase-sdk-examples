@@ -51,7 +51,7 @@ export class TransformToolbar extends Component<Props, State> {
     this.setState({
       selection,
     });
-    
+
     if (this.props.selectionChanged) {
       this.props.selectionChanged(selection);
     }
@@ -70,18 +70,18 @@ export class TransformToolbar extends Component<Props, State> {
                 aria-label="text alignment"
               >
                 <ToggleButton value={Selection.Translate} aria-label="left aligned">
-                <img src={`${cdnUrl}/textures/move.jpg`} alt="Kitten" height="40" width="40"/>
+                <img src={`${cdnUrl}/textures/move.jpg`} alt="Move" height="40" width="40"/>
                 </ToggleButton>
                 <ToggleButton value={Selection.Rotate} aria-label="centered">
-                <img src={`${cdnUrl}/textures/rotate.jpg`} alt="Kitten" height="40" width="40"/>
+                <img src={`${cdnUrl}/textures/rotate.jpg`} alt="Rotate" height="40" width="40"/>
                 </ToggleButton>
                 <ToggleButton value={Selection.Scale} aria-label="right aligned">
-                  <img src={`${cdnUrl}/textures/scale.jpg`} alt="Kitten" height="40" width="40"/>
+                  <img src={`${cdnUrl}/textures/scale.jpg`} alt="Scale" height="40" width="40"/>
                 </ToggleButton>
               </ToggleButtonGroup>
             </div>
           </Grid>
-          
+
         </Grid>
       </ControlsDiv>
     );

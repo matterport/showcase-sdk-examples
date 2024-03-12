@@ -8,7 +8,6 @@
     "decompress-cli": "^2.0.0",
     "ts-loader": "^9.3.0",
     "typescript": "^4.7.3",
-
     "webpack-cli": "^4.10.0",
     "webpack": "^5.73.0",
     "webpack-dev-server": "^4.9.2",
@@ -19,8 +18,8 @@
     "css-loader": "^6.7.1",
     "style-loader": "^3.3.1",
 
-    "three": "^0.139.2",
-    "@types/three": "^0.139.0",
+    "three": "^0.151.3",
+    "@types/three": "^0.151.0",
     "react": "^18.0.0",
     "@types/react": "^18.0.0",
     "react-dom": "^18.0.0",
@@ -38,6 +37,7 @@
     "easter": "lerna run develop --scope=easter --stream",
     "rc-app": "lerna run develop --scope=rc-app --stream",
     "embed-examples": "lerna run develop --scope=embed-examples --stream",
+    "training-tags-demo": "lerna run develop --scope=training-tags-demo --stream",
 
     "fetch-bundle": "cross-var curl https://static.matterport.com/showcase-sdk/bundle/$npm_package_config_bundle_version/showcase-bundle.zip -o bundle.zip",
     "expand-bundle": "yarn decompress bundle.zip --out-dir=./packages/bundle",
@@ -48,6 +48,6 @@
     "packages/*"
   ],
   "config": {
-    "bundle_version": "3.1.75.3-0-gba9de22f6d"
+    "bundle_version": "24.2.1_webgl-99-g397d2e031f"
   }
 }

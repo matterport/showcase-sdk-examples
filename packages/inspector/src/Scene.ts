@@ -39,7 +39,7 @@ class Scene implements IScene {
   public get cameraPose() {
     return this.cameraPoseSubject;
   }
-  
+
   private async setup(sdk: any) {
     sdk.Camera.pose.subscribe((pose: any) => {
       this.cameraPoseSubject.next({
@@ -64,7 +64,7 @@ class Scene implements IScene {
     ]);
     this.sensor = await sdk.Sensor.createSensor(sdk.Sensor.SensorType.CAMERA);
     this.sensor.showDebug(true);
-  
+
     const node = await sdk.Scene.createNode();
     this.widget = node.addComponent('mp.transformControls');
     node.start();
@@ -113,7 +113,8 @@ class Scene implements IScene {
   }
 
   public async deserialize(serialized: string) {
-    const nodes: ISceneNode[] = await this.sdk.sdk.Scene.deserialize(serialized);
+    const sceneObject = await this.sdk.sdk.Scene.deserialize(serialized);
+    const nodes: ISceneNode[] = [...sceneObject.nodeIterator()];
 
     const added: ISceneNode[] = [];
     for (const node of nodes) {

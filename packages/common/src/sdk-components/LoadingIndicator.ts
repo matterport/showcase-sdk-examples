@@ -34,7 +34,7 @@ class LoadingIndicator extends SceneComponent {
       opacity: 0.2,
     });
     this.box = new THREE.Mesh(geometry, material);
-    this.mixer = new THREE.AnimationMixer(this.box);
+    //this.mixer = new THREE.AnimationMixer(this.box);
 
     for (const component of root.componentIterator()) {
       if (component.componentType === 'mp.gltfLoader') {
@@ -60,8 +60,10 @@ class LoadingIndicator extends SceneComponent {
       return;
     }
 
-    console.log(this.inputs.logo);
-    this.mixer = new THREE.AnimationMixer(this.inputs.logo);
+    // Must set a name to an object to use in a path
+    this.inputs.logo.children[0].children[0].name = 'logo';
+    // The OBJ is nested
+    this.mixer = new THREE.AnimationMixer(this.inputs.logo.children[0].children[0]);
 
     switch(this.inputs.loadingState) {
       case 'Idle':
@@ -89,7 +91,7 @@ class LoadingIndicator extends SceneComponent {
           action.play();
 
           const onEnterTime = this.inputs.transitionInDuration;
-          const opacityTrack = new THREE.NumberKeyframeTrack('.material.opacity', [0, onEnterTime], [0, 0.7], THREE.InterpolateSmooth);
+          const opacityTrack = new THREE.NumberKeyframeTrack('logo.material.opacity', [0, onEnterTime], [0, 0.7], THREE.InterpolateSmooth);
           const scaleTrack = new THREE.VectorKeyframeTrack('.scale', [0, onEnterTime],
             [0, 0, 0, this.inputs.size.x, this.inputs.size.y, this.inputs.size.z], THREE.InterpolateSmooth);
           const onEnterClip = new THREE.AnimationClip(null, onEnterTime, [opacityTrack, scaleTrack]);

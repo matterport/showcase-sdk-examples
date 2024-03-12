@@ -20,7 +20,7 @@ export class CameraRig extends Object3D {
     const focalRadius = camWorld.distanceTo(focalPoint);
 
     // when focusing, set the base's orientation ...
-    this.lookAt(focalPoint);
+    this.customLookAt(focalPoint);
     // ... remove any rotation from the camera itself ...
     this.camera.quaternion.set(0, 0, 0, 1);
     // ... and set the rig base at the focal point
@@ -40,7 +40,7 @@ export class CameraRig extends Object3D {
     this.updateMatrixWorld();
   }
 
-  lookAt(point: Vector3) {
+  customLookAt(point: Vector3) {
     // THREE.js's `lookAt` functions are lacking
     // THREE.js's `lookAt` branches between two different behaviors based on an `isCamera` and `isLight` boolean that is part of `Camera` and `Light`.
     // since this is a "camera", but only extends `Object3D`, AND because we support upside-down orientations, we have to use the underlying `Matrix4.lookAt`

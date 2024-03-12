@@ -1,5 +1,5 @@
 import { SceneComponent, ComponentOutput, ISceneNode } from '@mp/common';
-import { Camera, Object3D, Vector3, Quaternion, Matrix4 } from 'three';
+import { PerspectiveCamera, Object3D, Vector3, Quaternion, Matrix4 } from 'three';
 import TWEEN from '@tweenjs/tween.js';
 
 type Position = {
@@ -25,7 +25,7 @@ type Inputs = {
 };
 
 type Outputs = {
-  camera: null | Camera;
+  camera: null | PerspectiveCamera;
 } & ComponentOutput;
 
 type Events = {
@@ -34,7 +34,7 @@ type Events = {
 };
 
 class CloseupView extends SceneComponent {
-  private camera: Camera;
+  private camera: PerspectiveCamera;
   private time = 0;
   private position: Position = {
     x: 0,
@@ -55,7 +55,7 @@ class CloseupView extends SceneComponent {
   };
 
   outputs = {
-    camera: null as null | Camera,
+    camera: null as null | PerspectiveCamera,
   } as Outputs;
 
   events = {
@@ -136,7 +136,7 @@ class CloseupView extends SceneComponent {
       })
       .start(0);
 
-    const dummy = new THREE.Camera();
+    const dummy = new THREE.PerspectiveCamera();
     const qStart = new THREE.Quaternion();
     const qEnd = new THREE.Quaternion();
 
@@ -144,9 +144,9 @@ class CloseupView extends SceneComponent {
     this.quaternionTween = new TWEEN.Tween(this.quaternionTime)
       .to({ t: 1.0 }, this.inputs.duration * 1000)
       .easing(TWEEN.Easing.Cubic.InOut)
-      .onStart(() =>  {
-        dummy.position.copy( this.camera.position );
-        dummy.lookAt( new Vector3().set(target.x, target.y, target.z) );
+      .onStart(() => {
+        dummy.position.copy(this.camera.position);
+        dummy.lookAt(new Vector3().set(target.x, target.y, target.z));
         qStart.copy(this.camera.quaternion);
         qEnd.copy(q);
       })
@@ -163,7 +163,7 @@ class CloseupView extends SceneComponent {
 
   onEvent(eventType: string, eventData: unknown) {
     const data = eventData as any;
-    switch(eventType) {
+    switch (eventType) {
       case Event.OnAccessGranted:
         this.setupCameraAnimation(data.pose);
         break;

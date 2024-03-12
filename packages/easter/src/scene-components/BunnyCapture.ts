@@ -1,14 +1,14 @@
 import { Dict } from '@mp/core';
 import { SceneEvents } from '../scenes/SceneEvents';
 import { SceneComponent } from '@mp/common';
-import { Camera, Vector3 } from 'three';
+import { PerspectiveCamera, Vector3 } from 'three';
 import { IGameState } from '../interfaces';
 import { Events } from 'phaser';
 
 class BunnyCaptureComponent extends SceneComponent {
   private cameraPose: any = null;
   private iframe: HTMLElement = null;
-  private projectionCam = new Camera();
+  private projectionCam = new PerspectiveCamera();
   private capturePoint = new Vector3();
 
   events = {
@@ -22,7 +22,6 @@ class BunnyCaptureComponent extends SceneComponent {
   onInit() {
     this.onCameraPoseChanged = this.onCameraPoseChanged.bind(this);
     this.iframe = document.getElementById('sdk-iframe');
-
     this.sdk.Camera.pose.subscribe(this.onCameraPoseChanged);
   }
 
@@ -52,10 +51,10 @@ class BunnyCaptureComponent extends SceneComponent {
       this.eventBus.emit(SceneEvents.StartRabbit, this.capturePoint);
 
       if (newCaptured >= this.gameState.total.value) {
-          const that = this;
-          setTimeout(function() {
-            that.eventBus.emit(SceneEvents.EndGame);
-          }, 2000);
+        const that = this;
+        setTimeout(function() {
+          that.eventBus.emit(SceneEvents.EndGame);
+        }, 2000);
       }
     }
   }

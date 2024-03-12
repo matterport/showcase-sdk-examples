@@ -7,7 +7,7 @@ declare global {
 }
 
 type ConnectOptions = {
-  urlParams?: {[key: string]: string};
+  urlParams?: { [key: string]: string };
 };
 
 export async function connect(options: ConnectOptions = {}): Promise<any> {
@@ -26,7 +26,7 @@ export async function connect(options: ConnectOptions = {}): Promise<any> {
     apiHost = urlParams.get('apiHost');
   }
 
-  for(const key in options.urlParams) {
+  for (const key in options.urlParams) {
     if (!urlParams.has(key)) {
       urlParams.set(key, options.urlParams[key]);
     }

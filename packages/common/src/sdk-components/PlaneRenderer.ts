@@ -12,8 +12,8 @@ type Inputs = {
   polygonOffset: boolean;
   polygonOffsetFactor: number;
   polygonOffsetUnits: number;
-  localScale: {x: number; y: number; z: number; };
-  localPosition: {x: number; y: number; z: number; };
+  localScale: { x: number; y: number; z: number; };
+  localPosition: { x: number; y: number; z: number; };
 }
 
 export class PlaneRenderer extends SceneComponent implements IPlaneRenderer {
@@ -43,7 +43,7 @@ export class PlaneRenderer extends SceneComponent implements IPlaneRenderer {
     this.pivotNode = new THREE.Group();
 
     this.mesh = new THREE.Mesh(
-      new THREE.PlaneBufferGeometry(1.0, 1.0),
+      new THREE.PlaneGeometry(1.0, 1.0),
       new THREE.MeshBasicMaterial({
         transparent: this.inputs.transparent,
         map: this.inputs.texture,
@@ -56,7 +56,6 @@ export class PlaneRenderer extends SceneComponent implements IPlaneRenderer {
     this.mesh.position.set(this.inputs.localPosition.x, this.inputs.localPosition.y, this.inputs.localPosition.z);
     this.mesh.updateMatrixWorld();
     this.pivotNode.add(this.mesh);
-
     this.outputs.objectRoot = this.pivotNode;
     this.outputs.collider = this.pivotNode;
     this.mesh.visible = this.inputs.visible;
