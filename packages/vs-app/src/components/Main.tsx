@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Frame, GetSDK, initComponents, SceneComponent, ISceneNode, ComponentInteractionType,
-  orientedBoxType, slotType, OrientedBox, IComponentEventSpy, IInteractionEvent, sdkKey } from '@mp/common';
+import { Frame, GetSDK, initComponents, orientedBoxType, slotType, sdkKey } from '@mp/common';
+import { MpSdk } from '@mp/bundle-sdk/sdk';
+
 import { AppState } from '../AppState';
 import { SceneLoader } from '../SceneLoader';
 import { ItemList } from './ItemList';
@@ -20,23 +21,30 @@ interface Props {
 }
 
 interface State {
-  slotNode: SlotNode|null;
+  slotNode: SlotNode | null;
 }
 
 type SlotNode = {
-  node: ISceneNode;
-  slotComponent: SceneComponent;
-  modelComponent: SceneComponent;
-  boxComponent: OrientedBox;
-}
+  node: MpSdk.Scene.INode;
+  slotComponent: MpSdk.Scene.IComponent;
+  modelComponent: MpSdk.Scene.IComponent;
+  boxComponent: MpSdk.Scene.IComponent;
+};
+
+type ModelComponentInputs = {
+  localPosition: MpSdk.Vector3;
+  localRotation: MpSdk.Vector3;
+  localScale: MpSdk.Vector3;
+};
 
 export class Main extends Component<Props, State> {
-  private sdk: any = null;
+  private sdk: MpSdk = null;
   private scene: SceneLoader = null;
   private slots: SlotNode[] = [];
-  private cameraInput: SceneComponent;
+  private cameraInput: MpSdk.Scene.IComponent;
   private src: string;
   private applicationKey: string;
+  private sceneObject: MpSdk.Scene.IObject = null;
 
   constructor(props: Props) {
     super(props);
@@ -56,7 +64,10 @@ export class Main extends Component<Props, State> {
     params.applicationKey = params.applicationKey || sdkKey;
     this.applicationKey = params.applicationKey;
 
-    const queryString = Object.keys(params).map((key) => key + '=' + params[key]).join('&');
+    const queryString = Object
+      .keys(params)
+      .map((key) => key + '=' + params[key])
+      .join('&');
     this.src = `./bundle/showcase.html?${queryString}`;
 
     this.handleListSelection = this.handleListSelection.bind(this);
@@ -65,73 +76,68 @@ export class Main extends Component<Props, State> {
   async componentDidMount() {
     this.sdk = await GetSDK('sdk-iframe', this.applicationKey);
     await initComponents(this.sdk);
-    await this.createCameraControl(this.sdk);
+    await this.createCameraControl();
     await this.sdk.Scene.configure((renderer: any, three: any) => {
       renderer.physicallyCorrectLights = true;
       renderer.outputEncoding = three.sRGBEncoding;
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.bias = 0.0001;
       renderer.shadowMap.type = three.PCFSoftShadowMap;
-
     });
     this.scene = new SceneLoader(this.sdk);
-
     const slots: SlotNode[] = [];
 
-    class ClickSpy implements IComponentEventSpy<IInteractionEvent> {
-      public eventType = ComponentInteractionType.CLICK;
-      constructor(private mainComponent: Main){}
-      onEvent(payload: IInteractionEvent) {
-        this.mainComponent.handleOrientedBoxInteraction(payload.node, payload.component, payload.type);
-      }
-    }
-
-    class HoverSpy implements IComponentEventSpy {
-      public eventType = ComponentInteractionType.HOVER;
-      constructor(private mainComponent: Main) {}
-      onEvent(payload: { hover: boolean; }) {
-        this.mainComponent.cameraInput.inputs.suppressClick = !payload.hover;
-      }
-    }
-
-    const clickSpy = new ClickSpy(this);
-    const hoverSpy = new HoverSpy(this);
-    const findSlots = (node: ISceneNode) => {
-      let slot: SceneComponent = null;
-      let model: SceneComponent = null;
-      let box: OrientedBox = null;
-      const componentIterator: IterableIterator<SceneComponent> = node.componentIterator();
+    let count = 0;
+    const findSlots = (node: MpSdk.Scene.INode) => {
+      let slot: MpSdk.Scene.IComponent = null;
+      let model: MpSdk.Scene.IComponent = null;
+      let box: MpSdk.Scene.IComponent = null;
+      const componentIterator: IterableIterator<MpSdk.Scene.IComponent> = node.componentIterator();
       for (const component of componentIterator) {
         if (component.componentType === slotType) {
           slot = component;
-        }
-        else if (component.componentType === 'mp.gltfLoader') {
+        } else if (component.componentType === 'mp.gltfLoader') {
           model = component;
-        }
-        else if (component.componentType == orientedBoxType) {
-          box = component as OrientedBox;
-          box.spyOnEvent(clickSpy);
-          box.spyOnEvent(hoverSpy);
+        } else if (component.componentType == orientedBoxType) {
+          box = component as MpSdk.Scene.IComponent;
+          const clickPath = this.scene.sceneObject.addEventPath(box, this.sdk.Scene.InteractionType.CLICK);
+          const clickSpy = {
+            id: 'clickSpy-' + count,
+            path: clickPath,
+            onEvent: (payload: { input: { button: number } }) => {
+              if (payload.input.button !== undefined) {
+                this.handleOrientedBoxInteraction(node, component, this.sdk.Scene.InteractionType.CLICK);
+              }
+            },
+          };
+          this.scene.sceneObject.spyOnEvent(clickSpy);
+          const hoverPath = this.scene.sceneObject.addEventPath(box, this.sdk.Scene.InteractionType.HOVER);
+          const hoverSpy = {
+            id: 'hoverSpy-' + count,
+            path: hoverPath,
+            onEvent: (payload: { hover: boolean }) => {
+              this.cameraInput.inputs.suppressClick = !payload.hover;
+            },
+          };
+          this.scene.sceneObject.spyOnEvent(hoverSpy);
           box.inputs.color = UnselectedColor;
           box.inputs.opacity = UnselectedOpacity;
+          // Increment count for unique spy names
+          count++;
         }
       }
-
       if (slot && model) {
         slots.push({
           node: node,
           slotComponent: slot,
           modelComponent: model,
           boxComponent: box,
-        })
+        });
       }
     };
 
     this.slots = slots;
     await this.scene.load('AAWs9eZ9ip6', findSlots);
-
-    console.log(this.scene);
-    console.log(this.sdk);
   }
 
   private handleListSelection(item: ItemDesc) {
@@ -139,20 +145,31 @@ export class Main extends Component<Props, State> {
     if (!slotNode) {
       return;
     }
-    slotNode.slotComponent.inputs. model = item.url;
-    slotNode.modelComponent.inputs.localPosition.x = item.position.x;
-    slotNode.modelComponent.inputs.localPosition.y = item.position.y;
-    slotNode.modelComponent.inputs.localPosition.z = item.position.z;
-    slotNode.modelComponent.inputs.localRotation.x = item.rotation.x;
-    slotNode.modelComponent.inputs.localRotation.y = item.rotation.y;
-    slotNode.modelComponent.inputs.localRotation.z = item.rotation.z;
-    slotNode.modelComponent.inputs.localScale.x = item.scale.x;
-    slotNode.modelComponent.inputs.localScale.y = item.scale.y;
-    slotNode.modelComponent.inputs.localScale.z = item.scale.z;
-  }
 
-  private handleOrientedBoxInteraction(node: ISceneNode, component: SceneComponent, interactionType: ComponentInteractionType) {
-    if (interactionType === ComponentInteractionType.CLICK) {
+    slotNode.slotComponent.inputs.model = item.url;
+    let inputs = slotNode.modelComponent.inputs as ModelComponentInputs;
+    inputs.localPosition = {
+      x: item.position.x,
+      y: item.position.y,
+      z: item.position.z,
+    };
+    inputs.localRotation = {
+      x: item.rotation.x,
+      y: item.rotation.y,
+      z: item.rotation.z,
+    };
+    inputs.localScale = {
+      x: item.scale.x,
+      y: item.scale.y,
+      z: item.scale.z,
+    };
+  }
+  private handleOrientedBoxInteraction(
+    node: MpSdk.Scene.INode,
+    component: MpSdk.Scene.IComponent,
+    interactionType: MpSdk.Scene.InteractionType
+  ) {
+    if (interactionType === this.sdk.Scene.InteractionType.CLICK) {
       // select this node
       for (const slot of this.slots) {
         if (slot.boxComponent === component) {
@@ -162,18 +179,15 @@ export class Main extends Component<Props, State> {
             lastSlotNode.boxComponent.inputs.opacity = UnselectedOpacity;
             lastSlotNode.boxComponent.inputs.lineOpacity = UnselectedLineOpacity;
           }
-
           if (lastSlotNode === slot) {
             this.cameraInput.inputs.focus = null;
-
             this.setState({
               slotNode: null,
             });
           } else {
             this.setState({
               slotNode: slot,
-            })
-
+            });
             slot.boxComponent.inputs.color = SelectedColor;
             slot.boxComponent.inputs.opacity = SelectedOpacity;
             slot.boxComponent.inputs.lineOpacity = SelectedLineOpacity;
@@ -199,35 +213,49 @@ export class Main extends Component<Props, State> {
 
     return (
       <div className='main'>
-        <ItemList items={filteredItems} onSelected={this.handleListSelection}></ItemList>
+        <ItemList
+          items={filteredItems}
+          onSelected={this.handleListSelection}
+        ></ItemList>
         <Frame src={this.src}></Frame>
       </div>
     );
   }
 
-  async createCameraControl(theSdk: any) {
-    const cameraNode = await theSdk.Scene.createNode();
-    const cameraPose = await theSdk.Camera.getPose();
+  async createCameraControl() {
+    [this.sceneObject] = await this.sdk.Scene.createObjects(1);
+    const cameraNode = this.sceneObject.addNode();
+    const cameraPose = await this.sdk.Camera.pose.waitUntil(pose => !!pose);
     this.cameraInput = cameraNode.addComponent(cameraInputType);
     // convert sdk pose to THREE.js objects
     this.cameraInput.inputs.startPose = {
-      position: new Vector3(cameraPose.position.x, cameraPose.position.y, cameraPose.position.z),
-      quaternion: new Quaternion().setFromEuler(new Euler(
-        cameraPose.rotation.x * Math.PI / 180,
-        cameraPose.rotation.y * Math.PI / 180,
-        (cameraPose.rotation.z || 0) * Math.PI / 180,
-        'YXZ')),
+      position: new Vector3(
+        cameraPose.position.x,
+        cameraPose.position.y,
+        cameraPose.position.z
+      ),
+      quaternion: new Quaternion().setFromEuler(
+        new Euler(
+          cameraPose.rotation.x * (Math.PI / 180),
+          cameraPose.rotation.y * (Math.PI / 180),
+          0, // No Z value on cameraPose
+          'YXZ'
+        )
+      ),
       projection: new Matrix4().fromArray(cameraPose.projection).transpose(),
     };
     const cameraControl = cameraNode.addComponent('mp.camera');
-    cameraControl.bind('camera', this.cameraInput, 'camera');
+
+    const inputPath = this.sceneObject.addInputPath(cameraControl, 'camera');
+    const outputPath = this.sceneObject.addOutputPath(this.cameraInput, 'camera');
+    inputPath.bind(outputPath);
 
     cameraNode.start();
   }
 }
 
 // from cwf/modules/browser.ts
-export const objectFromQuery = (url?: string): {[key: string]: string} => {
+export const objectFromQuery = (url?: string): { [key: string]: string } => {
   const regex = /[#&?]([^=]+)=([^#&?]+)/g;
   url = url || window.location.href;
   const object: { [param: string]: string } = {};

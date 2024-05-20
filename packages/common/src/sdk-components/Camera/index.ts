@@ -1,12 +1,20 @@
-import { SceneComponent, ComponentOutput, DragBeginEvent, DragEvent, KeyEvent, KeyState, ScrollEvent } from "../../SceneComponent";
-import { Vector3, Quaternion, Camera, Matrix4 } from "three";
-import { CameraInputMap, Keys, HasControls } from "./InputMap";
-import { CameraRig } from "./CameraRig";
-import { ICameraController } from "./ICameraController";
-import { ControlMode } from "./ControlMode";
-import { FreeControls } from "./FreeControls";
-import { FlightControls } from "./FlightControls";
-import { Axis } from "./Axis";
+import {
+  SceneComponent,
+  ComponentOutput,
+  DragBeginEvent,
+  DragEvent,
+  KeyEvent,
+  KeyState,
+  ScrollEvent,
+} from '../../SceneComponent';
+import { Vector3, Quaternion, Camera, Matrix4 } from 'three';
+import { CameraInputMap, Keys, HasControls } from './InputMap';
+import { CameraRig } from './CameraRig';
+import { ICameraController } from './ICameraController';
+import { ControlMode } from './ControlMode';
+import { FreeControls } from './FreeControls';
+import { FlightControls } from './FlightControls';
+import { Axis } from './Axis';
 
 type CameraPose = {
   position: Vector3;
@@ -24,14 +32,14 @@ export enum CameraInputEvent {
   DragEnd = 'DRAG_END',
   Key = 'KEY',
   Scroll = 'SCROLL',
-};
+}
 
 type Events = {
-  [CameraInputEvent.DragBegin]: boolean,
-  [CameraInputEvent.Drag]: boolean,
-  [CameraInputEvent.DragEnd]: boolean,
-  [CameraInputEvent.Key]: boolean,
-  [CameraInputEvent.Scroll]: boolean,
+  [CameraInputEvent.DragBegin]: boolean;
+  [CameraInputEvent.Drag]: boolean;
+  [CameraInputEvent.DragEnd]: boolean;
+  [CameraInputEvent.Key]: boolean;
+  [CameraInputEvent.Scroll]: boolean;
 };
 
 class CameraInput extends SceneComponent {
@@ -58,7 +66,7 @@ class CameraInput extends SceneComponent {
     [CameraInputEvent.Key]: true,
     [CameraInputEvent.Scroll]: true,
   };
-  
+
   constructor() {
     super();
     class Controls implements HasControls {
@@ -68,20 +76,23 @@ class CameraInput extends SceneComponent {
       }
     }
 
-    this.controlMap = new CameraInputMap({
-      [Keys.W]:     [Axis.Z, 'accelerate',       -1],
-      [Keys.A]:     [Axis.X, 'accelerate',       -1],
-      [Keys.S]:     [Axis.Z, 'accelerate',        1],
-      [Keys.D]:     [Axis.X, 'accelerate',        1],
-      [Keys.SPACE]: [Axis.Y, 'accelerate',        1],
-      [Keys.SHIFT]: [Axis.Y, 'accelerate',       -1],
-      [Keys.LEFT]:  [Axis.Y, 'accelerateAround',  1],
-      [Keys.RIGHT]: [Axis.Y, 'accelerateAround', -1],
-      [Keys.UP]:    [Axis.X, 'accelerateAround',  1],
-      [Keys.DOWN]:  [Axis.X, 'accelerateAround', -1],
-      [Keys.Q]:     [Axis.Z, 'accelerateAround',  1],
-      [Keys.E]:     [Axis.Z, 'accelerateAround', -1],
-    }, new Controls(this));
+    this.controlMap = new CameraInputMap(
+      {
+        [Keys.W]: [Axis.Z, 'accelerate', -1],
+        [Keys.A]: [Axis.X, 'accelerate', -1],
+        [Keys.S]: [Axis.Z, 'accelerate', 1],
+        [Keys.D]: [Axis.X, 'accelerate', 1],
+        [Keys.SPACE]: [Axis.Y, 'accelerate', 1],
+        [Keys.SHIFT]: [Axis.Y, 'accelerate', -1],
+        [Keys.LEFT]: [Axis.Y, 'accelerateAround', 1],
+        [Keys.RIGHT]: [Axis.Y, 'accelerateAround', -1],
+        [Keys.UP]: [Axis.X, 'accelerateAround', 1],
+        [Keys.DOWN]: [Axis.X, 'accelerateAround', -1],
+        [Keys.Q]: [Axis.Z, 'accelerateAround', 1],
+        [Keys.E]: [Axis.Z, 'accelerateAround', -1],
+      },
+      new Controls(this)
+    );
   }
 
   onInit() {
@@ -114,7 +125,7 @@ class CameraInput extends SceneComponent {
   }
 
   onEvent(eventType: string, eventData: unknown) {
-    switch(eventType) {
+    switch (eventType) {
       case CameraInputEvent.DragBegin:
         {
           const event = eventData as DragBeginEvent;
@@ -136,9 +147,8 @@ class CameraInput extends SceneComponent {
         {
           const event = eventData as KeyEvent;
           if (event.state === KeyState.DOWN) {
-            this.controlMap.onKeyDown(event.key);  
-          }
-          else {
+            this.controlMap.onKeyDown(event.key);
+          } else {
             this.controlMap.onKeyUp(event.key);
           }
         }
@@ -163,7 +173,7 @@ class CameraInput extends SceneComponent {
       this.cameraRig.clearFocus();
       this.activeControls = this.controls[ControlMode.FREE];
     } else {
-      this.cameraRig.setFocus(this.inputs.focus)
+      this.cameraRig.setFocus(this.inputs.focus);
       this.activeControls = this.controls[ControlMode.FLIGHT];
     }
   }

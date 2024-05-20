@@ -1,6 +1,6 @@
 {
   "name": "vs-app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./src/index.tsx",
   "dependencies": {
     "@mui/material": "^5.8.4",

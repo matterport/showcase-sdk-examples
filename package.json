@@ -1,6 +1,6 @@
 {
   "name": "sdk_examples",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "devDependencies": {
     "lerna": "^5.1.3",
@@ -17,7 +17,6 @@
     "source-map-loader": "^4.0.0",
     "css-loader": "^6.7.1",
     "style-loader": "^3.3.1",
-
     "three": "^0.151.3",
     "@types/three": "^0.151.0",
     "react": "^18.0.0",
@@ -31,23 +30,24 @@
     "clean-install": "yarn clean ; yarn install ; yarn install-bundle ; yarn bootstrap",
     "build-all-dev": "lerna run build-dev",
     "build-all-prod": "lerna run build-prod",
-
     "inspector": "lerna run develop --scope=inspector --stream",
     "vs-app": "lerna run develop --scope=vs-app --stream",
     "easter": "lerna run develop --scope=easter --stream",
     "rc-app": "lerna run develop --scope=rc-app --stream",
     "embed-examples": "lerna run develop --scope=embed-examples --stream",
     "training-tags-demo": "lerna run develop --scope=training-tags-demo --stream",
-
     "fetch-bundle": "cross-var curl https://static.matterport.com/showcase-sdk/bundle/$npm_package_config_bundle_version/showcase-bundle.zip -o bundle.zip",
     "expand-bundle": "yarn decompress bundle.zip --out-dir=./packages/bundle",
     "install-bundle": "yarn fetch-bundle && yarn expand-bundle",
-    "test": "lerna run test --stream"
+    "test": "lerna run test --stream",
+    "fetch-types": "cross-var curl https://static.matterport.com/showcase-sdk/types/$npm_package_config_bundle_version/sdk.d.ts -o embedtypes/sdk.d.ts",
+    "postinstall": "yarn fetch-types"
   },
   "workspaces": [
     "packages/*"
   ],
   "config": {
-    "bundle_version": "24.2.1_webgl-99-g397d2e031f"
+    "bundle_version": "24.4.3_webgl-60-g22e9112908",
+    "embed_version": "24.5.1_webgl-89-g74a0f01508"
   }
 }

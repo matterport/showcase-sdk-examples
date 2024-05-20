@@ -19,7 +19,7 @@ export class RemoteSimulator {
   private time: RemoteTime;
   private inTransition: boolean = false;
   private inRotation: boolean = false;
-  private lastFrame: Frame|null = null;
+  private lastFrame: Frame | null = null;
 
   constructor(private photonClient: PhotonClient, private applicationKey: string) {
     this.onEnterIdle = this.onEnterIdle.bind(this);
@@ -36,7 +36,7 @@ export class RemoteSimulator {
       this.onExitSimulating
     );
     this.fsm.start();
-    this.time = new RemoteTime(this.photonClient)
+    this.time = new RemoteTime(this.photonClient);
   }
 
   /**
@@ -80,7 +80,7 @@ export class RemoteSimulator {
   };
 
   private pushToEventLog = (event: Event) => {
-    this.eventLog.set(event.step, event)
+    this.eventLog.set(event.step, event);
   };
 
   private onEnterSimulating = async () => {
@@ -160,8 +160,7 @@ export class RemoteSimulator {
       this.inTransition = true;
       this.sdk.Sweep.moveTo(currentEvent.args[1], {
         transition: this.sdk.Sweep.Transition.FLY,
-      })
-      .finally(() => {
+      }).finally(() => {
         this.inTransition = false;
       });
     }
@@ -169,7 +168,6 @@ export class RemoteSimulator {
     // Apply a camera rotation or sweep update if either is different from the frame log at the current step.
     const currentFrame = this.frameLog.get(currentStep) || this.lastFrame;
     if (currentFrame && this.cameraPose) {
-
       // Rotation update
       const diffX = Math.abs(this.cameraPose.rotation.x - currentFrame.pose.rotation.x);
       const diffY = Math.abs(this.cameraPose.rotation.y - currentFrame.pose.rotation.y);
@@ -179,8 +177,7 @@ export class RemoteSimulator {
         this.sdk.Camera.setRotation({
           x: currentFrame.pose.rotation.x,
           y: currentFrame.pose.rotation.y,
-        })
-        .finally(() => {
+        }).finally(() => {
           this.inRotation = false;
         });
       }
@@ -192,8 +189,7 @@ export class RemoteSimulator {
           this.sdk.Sweep.moveTo(currentFrame.pose.sweep, {
             transition: this.sdk.Sweep.Transition.INSTANT,
             transitionTime: 0.01,
-          })
-          .finally(() => {
+          }).finally(() => {
             this.inTransition = false;
           });
         }

@@ -1,4 +1,3 @@
-
 export const millisecondsPerStep = 15;
 export const fixedDelay = 200;
 export const sendInterval = 2000;
@@ -15,4 +14,4 @@ export type StepPayload = {
   type: string;
   time: number;
   step: number;
-}
+};

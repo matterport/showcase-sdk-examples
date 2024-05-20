@@ -1,6 +1,6 @@
-import { CameraRig } from "./CameraRig";
-import { Controls } from "./ControlBase";
-import { Vector3, Euler, Quaternion } from "three";
+import { CameraRig } from './CameraRig';
+import { Controls } from './ControlBase';
+import { Vector3, Euler, Quaternion } from 'three';
 
 export class FreeControls extends Controls {
   private localVelocity = new Vector3();
@@ -22,7 +22,7 @@ export class FreeControls extends Controls {
     this.cameraRig.quaternion.multiply(this.localOrientation);
 
     // remove roll
-    const euler = new Euler(0,0,0,'YXZ').setFromQuaternion(this.cameraRig.quaternion);
+    const euler = new Euler(0, 0, 0, 'YXZ').setFromQuaternion(this.cameraRig.quaternion);
     euler.z = 0;
     this.cameraRig.quaternion.setFromEuler(euler);
   }

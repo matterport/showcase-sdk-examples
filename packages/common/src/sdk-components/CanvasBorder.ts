@@ -1,7 +1,7 @@
 import { SceneComponent, ComponentOutput, Size, IPainter2d } from '@mp/common';
 
 type Inputs = {
-  position: { x: number, y: number };
+  position: { x: number; y: number };
   size: Size;
   radius: number;
 };
@@ -45,7 +45,7 @@ class CanvasBorder extends SceneComponent implements IPainter2d {
     context2d.lineTo(r - radius, y);
     context2d.quadraticCurveTo(r, y, r, y + radius);
     context2d.lineTo(r, y + this.inputs.size.h - radius);
-    context2d.quadraticCurveTo(r, b, r-radius, b);
+    context2d.quadraticCurveTo(r, b, r - radius, b);
     context2d.lineTo(x + radius, b);
     context2d.quadraticCurveTo(x, b, x, b - radius);
     context2d.lineTo(x, y + radius);

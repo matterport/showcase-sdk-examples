@@ -11,7 +11,6 @@ export interface ISceneConfig {
   sdk: any;
 }
 
-
 export const GameStateOnChanged = 'onchanged';
 
 export interface IGameState {

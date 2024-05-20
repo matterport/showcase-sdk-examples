@@ -6,7 +6,6 @@ type Outputs = {
   painter: IPainter2d | null;
 } & ComponentOutput;
 
-
 class MjpegPlayer extends SceneComponent implements IPainter2d {
   private image: HTMLImageElement | null = null;
   private time: number = 0;
@@ -48,6 +47,6 @@ class MjpegPlayer extends SceneComponent implements IPainter2d {
 }
 
 export const mjpegPlayerType = 'mp.mjpegPlayer';
-export const makeMjpegPlayer = function() {
+export const makeMjpegPlayer = function () {
   return new MjpegPlayer();
-}
+};

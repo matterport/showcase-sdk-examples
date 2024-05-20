@@ -1,7 +1,7 @@
 import { SceneComponent, ComponentInteractionType } from '../SceneComponent';
 import { Texture, Mesh, MeshBasicMaterial, Object3D } from 'three';
 
-export type Size = { w: number; h: number; };
+export type Size = { w: number; h: number };
 
 type Inputs = {
   texture: Texture | null;
@@ -12,9 +12,9 @@ type Inputs = {
   polygonOffset: boolean;
   polygonOffsetFactor: number;
   polygonOffsetUnits: number;
-  localScale: { x: number; y: number; z: number; };
-  localPosition: { x: number; y: number; z: number; };
-}
+  localScale: { x: number; y: number; z: number };
+  localPosition: { x: number; y: number; z: number };
+};
 
 export class PlaneRenderer extends SceneComponent implements IPlaneRenderer {
   private mesh: Mesh;
@@ -31,7 +31,7 @@ export class PlaneRenderer extends SceneComponent implements IPlaneRenderer {
     polygonOffsetUnits: 0,
     localScale: { x: 1, y: 1, z: 1 },
     localPosition: { x: 0, y: 0, z: 0 },
-  }
+  };
 
   events = {
     [ComponentInteractionType.CLICK]: true,
@@ -51,8 +51,13 @@ export class PlaneRenderer extends SceneComponent implements IPlaneRenderer {
         polygonOffset: this.inputs.polygonOffset,
         polygonOffsetFactor: this.inputs.polygonOffsetFactor,
         polygonOffsetUnits: this.inputs.polygonOffsetUnits,
-      }));
-    this.mesh.scale.set(this.inputs.localScale.x, this.inputs.localScale.y / this.inputs.aspect, this.inputs.localScale.z);
+      })
+    );
+    this.mesh.scale.set(
+      this.inputs.localScale.x,
+      this.inputs.localScale.y / this.inputs.aspect,
+      this.inputs.localScale.z
+    );
     this.mesh.position.set(this.inputs.localPosition.x, this.inputs.localPosition.y, this.inputs.localPosition.z);
     this.mesh.updateMatrixWorld();
     this.pivotNode.add(this.mesh);
@@ -87,7 +92,11 @@ export class PlaneRenderer extends SceneComponent implements IPlaneRenderer {
       material.polygonOffsetUnits = this.inputs.polygonOffsetUnits;
     }
 
-    this.mesh.scale.set(this.inputs.localScale.x, this.inputs.localScale.y / this.inputs.aspect, this.inputs.localScale.z);
+    this.mesh.scale.set(
+      this.inputs.localScale.x,
+      this.inputs.localScale.y / this.inputs.aspect,
+      this.inputs.localScale.z
+    );
     this.mesh.position.set(this.inputs.localPosition.x, this.inputs.localPosition.y, this.inputs.localPosition.z);
   }
 
@@ -98,7 +107,6 @@ export class PlaneRenderer extends SceneComponent implements IPlaneRenderer {
     (this.mesh.material as MeshBasicMaterial).dispose();
     this.mesh.geometry.dispose();
   }
-
 }
 
 export interface IPlaneRenderer extends SceneComponent {

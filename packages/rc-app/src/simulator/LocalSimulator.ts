@@ -14,7 +14,7 @@ const sendEvent = (photonClient: PhotonClient, type: string, step: number, args:
 };
 
 const frameFromPose = (step: number, pose: CameraPose): Frame => {
-  return  {
+  return {
     step,
     pose: {
       position: {
@@ -30,7 +30,7 @@ const frameFromPose = (step: number, pose: CameraPose): Frame => {
       sweep: pose.sweep,
     },
   };
-}
+};
 
 export class LocalSimulator {
   private fsm: FSMInterpreter = null;
@@ -40,7 +40,7 @@ export class LocalSimulator {
   private cameraPoseSub: any = null;
   private tickIntervalId: number = null;
   private time: LocalTime;
-  private tmp: IVector3 = { x: 0, y: 0, z: 0};
+  private tmp: IVector3 = { x: 0, y: 0, z: 0 };
 
   constructor(private photonClient: PhotonClient, private applicationKey: string) {
     this.onTick = this.onTick.bind(this);
@@ -84,7 +84,7 @@ export class LocalSimulator {
 
     appSub.cancel();
     this.fsm.send('SDK_READY');
-  }
+  };
 
   private onEnterSimulating = async () => {
     this.time.start();
@@ -92,12 +92,18 @@ export class LocalSimulator {
       this.cameraPose = pose;
     });
 
-    this.sdk.on(this.sdk.Sweep.Event.EXIT, (...args: any) => sendEvent(this.photonClient, this.sdk.Sweep.Event.EXIT, this.time.currentStep(), args));
-    this.sdk.on(this.sdk.Mode.Event.CHANGE_START, (...args: any) => sendEvent(this.photonClient, this.sdk.Mode.Event.CHANGE_START, this.time.currentStep(), args));
-    this.sdk.on(this.sdk.Mode.Event.CHANGE_END, (...args: any) => sendEvent(this.photonClient, this.sdk.Mode.Event.CHANGE_END, this.time.currentStep(), args));
+    this.sdk.on(this.sdk.Sweep.Event.EXIT, (...args: any) =>
+      sendEvent(this.photonClient, this.sdk.Sweep.Event.EXIT, this.time.currentStep(), args)
+    );
+    this.sdk.on(this.sdk.Mode.Event.CHANGE_START, (...args: any) =>
+      sendEvent(this.photonClient, this.sdk.Mode.Event.CHANGE_START, this.time.currentStep(), args)
+    );
+    this.sdk.on(this.sdk.Mode.Event.CHANGE_END, (...args: any) =>
+      sendEvent(this.photonClient, this.sdk.Mode.Event.CHANGE_END, this.time.currentStep(), args)
+    );
 
     this.tickIntervalId = window.setInterval(this.onTick, 15);
-  }
+  };
 
   private onExitSimulating = async () => {
     clearInterval(this.tickIntervalId);
@@ -109,7 +115,7 @@ export class LocalSimulator {
     }
 
     this.time.stop();
-  }
+  };
 
   private onTick() {
     const currentStep = this.time.currentStep();
@@ -129,8 +135,9 @@ export class LocalSimulator {
       return;
     }
 
-    const rotChanged =  Math.abs(this.cameraPose.rotation.x - lastFrame.pose.rotation.x) > 0.01 ||
-                        Math.abs(this.cameraPose.rotation.y - lastFrame.pose.rotation.y);
+    const rotChanged =
+      Math.abs(this.cameraPose.rotation.x - lastFrame.pose.rotation.x) > 0.01 ||
+      Math.abs(this.cameraPose.rotation.y - lastFrame.pose.rotation.y);
     this.tmp.x = this.cameraPose.position.x - lastFrame.pose.position.x;
     this.tmp.y = this.cameraPose.position.y - lastFrame.pose.position.y;
     this.tmp.z = this.cameraPose.position.z - lastFrame.pose.position.z;

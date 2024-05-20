@@ -24,7 +24,7 @@ const context: IContext = {
   sdkHost: hostSimulator,
 };
 
-const container = document.getElementById("content");
+const container = document.getElementById('content');
 const root = ReactDOMClient.createRoot(container);
 root.render(
   <ClientContext.Provider value={context}>

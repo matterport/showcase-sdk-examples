@@ -1,4 +1,4 @@
-import { Object3D, Camera, Vector3, Quaternion } from "three";
+import { Object3D, Camera, Vector3, Quaternion } from 'three';
 
 const WORLD_UP = new Vector3(0, 1, 0);
 /**
@@ -64,5 +64,4 @@ export class CameraRig extends Object3D {
     super.updateMatrixWorld();
     this.camera.updateMatrixWorld();
   }
-
 }

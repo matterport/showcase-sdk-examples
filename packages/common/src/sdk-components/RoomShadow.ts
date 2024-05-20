@@ -1,7 +1,6 @@
 import { SceneComponent } from '../SceneComponent';
 
 class RoomShadow extends SceneComponent {
-
   onInit() {
     const THREE = this.context.three;
     const node = new THREE.Object3D();

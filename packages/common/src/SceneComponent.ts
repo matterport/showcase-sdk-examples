@@ -40,7 +40,11 @@ abstract class SceneComponentPrivate {
    * Binds `this[prop]` to the output of `src[srcProp]`.
    * When the value of `src[srcProp]` changes, the value is propagated and sets `this[prop]` to the same value automatically.
    */
-  declare bind: (prop: string, src: SceneComponent['outputs' | 'inputs'], srcProp: keyof SceneComponent['outputs' | 'inputs']) => void;
+  declare bind: (
+    prop: string,
+    src: SceneComponent['outputs' | 'inputs'],
+    srcProp: keyof SceneComponent['outputs' | 'inputs']
+  ) => void;
 
   /**
    * @reserved
@@ -102,9 +106,9 @@ export abstract class SceneComponent extends SceneComponentPrivate {
   events: Record<string, boolean>;
 
   /**
-  * @reserved
-  * A dictionary of events that will be emitted by this component.
-  */
+   * @reserved
+   * A dictionary of events that will be emitted by this component.
+   */
   emits?: Record<string, boolean>;
 
   /**
@@ -198,7 +202,7 @@ abstract class ComponentOutputReserved {
 
 // Hack around the type system to get a cleaner interface around `ComponentOutput`
 interface ComponentOut extends Dict {}
-class ComponentOut extends ComponentOutputReserved  {}
+class ComponentOut extends ComponentOutputReserved {}
 
 /**
  * A general-use bag of properties.
@@ -313,18 +317,18 @@ export interface DragEndEvent extends DragEvent {
 }
 
 export interface PointerMoveEvent {
-    readonly id: number;
-    readonly position: IVector2;
-    readonly buttons: PointerButtonMask;
-    readonly device: PointerDevice;
+  readonly id: number;
+  readonly position: IVector2;
+  readonly buttons: PointerButtonMask;
+  readonly device: PointerDevice;
 }
 
 export interface PointerButtonEvent {
-    readonly id: number;
-    readonly position: IVector2;
-    readonly button: PointerButton;
-    readonly down: boolean;
-    readonly device: PointerDevice;
+  readonly id: number;
+  readonly position: IVector2;
+  readonly button: PointerButton;
+  readonly down: boolean;
+  readonly device: PointerDevice;
 }
 
 export interface ScrollEvent {
@@ -338,7 +342,7 @@ export enum KeyState {
   UP,
 }
 
-export enum Keys{
+export enum Keys {
   ESCAPE = 27,
   ZERO = 48,
   ONE = 49,
@@ -398,9 +402,9 @@ export interface KeyEvent {
   key: Keys;
   state: KeyState;
   modifiers: {
-    altKey: boolean,
-    shiftKey: boolean,
-    ctrlKey: boolean
+    altKey: boolean;
+    shiftKey: boolean;
+    ctrlKey: boolean;
   };
 }
 

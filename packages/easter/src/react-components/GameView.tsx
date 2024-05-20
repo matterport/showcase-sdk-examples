@@ -6,7 +6,7 @@ import { Types, Game, Scene, GameObjects } from 'phaser';
 import { SceneIds } from '../scenes/SceneIds';
 
 interface Props {
-  config: ISceneConfig,
+  config: ISceneConfig;
 }
 
 interface State {
@@ -16,8 +16,7 @@ interface State {
   timeString: string;
 }
 
-
-const secondsToString = function(seconds: number) {
+const secondsToString = function (seconds: number) {
   const date = new Date(null);
   date.setSeconds(seconds);
   return date.toISOString().substr(14, 5);
@@ -41,12 +40,12 @@ export class MiniScene extends Scene {
     this.load.setBaseURL();
     this.load.spritesheet('rabbit', 'assets/capture_sprite.png', {
       frameWidth: 400,
-      frameHeight: 400
+      frameHeight: 400,
     });
   }
 
   create(): void {
-    this.rabbit = this.add.sprite(this.game.canvas.clientWidth/2, this.game.canvas.clientHeight/2, 'rabbit');
+    this.rabbit = this.add.sprite(this.game.canvas.clientWidth / 2, this.game.canvas.clientHeight / 2, 'rabbit');
     const scale = Math.max(this.game.canvas.clientWidth, this.game.canvas.clientHeight) / 400;
     this.rabbit.scale = scale * 1.55;
   }
@@ -69,7 +68,7 @@ export class MiniScene extends Scene {
 }
 
 export class GameView extends Component<Props, State> {
-  private interval: number|null = null;
+  private interval: number | null = null;
   private canvasRef: React.RefObject<HTMLCanvasElement>;
 
   constructor(props: Props) {
@@ -82,7 +81,7 @@ export class GameView extends Component<Props, State> {
       total: props.config.gameState.total.value,
       time: 0,
       timeString: secondsToString(0),
-    }
+    };
     this.onTotalChanged = this.onTotalChanged.bind(this);
     this.onCapturedChanged = this.onCapturedChanged.bind(this);
     this.onTimeElapsed = this.onTimeElapsed.bind(this);
@@ -112,14 +111,12 @@ export class GameView extends Component<Props, State> {
     game.scene.start(SceneIds.Game, this.props.config);
   }
 
-  onCaptureComplete() {
-
-  }
+  onCaptureComplete() {}
 
   onTimeElapsed() {
     const nextTime = this.state.time + 1;
 
-    this.setState( {
+    this.setState({
       time: nextTime,
       timeString: secondsToString(nextTime),
     });
@@ -160,10 +157,7 @@ export class GameView extends Component<Props, State> {
     return (
       <div className='overlay-container no-pointer-events'>
         <div id='game-overlay'>
-          <canvas
-            className='basket'
-            ref={this.canvasRef}
-          />
+          <canvas className='basket' ref={this.canvasRef} />
           <div className='group-container'>
             <TextView className='timer' text={`Time: ${timeString}`}></TextView>
             <div className='score-container'>

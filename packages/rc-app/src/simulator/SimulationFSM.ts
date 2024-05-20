@@ -1,7 +1,18 @@
-import { AnyEventObject, BaseActionObject, createMachine, interpret, Interpreter, ResolveTypegenMeta, TypegenDisabled } from 'xstate';
+import {
+  AnyEventObject,
+  BaseActionObject,
+  createMachine,
+  interpret,
+  Interpreter,
+  ResolveTypegenMeta,
+  TypegenDisabled,
+} from 'xstate';
 
-export type FSMInterpreter = Interpreter<unknown, any, AnyEventObject,
-  { value: any; context: unknown; },
+export type FSMInterpreter = Interpreter<
+  unknown,
+  any,
+  AnyEventObject,
+  { value: any; context: unknown },
   ResolveTypegenMeta<TypegenDisabled, AnyEventObject, BaseActionObject, any>
 >;
 
@@ -18,7 +29,7 @@ export interface FSMSchema {
   };
 }
 
-export type FSMEvent = {type: 'START' } | { type: 'SDK_READY' } | { type: 'STOP' };
+export type FSMEvent = { type: 'START' } | { type: 'SDK_READY' } | { type: 'STOP' };
 
 type Callback = (context: unknown, event: FSMEvent) => Promise<void>;
 

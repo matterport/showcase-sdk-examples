@@ -7,7 +7,7 @@ class GameState implements IGameState {
   public debug: ObservableValue<boolean> = new ObservableValue(false);
 }
 
-export const MakeGameState = function(): IGameState {
+export const MakeGameState = function (): IGameState {
   const state = new GameState();
 
   const urlParams = new URLSearchParams(window.location.search);

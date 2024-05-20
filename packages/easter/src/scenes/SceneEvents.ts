@@ -1,4 +1,3 @@
-
 export enum SceneEvents {
   /**
    * Application state change events.
@@ -25,5 +24,5 @@ export enum SceneEvents {
   /**
    * Sent when the capture animation is complete
    */
-  CaptureComplete = 'CaptureComplete'
+  CaptureComplete = 'CaptureComplete',
 }

@@ -52,11 +52,12 @@ export class PhotonClient extends Photon.LoadBalancing.LoadBalancingClient {
   }
 
   // room list updates
-  public onRoomListUpdate(rooms: Photon.LoadBalancing.RoomInfo[],
+  public onRoomListUpdate(
+    rooms: Photon.LoadBalancing.RoomInfo[],
     roomsUpdated: Photon.LoadBalancing.RoomInfo[],
     roomsAdded: Photon.LoadBalancing.RoomInfo[],
-    roomsRemoved: Photon.LoadBalancing.RoomInfo[])
-  {
+    roomsRemoved: Photon.LoadBalancing.RoomInfo[]
+  ) {
     this.onRoomList(rooms);
   }
 

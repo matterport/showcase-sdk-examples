@@ -20,7 +20,7 @@ class HlsLoader extends SceneComponent {
   inputs: Inputs = {
     src: '',
     enabled: false,
-  }
+  };
 
   outputs = {
     video: null,
@@ -28,14 +28,13 @@ class HlsLoader extends SceneComponent {
   } as Outputs;
 
   onInit() {
-    this.outputs.aspect = 720/480;
+    this.outputs.aspect = 720 / 480;
     if (this.inputs.enabled) {
       this.setupStream();
     }
   }
 
   onInputsUpdated() {
-
     this.setupStream();
   }
 

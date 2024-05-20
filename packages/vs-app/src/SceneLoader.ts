@@ -1,11 +1,13 @@
-
 import scene from '../assets/vs-app.json';
-import { ISceneNode } from '@mp/common';
+import { MpSdk } from '@mp/bundle-sdk/sdk';
 
 export class SceneLoader {
-  private nodes: ISceneNode[] = [];
-
-  constructor(private sdk: any) {}
+  private nodes: MpSdk.Scene.INode[] = [];
+  private _sceneObject: MpSdk.Scene.IObject = null;
+  public get sceneObject() {
+    return this._sceneObject;
+  }
+  constructor(private sdk: MpSdk) {}
 
   /**
    * Load the scene for a given model.
@@ -13,7 +15,7 @@ export class SceneLoader {
    * @param sid sid of the model, used to lookup the scene.
    * @param callback an optional callback which is called once for scene node created.
    */
-  public async load(sid: string, callback: (node: ISceneNode) => void = null) {
+  public async load(sid: string, callback: (node: MpSdk.Scene.INode) => void = null) {
     const nodesToStop = this.nodes.splice(0);
     for (const node of nodesToStop) {
       node.stop();
@@ -24,22 +26,17 @@ export class SceneLoader {
       return;
     }
 
-    const sceneObject = await this.sdk.Scene.deserialize(JSON.stringify(scene));
-    const nodesToStart = [...sceneObject.nodeIterator()];
-
+    this._sceneObject = await this.sdk.Scene.deserialize(JSON.stringify(scene));
+    const nodesToStart = [...this.sceneObject.nodeIterator()];
     if (callback) {
       for (const node of nodesToStart) {
         callback(node);
       }
     }
-
-    for (const node of nodesToStart) {
-      node.start();
-      this.nodes.push(node);
-    }
+    this._sceneObject.start();
   }
 
-  public *nodeIterator(): IterableIterator<ISceneNode> {
+  public *nodeIterator(): IterableIterator<MpSdk.Scene.INode> {
     for (const node of this.nodes) {
       yield node;
     }

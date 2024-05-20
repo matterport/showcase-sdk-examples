@@ -25,20 +25,22 @@ class ScenePainterComponent extends SceneComponent {
       new THREE.BoxGeometry(1.0, 1.0, 1.0),
       new THREE.MeshBasicMaterial({
         color: 0x00ff00,
-      }));
+      })
+    );
     const cubeEdges = new THREE.LineSegments(
       new THREE.EdgesGeometry(new THREE.BoxGeometry(1.0, 1.0, 1.0)),
       new THREE.MeshBasicMaterial({
         color: 0x000000,
-      }));
-
+      })
+    );
 
     const orbiter = new THREE.Object3D();
     const orbitCube = new THREE.Mesh(
       new THREE.BoxGeometry(0.4, 0.4, 0.4),
       new THREE.MeshBasicMaterial({
         color: 0xff00ff,
-      }));
+      })
+    );
 
     this.cube = cube;
     this.orbiter = orbiter;
@@ -69,7 +71,7 @@ class ScenePainterComponent extends SceneComponent {
 }
 
 class ScenePainter implements IPainter3d {
-  constructor(private scene: Scene, private camera: Camera) { }
+  constructor(private scene: Scene, private camera: Camera) {}
 
   paint(renderer: WebGLRenderer): void {
     renderer.clear();

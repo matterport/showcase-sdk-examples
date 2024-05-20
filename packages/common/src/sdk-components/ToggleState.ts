@@ -17,11 +17,10 @@ type Events = {
   [Event.Toggle]: boolean;
 };
 
-
 class ToggleState extends SceneComponent {
   inputs: Inputs = {
     initialState: false,
-  }
+  };
 
   outputs = {
     state: false,

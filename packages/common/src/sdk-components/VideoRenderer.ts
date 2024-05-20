@@ -15,7 +15,7 @@ class VideoRenderer extends SceneComponent {
 
   inputs: Inputs = {
     src: null,
-  }
+  };
 
   outputs = {
     texture: null,

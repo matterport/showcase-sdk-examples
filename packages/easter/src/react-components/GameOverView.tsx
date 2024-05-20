@@ -3,9 +3,8 @@ import { ISceneConfig } from '../interfaces';
 import { shareWindow, ShareMedium, getShareUrls } from './urls';
 
 interface Props {
-  config: ISceneConfig,
+  config: ISceneConfig;
 }
-
 
 export class GameOverView extends Component<Props, {}> {
   private urlFieldRef: HTMLInputElement;
@@ -22,7 +21,7 @@ export class GameOverView extends Component<Props, {}> {
   }
 
   private onFacebookClicked() {
-     this.openShareWindow(ShareMedium.FACEBOOK);
+    this.openShareWindow(ShareMedium.FACEBOOK);
   }
 
   private onTwitterClicked() {
@@ -38,7 +37,7 @@ export class GameOverView extends Component<Props, {}> {
   }
 
   private onEmailClicked() {
-    this.openShareWindow(ShareMedium.MAIL)
+    this.openShareWindow(ShareMedium.MAIL);
   }
 
   private onCopy() {
@@ -61,7 +60,7 @@ export class GameOverView extends Component<Props, {}> {
     }
 
     window.open(shareUrl, '', windowProperties);
-  }
+  };
 
   render() {
     const url = window.location.href;
@@ -70,8 +69,12 @@ export class GameOverView extends Component<Props, {}> {
       <div className='overlay-container game-over'>
         <div className='text-wrapper'>
           <div className='title'>Congratulations, you found all the hidden bunnies!</div>
-          <div className='description'>Be sure to click and share this activity with your friends and help us reach our goal of $5,000 for United Way NYC! &nbsp;&nbsp;
-            <a href='https://matterport.com/blog/tumble-down-rabbit-hole-immersed-wonderland' target="_blank">Click here to learn more.</a>
+          <div className='description'>
+            Be sure to click and share this activity with your friends and help us reach our goal of $5,000 for United
+            Way NYC! &nbsp;&nbsp;
+            <a href='https://matterport.com/blog/tumble-down-rabbit-hole-immersed-wonderland' target='_blank'>
+              Click here to learn more.
+            </a>
           </div>
 
           <div className='link-item-container'>
@@ -108,9 +111,13 @@ export class GameOverView extends Component<Props, {}> {
               type='text'
               readOnly
               value={url}
-              ref={(ref) => {this.urlFieldRef = ref! as HTMLInputElement; }}
+              ref={(ref) => {
+                this.urlFieldRef = ref! as HTMLInputElement;
+              }}
             />
-            <button className='url-copy' onClick={this.onCopy}>COPY</button>
+            <button className='url-copy' onClick={this.onCopy}>
+              COPY
+            </button>
           </div>
         </div>
       </div>

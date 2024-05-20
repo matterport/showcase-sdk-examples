@@ -9,7 +9,7 @@ export interface IPainter2d {
 type Inputs = {
   painter: IPainter2d | null;
   textureRes: Size;
-}
+};
 
 type Outputs = {
   texture: Texture | null;
@@ -26,7 +26,7 @@ class CanvasRenderer extends SceneComponent {
   inputs: Inputs = {
     painter: null,
     textureRes: { w: 256, h: 256 },
-  }
+  };
 
   outputs = {
     texture: null,
@@ -49,8 +49,7 @@ class CanvasRenderer extends SceneComponent {
   }
 
   onInputsUpdated(oldInputs: Inputs) {
-    if (oldInputs.textureRes.w !== this.inputs.textureRes.w ||
-        oldInputs.textureRes.h !== this.inputs.textureRes.h) {
+    if (oldInputs.textureRes.w !== this.inputs.textureRes.w || oldInputs.textureRes.h !== this.inputs.textureRes.h) {
       this.resize(this.inputs.textureRes);
     }
 
@@ -81,10 +80,9 @@ class CanvasRenderer extends SceneComponent {
       this.outputs.texture.needsUpdate = true;
     }
   }
-
 }
 
-export interface ICanvasRenderer extends SceneComponent{
+export interface ICanvasRenderer extends SceneComponent {
   inputs: Inputs;
   outputs: Outputs;
 }

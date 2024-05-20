@@ -2,7 +2,7 @@ import { SceneEvents } from './SceneEvents';
 import { SceneIds } from './SceneIds';
 import { ISceneConfig } from '../interfaces';
 
-const transitionMap: {[scendId: string]: {[eventId: string]: string}} = {
+const transitionMap: { [scendId: string]: { [eventId: string]: string } } = {
   [SceneIds.Welcome]: {
     [SceneEvents.GoToTutorial]: SceneIds.Tutorial,
   },
@@ -18,7 +18,9 @@ const transitionMap: {[scendId: string]: {[eventId: string]: string}} = {
 function handleEvent(event: string, config: ISceneConfig) {
   let activeSceneKey: string = null;
   for (const scene of config.game.scene.scenes) {
-    if (typeof scene.sys.config == "string" ) { continue; }
+    if (typeof scene.sys.config == 'string') {
+      continue;
+    }
     if (config.game.scene.isActive(scene.sys.config.key)) {
       activeSceneKey = scene.sys.config.key;
       break;
@@ -31,16 +33,20 @@ function handleEvent(event: string, config: ISceneConfig) {
     config.game.scene.start(transitions[event], config);
     config.eventBus.emit(SceneEvents.SceneStart, {
       sceneId: transitions[event],
-    })
+    });
   }
 }
 
 export class SceneTransitions {
   constructor(private config: ISceneConfig) {
     for (const event in SceneEvents) {
-      this.config.eventBus.on(event, function() {
-        handleEvent(event, this.config);
-      }, this);
+      this.config.eventBus.on(
+        event,
+        function () {
+          handleEvent(event, this.config);
+        },
+        this
+      );
     }
   }
 }

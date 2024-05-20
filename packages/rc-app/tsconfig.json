@@ -14,7 +14,5 @@
     }
   },
   "include": ["./src/**/**/*", "lib/photon/Photon-Javascript_SDK.d.ts"],
-  "exclude": [
-    "**/__test__/*.test.ts"
-  ]
+  "exclude": ["**/__test__/*.test.ts"]
 }

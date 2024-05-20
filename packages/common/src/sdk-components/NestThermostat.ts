@@ -1,5 +1,15 @@
 import { SceneComponent, ComponentOutput } from '../SceneComponent';
-import { Object3D, AnimationMixer, AnimationAction, LoopOnce, AnimationClip, Mesh, Texture, MeshLambertMaterial, LineSegments } from 'three';
+import {
+  Object3D,
+  AnimationMixer,
+  AnimationAction,
+  LoopOnce,
+  AnimationClip,
+  Mesh,
+  Texture,
+  MeshLambertMaterial,
+  LineSegments,
+} from 'three';
 import { IPainter2d } from './CanvasRenderer';
 import { PlaneRenderer, Size } from './PlaneRenderer';
 
@@ -11,13 +21,12 @@ type Inputs = {
   loadingState: string;
   texture: Texture | null;
   updateInterval: number;
-}
+};
 
 type Outputs = {
   painter: IPainter2d | null;
   visible: boolean;
 } & ComponentOutput;
-
 
 class NestThermostat extends SceneComponent implements IPainter2d {
   private daeComponent: SceneComponent;
@@ -33,7 +42,7 @@ class NestThermostat extends SceneComponent implements IPainter2d {
     loadingState: 'Idle',
     texture: null,
     updateInterval: 1000,
-  }
+  };
 
   outputs = {
     painter: null,
@@ -53,8 +62,7 @@ class NestThermostat extends SceneComponent implements IPainter2d {
     for (const component of root.componentIterator()) {
       if (component.componentType === 'mp.daeLoader') {
         this.daeComponent = component;
-      }
-      else if (component.componentType === 'mp.planeRenderer') {
+      } else if (component.componentType === 'mp.planeRenderer') {
         planeRenderer = component as PlaneRenderer;
         planeRenderer.outputs.objectRoot.translateZ(0.05);
         planeRenderer.outputs.objectRoot.translateY(0.4);
@@ -62,16 +70,17 @@ class NestThermostat extends SceneComponent implements IPainter2d {
       }
     }
 
-
     this.outputs.painter = this;
 
     this.mixer = new THREE.AnimationMixer(planeRenderer.outputs.objectRoot);
 
     const tm = 0.2;
-    const positionTrack = new THREE.VectorKeyframeTrack('.scale', [0, tm], [
-      0, 0, 0,
-      0.5, 0.5, 0.5
-    ], THREE.InterpolateSmooth);
+    const positionTrack = new THREE.VectorKeyframeTrack(
+      '.scale',
+      [0, tm],
+      [0, 0, 0, 0.5, 0.5, 0.5],
+      THREE.InterpolateSmooth
+    );
     this.onEnterClip = new THREE.AnimationClip(null, tm, [positionTrack]);
   }
 
@@ -83,8 +92,7 @@ class NestThermostat extends SceneComponent implements IPainter2d {
         // we dont want line segments, track them and remove them.
         if (obj.type === 'LineSegments') {
           lines.push(obj as LineSegments);
-        }
-        else if (obj.type === 'Mesh') {
+        } else if (obj.type === 'Mesh') {
           this.mesh = obj as Mesh;
 
           const material = this.mesh.material as MeshLambertMaterial;
@@ -112,8 +120,7 @@ class NestThermostat extends SceneComponent implements IPainter2d {
         onEnterAction.loop = LoopOnce;
         onEnterAction.clampWhenFinished = true;
         onEnterAction.play();
-      }
-      else {
+      } else {
         this.outputs.visible = false;
       }
     }
@@ -142,20 +149,20 @@ class NestThermostat extends SceneComponent implements IPainter2d {
 
     context2d.fillStyle = 'white';
     context2d.font = '220px Arial';
-    context2d.fillText(`${this.temperature}`, x-115, y+75);
+    context2d.fillText(`${this.temperature}`, x - 115, y + 75);
   }
 
   onTick(delta: number) {
     this.currentTime += delta;
 
     if (this.mixer) {
-      this.mixer.update(delta/1000);
+      this.mixer.update(delta / 1000);
     }
 
     if (this.currentTime > this.nextUpdate) {
       this.nextUpdate += this.inputs.updateInterval;
 
-      this.temperature += (Math.random() * this.tempChangeRange);
+      this.temperature += Math.random() * this.tempChangeRange;
       this.temperature = Math.trunc(this.temperature);
 
       if (this.temperature > 99) {
@@ -173,6 +180,6 @@ class NestThermostat extends SceneComponent implements IPainter2d {
 }
 
 export const nestThermostatType = 'mp.nestThermostat';
-export const makeNestThermostat = function() {
+export const makeNestThermostat = function () {
   return new NestThermostat();
-}
+};

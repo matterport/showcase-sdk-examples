@@ -1,5 +1,5 @@
+import type { MpSdk } from 'embedtypes/sdk';
 import { clearMesssage, connect, setMessage } from '../common';
-import type { MpSdk } from '../common/sdk';
 import '../common/main.css';
 
 let tags: string[] | null = null;
@@ -11,7 +11,7 @@ const addTags = async (sdk: MpSdk) => {
   }
 
   sub = sdk.Sweep.data.subscribe({
-    onCollectionUpdated: async (collection: { [key: string]: any }) => {
+    onCollectionUpdated: async (collection) => {
       const tagInfos: any[] = Object.keys(collection).map((key: string) => {
         const sweep = collection[key];
         return {
@@ -40,9 +40,9 @@ const addTags = async (sdk: MpSdk) => {
   });
 };
 
-const removeTags = async (sdk: any) => {
+const removeTags = async (sdk: MpSdk) => {
   if (tags !== null) {
-    sdk.Tag.remove(tags);
+    sdk.Tag.remove(...tags);
     tags = null;
   }
 };
@@ -70,8 +70,8 @@ const main = async () => {
   sensor.addSource(source);
 
   sensor.readings.subscribe({
-    onCollectionUpdated: (sourceCollection: any) => {
-      const inRange: any[] = [];
+    onCollectionUpdated: (sourceCollection) => {
+      const inRange: unknown[] = [];
       for (const [source, reading] of sourceCollection) {
         if (reading.inRange) {
           const search = inRange.find((element) => {

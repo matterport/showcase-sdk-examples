@@ -78,12 +78,11 @@ export type Event = {
   args: any[];
 };
 
-
 export type Room = {
   name: string;
   sid: string;
-}
+};
 
 export type Actor = {
   id: number;
-}
+};

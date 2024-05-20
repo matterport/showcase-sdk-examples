@@ -1,20 +1,18 @@
-import { Dict } from "@mp/core";
-import { SceneComponent, ComponentInteractionType, ComponentOutput } from "@mp/common";
-import { Object3D, MeshBasicMaterial, SphereGeometry, Vector3, WebGLRenderTarget } from "three";
-import { Mesh } from "three";
-import { SceneEvents } from "../scenes/SceneEvents";
-import { Events } from "phaser";
+import { Dict } from '@mp/core';
+import { SceneComponent, ComponentInteractionType, ComponentOutput } from '@mp/common';
+import { Object3D, MeshBasicMaterial, SphereGeometry, Vector3, WebGLRenderTarget } from 'three';
+import { Mesh } from 'three';
+import { SceneEvents } from '../scenes/SceneEvents';
+import { Events } from 'phaser';
 
 interface Inputs {
-  size: number,
+  size: number;
   color: number;
   lineColor: number;
   hoverOpacity: number;
 }
 
-type Outputs = {
-
-} & ComponentOutput;
+type Outputs = {} & ComponentOutput;
 
 class BunnySelector extends SceneComponent {
   private static caughtMarker: WebGLRenderTarget;
@@ -22,14 +20,14 @@ class BunnySelector extends SceneComponent {
   private cameraDirty = true;
   private opacity = 0;
   private hoverOpacity = 0.75;
-  private root: Object3D|null = null;
-  private sphere: Mesh|null = null;
-  private checkPlane: Mesh|null = null;
+  private root: Object3D | null = null;
+  private sphere: Mesh | null = null;
+  private checkPlane: Mesh | null = null;
   private sphereWP = new Vector3();
   private markerVisible = false;
   private hovered = false;
   private caught = false;
-  private cameraSub: { cancel(): void }|null = null;
+  private cameraSub: { cancel(): void } | null = null;
   private hintActiveTime = 0;
   private static hintDuration = 3000;
 
@@ -82,10 +80,9 @@ class BunnySelector extends SceneComponent {
         planeMat.opacity = this.hoverOpacity;
         // if the bunny was captured, we don't need the "hint" alwasys on top
         this.setAlwaysOnTop(false);
-
       }
       if (eventType === ComponentInteractionType.HOVER) {
-        this.hovered = eventData.hover
+        this.hovered = eventData.hover;
       }
     }
   }
@@ -155,7 +152,8 @@ class BunnySelector extends SceneComponent {
         side: THREE.DoubleSide,
         depthTest: false,
         depthWrite: false,
-      }));
+      })
+    );
     this.checkPlane.position.z = this.inputs.size;
     this.sphere.renderOrder = 10;
     this.checkPlane.renderOrder = 11;
@@ -169,7 +167,6 @@ class BunnySelector extends SceneComponent {
     const renderContext2D = canvas.getContext('2d');
     canvas.width = renderTargetSize;
     canvas.height = renderTargetSize;
-
 
     renderContext2D.textAlign = 'center';
     renderContext2D.textBaseline = 'middle';
@@ -205,8 +202,8 @@ class BunnySelector extends SceneComponent {
 
 export const bunnySelectorSphereType = 'easter.bunnyselectorsphere';
 
-export const createBunnySelectorClosure = function(eventBus: Events.EventEmitter, sdk: any) {
-  return function() {
+export const createBunnySelectorClosure = function (eventBus: Events.EventEmitter, sdk: any) {
+  return function () {
     return new BunnySelector(eventBus, sdk);
   };
-}
+};

@@ -43,7 +43,6 @@ class ClockPainterComponent extends SceneComponent {
     this.outputs.painter = this.activePainter;
     this.notify('paint.ready');
   }
-
 }
 
 class DigitalClockPainter implements IPainter2d {
@@ -56,11 +55,11 @@ class DigitalClockPainter implements IPainter2d {
 
     const now = new Date();
     const hours = now.getHours();
-    const mins  = now.getMinutes();
-    const secs  = now.getSeconds();
+    const mins = now.getMinutes();
+    const secs = now.getSeconds();
     const formattedHours = hours;
-    const formattedMins  = mins < 10 ? '0' + mins : mins;
-    const formattedSecs  = secs < 10 ? '0' + secs : secs;
+    const formattedMins = mins < 10 ? '0' + mins : mins;
+    const formattedSecs = secs < 10 ? '0' + secs : secs;
     context.fillText(`${formattedHours}:${formattedMins}:${formattedSecs}`, size.w / 2, size.h / 2);
   }
 }
@@ -83,11 +82,11 @@ class AnalogClockPainter implements IPainter2d {
 
     // numbers
     context.fillStyle = 'black';
-    context.font = '25px sans-serif'
+    context.font = '25px sans-serif';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     for (let i = 12; i; --i) {
-      const theta = 2 * Math.PI * i / 12 - 0.5 * Math.PI;
+      const theta = (2 * Math.PI * i) / 12 - 0.5 * Math.PI;
       const rx = 0.85 * r * Math.cos(theta);
       const ry = 0.85 * r * Math.sin(theta);
       const nx = rx + cx;
@@ -98,11 +97,11 @@ class AnalogClockPainter implements IPainter2d {
 
     const now = new Date();
     const hours = now.getHours() % 12;
-    const mins  = now.getMinutes();
-    const secs  = now.getSeconds();
+    const mins = now.getMinutes();
+    const secs = now.getSeconds();
 
     // second hand
-    const secAngle = 2 * Math.PI * secs / 60 - 0.5 * Math.PI;
+    const secAngle = (2 * Math.PI * secs) / 60 - 0.5 * Math.PI;
     const sx = 0.85 * r * Math.cos(secAngle);
     const sy = 0.85 * r * Math.sin(secAngle);
     context.strokeStyle = 'red';
@@ -113,7 +112,7 @@ class AnalogClockPainter implements IPainter2d {
     context.stroke();
 
     // minute hand
-    const minAngle = 2 * Math.PI * (mins + secs / 60) / 60 - 0.5 * Math.PI;
+    const minAngle = (2 * Math.PI * (mins + secs / 60)) / 60 - 0.5 * Math.PI;
     const mx = 0.75 * r * Math.cos(minAngle);
     const my = 0.75 * r * Math.sin(minAngle);
     context.strokeStyle = 'blue';
@@ -124,7 +123,7 @@ class AnalogClockPainter implements IPainter2d {
     context.stroke();
 
     // hour hand
-    const hourAngle = 2 * Math.PI * (hours + mins / 60) / 12 - 0.5 * Math.PI;
+    const hourAngle = (2 * Math.PI * (hours + mins / 60)) / 12 - 0.5 * Math.PI;
     const hx = 0.6 * r * Math.cos(hourAngle);
     const hy = 0.6 * r * Math.sin(hourAngle);
     context.strokeStyle = 'green';

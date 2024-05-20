@@ -13,7 +13,7 @@ class BunnyCaptureComponent extends SceneComponent {
 
   events = {
     captured: true,
-  }
+  };
 
   constructor(private gameState: IGameState, private eventBus: Events.EventEmitter, private sdk: any) {
     super();
@@ -41,7 +41,12 @@ class BunnyCaptureComponent extends SceneComponent {
 
       this.projectionCam.position.copy(this.cameraPose.position);
       this.projectionCam.projectionMatrix.fromArray(this.cameraPose.projection).transpose();
-      this.projectionCam.rotation.set(this.cameraPose.rotation.x * Math.PI / 180, this.cameraPose.rotation.y * Math.PI / 180, 0, 'YXZ');
+      this.projectionCam.rotation.set(
+        (this.cameraPose.rotation.x * Math.PI) / 180,
+        (this.cameraPose.rotation.y * Math.PI) / 180,
+        0,
+        'YXZ'
+      );
       this.projectionCam.updateMatrixWorld();
 
       this.capturePoint.copy(bunnyPosition).project(this.projectionCam);
@@ -52,7 +57,7 @@ class BunnyCaptureComponent extends SceneComponent {
 
       if (newCaptured >= this.gameState.total.value) {
         const that = this;
-        setTimeout(function() {
+        setTimeout(function () {
           that.eventBus.emit(SceneEvents.EndGame);
         }, 2000);
       }
@@ -66,8 +71,8 @@ class BunnyCaptureComponent extends SceneComponent {
 
 export const bunnyCaptureType = 'easter.bunnycapture';
 
-export const createBunnyCaptureClosure = function(gameState: IGameState, eventBus: Events.EventEmitter, sdk: any) {
-  return function() {
+export const createBunnyCaptureClosure = function (gameState: IGameState, eventBus: Events.EventEmitter, sdk: any) {
+  return function () {
     return new BunnyCaptureComponent(gameState, eventBus, sdk);
-  }
-}
+  };
+};

@@ -2,15 +2,15 @@ import { ComponentOutput, SceneComponent } from '../SceneComponent';
 
 const defaultInputs: Inputs = {
   sensor: null,
-    height: 1,
-    radius: 1,
-}
+  height: 1,
+  radius: 1,
+};
 
 type Inputs = {
   sensor: any;
   height: number;
   radius: number;
-}
+};
 
 type Outputs = {
   source: any;
@@ -23,7 +23,7 @@ class CylinderSource extends SceneComponent {
 
   inputs: Inputs = {
     ...defaultInputs,
-  }
+  };
 
   outputs = {
     source: null,
@@ -34,7 +34,7 @@ class CylinderSource extends SceneComponent {
   }
 
   onInputsUpdated(previousInputs: Inputs) {
-    if( previousInputs.sensor !== this.inputs.sensor) {
+    if (previousInputs.sensor !== this.inputs.sensor) {
       if (previousInputs.sensor) {
         // todo: when supported, remove this source from previous sensor
         this.outputs.source = null;
@@ -46,11 +46,11 @@ class CylinderSource extends SceneComponent {
           basePoint: {
             x: this.context.root.position.x,
             y: this.context.root.position.y,
-            z: this.context.root.position.z
+            z: this.context.root.position.z,
           },
           height: this.inputs.height,
           radius: this.inputs.radius,
-          userData: { }
+          userData: {},
         }).then((source: any) => {
           this.outputs.source = source;
           this.inputs.sensor.addSource(source);
@@ -70,7 +70,7 @@ class CylinderSource extends SceneComponent {
       const deltaX = Math.abs(this.outputs.source.volume.basePoint.x - this.context.root.position.x);
       const deltaY = Math.abs(this.outputs.source.volume.basePoint.y - this.context.root.position.y);
       const deltaZ = Math.abs(this.outputs.source.volume.basePoint.z - this.context.root.position.z);
-      
+
       this.outputs.source.volume.basePoint.x = this.context.root.position.x;
       this.outputs.source.volume.basePoint.y = this.context.root.position.y;
       this.outputs.source.volume.basePoint.z = this.context.root.position.z;
@@ -83,8 +83,8 @@ class CylinderSource extends SceneComponent {
 }
 
 export const cylinderSourceType = 'mp.cylinderSource';
-export const makeCylinderSource = function(sdk: any) {
+export const makeCylinderSource = function (sdk: any) {
   return () => {
     return new CylinderSource(sdk);
   };
-}
+};

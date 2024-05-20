@@ -8,4 +8,4 @@ export class WelcomeScene extends Phaser.Scene {
   }
 
   init(config: ISceneConfig): void {}
-};
+}

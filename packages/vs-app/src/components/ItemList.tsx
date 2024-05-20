@@ -7,15 +7,14 @@ interface Props {
   onSelected?: (item: ItemDesc) => void;
 }
 
-export class ItemList extends Component<Props,{}> {
-  constructor (props: Props){
+export class ItemList extends Component<Props, {}> {
+  constructor(props: Props) {
     super(props);
 
     this.onClick = this.onClick.bind(this);
   }
 
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   onClick(event: React.MouseEvent) {
     if (this.props.onSelected) {
@@ -37,8 +36,8 @@ export class ItemList extends Component<Props,{}> {
         <List className='list'>
           {this.props.items.map((item: ItemDesc, index: number) => {
             return (
-              <ListItem className= 'list-item' button key={index} onClick={this.onClick}>
-                <ListItemText primary={item.name} onClick={this.onClick}/>
+              <ListItem className='list-item' button key={index} onClick={this.onClick}>
+                <ListItemText primary={item.name} onClick={this.onClick} />
               </ListItem>
             );
           })}

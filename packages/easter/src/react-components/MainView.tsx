@@ -42,12 +42,11 @@ declare global {
     webkitRequestFullscreen?(): void;
     msRequestFullscreen?(): void;
   }
-
 }
 
 interface State {
   currentScene: SceneIds;
-  sceneConfig: ISceneConfig|null;
+  sceneConfig: ISceneConfig | null;
 }
 
 export class MainView extends Component<{}, State> {
@@ -70,8 +69,7 @@ export class MainView extends Component<{}, State> {
     // ensure applicationKey is inserted into the bundle query string
     if (urlParams.has('applicationKey')) {
       this.sdkKey = urlParams.get('applicationKey');
-    }
-    else {
+    } else {
       urlParams.set('applicationKey', this.sdkKey);
     }
 
@@ -79,18 +77,18 @@ export class MainView extends Component<{}, State> {
     this.state = {
       currentScene: SceneIds.Welcome,
       sceneConfig: null,
-    }
+    };
   }
 
   async componentDidMount() {
     this.sdk = await GetSDK('sdk-iframe', this.sdkKey);
 
     const iframeElement = document.getElementById('sdk-iframe') as HTMLIFrameElement;
-    const stylesheet = document.createElement("link");
+    const stylesheet = document.createElement('link');
     stylesheet.rel = 'stylesheet';
     stylesheet.type = 'text/css';
     stylesheet.href = '../assets/showcase.css';
-    iframeElement.contentDocument.getElementsByTagName('head')[0].appendChild(stylesheet)
+    iframeElement.contentDocument.getElementsByTagName('head')[0].appendChild(stylesheet);
 
     let phaserCanvas: HTMLCanvasElement = document.getElementById('phaser-canvas') as HTMLCanvasElement;
 
@@ -125,7 +123,7 @@ export class MainView extends Component<{}, State> {
       game: this.game,
       eventBus,
       gameState: gameState,
-      sdk: this.sdk
+      sdk: this.sdk,
     };
 
     await Promise.all([
@@ -147,9 +145,13 @@ export class MainView extends Component<{}, State> {
       nodes[i].start();
     }
 
-    sceneConfig.eventBus.addListener(SceneEvents.SceneStart, function(payload: any) {
-      this.setState({ currentScene: payload.sceneId });
-    }, this);
+    sceneConfig.eventBus.addListener(
+      SceneEvents.SceneStart,
+      function (payload: any) {
+        this.setState({ currentScene: payload.sceneId });
+      },
+      this
+    );
 
     this.setState({ sceneConfig: sceneConfig });
     this.game.scene.start(SceneIds.Welcome, sceneConfig);
@@ -163,16 +165,16 @@ export class MainView extends Component<{}, State> {
     const src = `./bundle/showcase.html?${this.queryString}&play=1&title=0&vr=0&fp=0&qs=1&dh=0&sr=3.08,-.02&ss=92&maxmeshq=256&maxtileq=2048&maxztileq=2048`;
     const { currentScene, sceneConfig } = this.state;
 
-    const renderState = function() {
-      switch(currentScene) {
+    const renderState = function () {
+      switch (currentScene) {
         case SceneIds.Welcome:
-          return (<InstructionsView config={sceneConfig}></InstructionsView>);
+          return <InstructionsView config={sceneConfig}></InstructionsView>;
         case SceneIds.Tutorial:
-          return (<TutorialView config={sceneConfig}></TutorialView>);
+          return <TutorialView config={sceneConfig}></TutorialView>;
         case SceneIds.Game:
-          return (<GameView config={sceneConfig}></GameView>);
+          return <GameView config={sceneConfig}></GameView>;
         case SceneIds.GameOver:
-          return (<GameOverView config={sceneConfig}></GameOverView>);
+          return <GameOverView config={sceneConfig}></GameOverView>;
       }
 
       return null;
@@ -180,7 +182,7 @@ export class MainView extends Component<{}, State> {
 
     return (
       <div ref={this.rootRef}>
-        { sceneConfig ? renderState() : null}
+        {sceneConfig ? renderState() : null}
         <Frame src={src}></Frame>
       </div>
     );
@@ -190,25 +192,41 @@ export class MainView extends Component<{}, State> {
     const fsElement = iframeElement.contentDocument.querySelector('#fullscreen-mode .icon-fullscreen');
     // if there is no fullscreen button, fullscreen probably isn't supported
     if (!fsElement) return;
-    fsElement.addEventListener('click', (ev) => {
-      if (!this.rootRef) return;
-      ev.stopImmediatePropagation();
-      ev.stopPropagation();
-      const rootElem = this.rootRef.current;
+    fsElement.addEventListener(
+      'click',
+      (ev) => {
+        if (!this.rootRef) return;
+        ev.stopImmediatePropagation();
+        ev.stopPropagation();
+        const rootElem = this.rootRef.current;
 
-      const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
-      const requestFullscreen = rootElem.requestFullscreen || rootElem.webkitRequestFullscreen || rootElem.mozRequestFullScreen || rootElem.msRequestFullscreen;
-      const exitFullscreen    = document.exitFullscreen    || document.webkitExitFullscreen    || document.mozCancelFullScreen  || document.msExitFullscreen;
+        const fullscreenElement =
+          document.fullscreenElement ||
+          document.webkitFullscreenElement ||
+          document.mozFullScreenElement ||
+          document.msFullscreenElement;
+        const requestFullscreen =
+          rootElem.requestFullscreen ||
+          rootElem.webkitRequestFullscreen ||
+          rootElem.mozRequestFullScreen ||
+          rootElem.msRequestFullscreen;
+        const exitFullscreen =
+          document.exitFullscreen ||
+          document.webkitExitFullscreen ||
+          document.mozCancelFullScreen ||
+          document.msExitFullscreen;
 
-      if (fullscreenElement) {
-        exitFullscreen.call(document);
-        fsElement.classList.remove('icon-fullscreen-exit');
-        fsElement.classList.add('icon-fullscreen');
-      } else {
-        requestFullscreen.call(rootElem);
-        fsElement.classList.remove('icon-fullscreen');
-        fsElement.classList.add('icon-fullscreen-exit');
-      }
-    }, true);
+        if (fullscreenElement) {
+          exitFullscreen.call(document);
+          fsElement.classList.remove('icon-fullscreen-exit');
+          fsElement.classList.add('icon-fullscreen');
+        } else {
+          requestFullscreen.call(rootElem);
+          fsElement.classList.remove('icon-fullscreen');
+          fsElement.classList.add('icon-fullscreen-exit');
+        }
+      },
+      true
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { Dict } from "@mp/core";
+import { Dict } from '@mp/core';
 
 /* eslint-disable no-shadow */
 export enum ShareMedium {
@@ -8,7 +8,7 @@ export enum ShareMedium {
   TWITTER = 'twitter',
   FACEBOOK = 'facebook',
   COPYLINK = 'copylink',
-  NATIVE = 'native',  /** Native sharing mechanism of host OS/device */
+  NATIVE = 'native' /** Native sharing mechanism of host OS/device */,
 }
 /* eslint-enable no-shadow */
 
@@ -26,12 +26,12 @@ const refs = {
 };
 
 export const shareWindow: {
-  [key in ShareMedium]: { width?: number, height?: number }
+  [key in ShareMedium]: { width?: number; height?: number };
 } = {
-  [FACEBOOK]: {width: 626, height: 436},
-  [TWITTER]: {width: 550, height: 440},
-  [PINTEREST]: {width: 750, height: 749},
-  [LINKEDIN]: {width: 550, height: 453},
+  [FACEBOOK]: { width: 626, height: 436 },
+  [TWITTER]: { width: 550, height: 440 },
+  [PINTEREST]: { width: 750, height: 749 },
+  [LINKEDIN]: { width: 550, height: 453 },
   [COPYLINK]: {},
   [MAIL]: {},
   [NATIVE]: {},
@@ -42,11 +42,12 @@ export const shareWindow: {
  * @param params
  */
 const makeQueryString = (params: Dict<string>) => {
-  return Object.keys(params).map((key) => key + '=' + encodeURIComponent(params[key])).join('&');
+  return Object.keys(params)
+    .map((key) => key + '=' + encodeURIComponent(params[key]))
+    .join('&');
 };
 
-const shareText = 
-`Ever dreamed of doing your #EasterEgg hunt in Wonderland? You can hunt for 10 bunnies in @immersedwonder by @AlexaMeadeArt. The Magical Bunny Adventure #virtual game launches tomorrow! @RoseWineMansion #HoppyEaster`;
+const shareText = `Ever dreamed of doing your #EasterEgg hunt in Wonderland? You can hunt for 10 bunnies in @immersedwonder by @AlexaMeadeArt. The Magical Bunny Adventure #virtual game launches tomorrow! @RoseWineMansion #HoppyEaster`;
 
 /**
  * Build a URL for sharing a Showcase model on Facebook
@@ -84,7 +85,7 @@ const makeTwitterUrl = (showcaseUrl: string, title: string): string => {
 const line1 = `Looking for some fun this easter?`;
 const line2 = `Join us for a Magical Bunny Adventure`;
 const line3 = `Find the 10 hidden bunnies throughout Alexa Meade's dreamscape: Immersed Wonderland in this 3D interactive game! Share the fun and help those most vulnerable during the Covid-19 crisis.`;
-const line4 = `Visit our blog page to learn more.`
+const line4 = `Visit our blog page to learn more.`;
 const blogLink = `https://matterport.com/blog/tumble-down-rabbit-hole-immersed-wonderland`;
 /**
  * Build a URL for sharing a Showcase model via Email
@@ -145,7 +146,7 @@ const makeLinkedInUrl = (showcaseUrl: string, title: string): string => {
  * @param locale Locale module for translation
  */
 export const getShareUrls = (showcaseUrl: string, title: string, image: string) => {
-  const urls: {[key in ShareMedium]: string} = {
+  const urls: { [key in ShareMedium]: string } = {
     [FACEBOOK]: makeFacebookUrl(showcaseUrl, title),
     [TWITTER]: makeTwitterUrl(showcaseUrl, title),
     [MAIL]: makeEmailUrl(showcaseUrl, title),

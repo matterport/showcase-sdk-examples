@@ -1,6 +1,13 @@
 import { PhotonClient } from 'rc-app/PhotonClient';
 
-import { DefaultGetTime, fixedDelay, GetTimeCallback, millisecondsPerStep, StepPayload, StepPayloadType } from './common';
+import {
+  DefaultGetTime,
+  fixedDelay,
+  GetTimeCallback,
+  millisecondsPerStep,
+  StepPayload,
+  StepPayloadType,
+} from './common';
 
 const latencyThreshold = 600;
 
@@ -12,7 +19,7 @@ export class RemoteTime {
     this.handleEvent = this.handleEvent.bind(this);
   }
 
-  public start(){
+  public start() {
     this.photonClient.events.on(StepPayloadType, this.handleEvent);
   }
 
@@ -24,7 +31,7 @@ export class RemoteTime {
     const currentTime = this.getTimeCallback();
     this.startTime = event.time;
     this.startStep = event.step;
-    
+
     const latency = currentTime - event.time;
     if (latency > latencyThreshold) {
       console.warn(`Detected high latency: ${latency}`);

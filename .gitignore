@@ -9,3 +9,4 @@ bundle.zip
 
 packages/bundle/*
 !package.json
+embedtypes/sdk.d.ts

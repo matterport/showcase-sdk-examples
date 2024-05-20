@@ -3,6 +3,8 @@ export const test: string = 'test';
 export { GetSDK } from './Sdk';
 export { Frame } from './components/Frame';
 export * from './SceneComponent';
+
+// vs-app only
 export * from './sdk-components/CanvasRenderer';
 export * from './sdk-components/OrientedBox';
 export * from './sdk-components/SecurityCamera';
@@ -16,17 +18,18 @@ export * from './sdk-components/RoomShadow';
 export * from './sdk-components/ClockPainter';
 export * from './sdk-components/SphereSource';
 
+// vs-app only
 import { orientedBoxType, makeOrientedBox } from './sdk-components/OrientedBox';
 import { slotType, makeSlot } from './sdk-components/Slot';
 import { securityCameraType, makeSecurityCamera } from './sdk-components/SecurityCamera';
 import { loadingIndicatorType, makeLoadingIndicator } from './sdk-components/LoadingIndicator';
 import { planeRendererType, makePlaneRenderer } from './sdk-components/PlaneRenderer';
 import { canvasRendererType, makeCanvasRenderer } from './sdk-components/CanvasRenderer';
-import { sceneRendererType, makeSceneRenderer }  from './sdk-components/SceneRenderer';
+import { sceneRendererType, makeSceneRenderer } from './sdk-components/SceneRenderer';
 import { videoRendererType, makeVideoRenderer } from './sdk-components/VideoRenderer';
 import { videoStreamCaptureType, makeVideoStreamCapture } from './sdk-components/VideoStreamCapture';
 import { nestThermostatType, makeNestThermostat } from './sdk-components/NestThermostat';
-import { roomShadowType, makeRoomShadow }  from './sdk-components/RoomShadow';
+import { roomShadowType, makeRoomShadow } from './sdk-components/RoomShadow';
 import { clockPainterType, makeClockPainter } from './sdk-components/ClockPainter';
 import { scenePainterType, makeScenePainter } from './sdk-components/ScenePainter';
 import { tunerType, makeTuner } from './sdk-components/Tuner';
@@ -37,10 +40,13 @@ import { canvasBorderType, makeCanvasBorder } from './sdk-components/CanvasBorde
 import { canvasTextType, makeCanvasText } from './sdk-components/CanvasText';
 import { canvasImageType, makeCanvasImage } from './sdk-components/CanvasImage';
 import { cameraInputType, makeCameraInput } from './sdk-components/Camera';
+
+// vs-app + inspector
 import { makeSphereSource, sphereSourceType } from './sdk-components/SphereSource';
 import { boxSourceType, makeBoxSource } from './sdk-components/BoxSource';
 import { cylinderSourceType, makeCylinderSource } from './sdk-components/CylinderSource';
 
+// TO-DO - Used in vs-app and inspector - might de-globalize
 export const initComponents = async (sdk: any) => {
   await Promise.all([
     sdk.Scene.register(orientedBoxType, makeOrientedBox),
@@ -68,7 +74,7 @@ export const initComponents = async (sdk: any) => {
     sdk.Scene.register(boxSourceType, makeBoxSource(sdk)),
     sdk.Scene.register(cylinderSourceType, makeCylinderSource(sdk)),
   ]);
-}
+};
 
 export const assetVersion = '1.0-2-g6b74572';
 export const cdnUrl = `https://static.matterport.com/showcase-sdk/examples/assets-${assetVersion}/assets`;

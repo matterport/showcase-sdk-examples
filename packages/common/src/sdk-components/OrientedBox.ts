@@ -1,5 +1,15 @@
-import { MeshBasicMaterial, LineSegments, Object3D, BoxGeometry, Mesh, LineBasicMaterial, EdgesGeometry,
-  AnimationMixer, AnimationClip, AnimationAction } from 'three';
+import {
+  MeshBasicMaterial,
+  LineSegments,
+  Object3D,
+  BoxGeometry,
+  Mesh,
+  LineBasicMaterial,
+  EdgesGeometry,
+  AnimationMixer,
+  AnimationClip,
+  AnimationAction,
+} from 'three';
 import { SceneComponent, ComponentInteractionType, ISceneNode } from '../SceneComponent';
 
 export interface IInteractionEvent {
@@ -9,7 +19,7 @@ export interface IInteractionEvent {
 }
 
 interface Inputs {
-  size: { x: number; y: number; z: number; },
+  size: { x: number; y: number; z: number };
   color: number;
   visible: boolean;
   opacity: number;
@@ -18,17 +28,22 @@ interface Inputs {
   lineColor: number;
 }
 
-const makeMaterialOpacityClip = function(THREE: any, time: number, startOpacity: number, endOpacity: number): AnimationClip {
+const makeMaterialOpacityClip = function (
+  THREE: any,
+  time: number,
+  startOpacity: number,
+  endOpacity: number
+): AnimationClip {
   const track = new THREE.NumberKeyframeTrack('.material.opacity', [0, time], [startOpacity, endOpacity]);
   return new THREE.AnimationClip(null, time, [track]);
 };
 
-const playAnimation = function(THREE: any, mixer: AnimationMixer, clip: AnimationClip, root?: any) {
+const playAnimation = function (THREE: any, mixer: AnimationMixer, clip: AnimationClip, root?: any) {
   const action: AnimationAction = mixer.clipAction(clip, root);
   action.loop = THREE.LoopOnce;
   action.clampWhenFinished = true;
   action.play();
-}
+};
 
 export class OrientedBox extends SceneComponent {
   private root: Object3D | null = null;
@@ -82,7 +97,7 @@ export class OrientedBox extends SceneComponent {
     }
     if (interactionType === ComponentInteractionType.HOVER) {
       this.notify(ComponentInteractionType.HOVER, {
-        hover: (<{hover: boolean;}>eventData).hover
+        hover: (<{ hover: boolean }>eventData).hover,
       });
     }
   }
@@ -117,13 +132,16 @@ export class OrientedBox extends SceneComponent {
     this.root.add(this.box);
 
     const edgesGeometry = new THREE.EdgesGeometry(boxGeometry);
-    this.edges = new THREE.LineSegments(edgesGeometry, new THREE.LineBasicMaterial({
-      transparent: true,
-      color: this.inputs.lineColor,
-      linewidth: 1,
-      opacity: this.inputs.lineOpacity,
-    }));
-    
+    this.edges = new THREE.LineSegments(
+      edgesGeometry,
+      new THREE.LineBasicMaterial({
+        transparent: true,
+        color: this.inputs.lineColor,
+        linewidth: 1,
+        opacity: this.inputs.lineOpacity,
+      })
+    );
+
     // put the edges object directly in the scene graph so that they dont intercept
     // raycasts. The edges object will need to be removed if this component is destroyed.
     const obj3D = (this.context.root as any).obj3D as Object3D;
@@ -142,16 +160,17 @@ export class OrientedBox extends SceneComponent {
       if (this.inputs.visible) {
         playAnimation(THREE, this.boxMixer, this.clipVisible);
         playAnimation(THREE, this.boxMixer, this.edgesClipVisible, this.edges);
-      }
-      else {
+      } else {
         playAnimation(THREE, this.boxMixer, this.clipNotVisible);
         playAnimation(THREE, this.boxMixer, this.edgesClipNotVisible, this.edges);
       }
     }
 
-    if (oldInputs.size.x !== this.inputs.size.x ||
-        oldInputs.size.y !== this.inputs.size.y ||
-        oldInputs.size.z !==  this.inputs.size.z) {
+    if (
+      oldInputs.size.x !== this.inputs.size.x ||
+      oldInputs.size.y !== this.inputs.size.y ||
+      oldInputs.size.z !== this.inputs.size.z
+    ) {
       this.makeBox();
       return;
     }
@@ -174,11 +193,11 @@ export class OrientedBox extends SceneComponent {
   }
 
   onTick(delta: number) {
-    this.boxMixer.update(delta/1000);
+    this.boxMixer.update(delta / 1000);
   }
 }
 
 export const orientedBoxType = 'mp.orientedBox';
-export const makeOrientedBox = function() {
+export const makeOrientedBox = function () {
   return new OrientedBox();
-}
+};

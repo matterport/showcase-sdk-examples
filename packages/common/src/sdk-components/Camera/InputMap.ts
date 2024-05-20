@@ -1,5 +1,5 @@
-import { Axis } from "./Axis";
-import { ICameraController } from "./ICameraController";
+import { Axis } from './Axis';
+import { ICameraController } from './ICameraController';
 
 export enum Keys {
   W = 87,
@@ -22,7 +22,10 @@ export interface HasControls {
 
 export class CameraInputMap {
   private keyDownMap: Indexable<boolean> = {};
-  constructor(private controlMap: Indexable<[Axis, keyof ICameraController, number]>, private controller: HasControls) {}
+  constructor(
+    private controlMap: Indexable<[Axis, keyof ICameraController, number]>,
+    private controller: HasControls
+  ) {}
 
   onKeyDown(keyCode: number): boolean {
     const inputMap = this.controlMap[keyCode];
@@ -47,8 +50,7 @@ export class CameraInputMap {
     return false;
   }
 
-  onMouseDown(x: number, y: number) {
-  }
+  onMouseDown(x: number, y: number) {}
 
   onMouseMove(deltaX: number, deltaY: number) {
     this.controller.controls.setAngularVelocity(Axis.X, -deltaY * 3.0);
@@ -67,4 +69,4 @@ export class CameraInputMap {
 
 type Indexable<T> = {
   [key: number]: T | undefined;
-}
+};

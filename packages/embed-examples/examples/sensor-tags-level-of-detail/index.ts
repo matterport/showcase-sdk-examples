@@ -1,5 +1,5 @@
+import type { MpSdk } from 'embedtypes/sdk';
 import { clearMesssage, connect, setMessage } from '../common';
-import type { MpSdk } from '../common/sdk';
 import '../common/main.css';
 
 let lowDetailTag: string[] | null = null;
@@ -69,7 +69,7 @@ const createTags = async (sdk: MpSdk) => {
       tagInfos.push(newTag);
     }
   }
-  tags = (await sdk.Tag.add(...tagInfos));
+  tags = await sdk.Tag.add(...tagInfos);
 };
 
 const removeTags = (sdk: MpSdk) => {
@@ -111,8 +111,8 @@ const main = async () => {
   sensor.addSource(source0, source1);
 
   sensor.readings.subscribe({
-    onCollectionUpdated: (sourceCollection: any) => {
-      const inRange: any[] = [];
+    onCollectionUpdated: (sourceCollection) => {
+      const inRange: unknown[] = [];
       for (const [source, reading] of sourceCollection) {
         if (reading.inRange) {
           const search = inRange.find((element) => {

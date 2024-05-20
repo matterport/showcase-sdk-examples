@@ -8,6 +8,6 @@ const appState = new AppState();
 appState.items = items;
 appState.slots = slots;
 
-const container = document.getElementById("content");
+const container = document.getElementById('content');
 const root = ReactDOMClient.createRoot(container);
-root.render(  <Main appState={appState}/>);
+root.render(<Main appState={appState} />);

@@ -1,14 +1,12 @@
-
 const SDK_VERSION = '3.2';
 
-export const GetSDK = function(elementId: string|HTMLIFrameElement, applicationKey: string): Promise<any> {
-  return new Promise(function(resolve, reject) {
-    const checkIframe = async function() {
+export const GetSDK = function (elementId: string | HTMLIFrameElement, applicationKey: string): Promise<any> {
+  return new Promise(function (resolve, reject) {
+    const checkIframe = async function () {
       var iframe = null;
       if (elementId instanceof HTMLIFrameElement) {
         iframe = elementId as HTMLIFrameElement;
-      }
-      else {
+      } else {
         iframe = document.getElementById(elementId);
       }
 
@@ -22,4 +20,4 @@ export const GetSDK = function(elementId: string|HTMLIFrameElement, applicationK
     };
     const intervalId = setInterval(checkIframe, 100);
   });
-}
+};

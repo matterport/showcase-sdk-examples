@@ -3,7 +3,7 @@ import { SceneComponent, ComponentInteractionType } from '../SceneComponent';
 
 interface Inputs {
   model: string | null;
-  size: { x: number; y: number; z: number; };
+  size: { x: number; y: number; z: number };
 }
 
 class Slot extends SceneComponent {
@@ -16,10 +16,10 @@ class Slot extends SceneComponent {
   };
 
   events: {
-    [ComponentInteractionType.CLICK]: false,
-    [ComponentInteractionType.HOVER]: false,
-    [ComponentInteractionType.DRAG]: false
-  }
+    [ComponentInteractionType.CLICK]: false;
+    [ComponentInteractionType.HOVER]: false;
+    [ComponentInteractionType.DRAG]: false;
+  };
 
   onInit() {
     const root = this.context.root;
@@ -29,8 +29,7 @@ class Slot extends SceneComponent {
     for (const component of root.componentIterator()) {
       if (component.componentType === orientedBoxType) {
         box = component;
-      }
-      else if (component.componentType === 'mp.gltfLoader') {
+      } else if (component.componentType === 'mp.gltfLoader') {
         model = component;
       }
     }
@@ -47,7 +46,7 @@ class Slot extends SceneComponent {
 
   onInputsUpdated(oldInputs: Inputs) {
     if (oldInputs.model !== this.inputs.model) {
-      console.log(`Slot.onInputsUpdated ${this.inputs.model}`)
+      console.log(`Slot.onInputsUpdated ${this.inputs.model}`);
 
       this.model.inputs.url = this.inputs.model;
     }
@@ -59,6 +58,6 @@ class Slot extends SceneComponent {
 }
 
 export const slotType = 'mp.slot';
-export const makeSlot = function() {
+export const makeSlot = function () {
   return new Slot();
-}
+};

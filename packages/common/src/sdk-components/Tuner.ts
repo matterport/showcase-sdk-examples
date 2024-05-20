@@ -10,10 +10,10 @@ type Outputs = {
 
 enum Event {
   Next = 'next',
-};
+}
 
 type Events = {
-  [Event.Next]: boolean,
+  [Event.Next]: boolean;
 };
 
 class Tuner extends SceneComponent {

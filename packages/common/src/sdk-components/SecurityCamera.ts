@@ -1,27 +1,37 @@
 import {
-  Object3D, Mesh, PerspectiveCamera, BufferAttribute,
-  MeshBasicMaterial, BoxGeometry, ShaderMaterial, LineBasicMaterial, EdgesGeometry,
-  AnimationMixer, Color, Matrix4, Vector3
+  Object3D,
+  Mesh,
+  PerspectiveCamera,
+  BufferAttribute,
+  MeshBasicMaterial,
+  BoxGeometry,
+  ShaderMaterial,
+  LineBasicMaterial,
+  EdgesGeometry,
+  AnimationMixer,
+  Color,
+  Matrix4,
+  Vector3,
 } from 'three';
 import { SceneComponent } from '../SceneComponent';
 
 interface Inputs {
   nearPlane: number;
-  farPlane: number,
-  horizontalFOV: number,
-  aspect: number,
-  localPosition: { x: number; y: number; z: number; };
-  localRotation: { x: number; y: number; z: number; };
+  farPlane: number;
+  horizontalFOV: number;
+  aspect: number;
+  localPosition: { x: number; y: number; z: number };
+  localRotation: { x: number; y: number; z: number };
   color: number;
   panPeriod: number;
   panAngle: number;
 }
 
 type HighlightUniforms = {
-  color: { value: Color },
+  color: { value: Color };
   projPosition: { value: Vector3 };
   lightMatrix: { value: Matrix4 };
-}
+};
 
 class SecurityCamera extends SceneComponent {
   private root: Object3D | null = null;
@@ -34,7 +44,7 @@ class SecurityCamera extends SceneComponent {
     color: { value: new Color() },
     projPosition: { value: new Vector3() },
     lightMatrix: { value: new Matrix4() },
-  }
+  };
   private mixer: AnimationMixer;
 
   inputs: Inputs = {
@@ -57,13 +67,18 @@ class SecurityCamera extends SceneComponent {
     this.outputs.objectRoot = this.root;
     this.root.position.set(this.inputs.localPosition.x, this.inputs.localPosition.y, this.inputs.localPosition.z);
 
-    const euler = new THREE.Euler(this.inputs.localRotation.x * Math.PI / 180, this.inputs.localRotation.y * Math.PI / 180, this.inputs.localRotation.z * Math.PI / 180, 'YXZ');
+    const euler = new THREE.Euler(
+      (this.inputs.localRotation.x * Math.PI) / 180,
+      (this.inputs.localRotation.y * Math.PI) / 180,
+      (this.inputs.localRotation.z * Math.PI) / 180,
+      'YXZ'
+    );
     this.pivot.quaternion.setFromEuler(euler);
 
     const aspect = this.inputs.aspect;
     const DEG2RAD = Math.PI / 180;
     const RAD2DEG = 1 / DEG2RAD;
-    const verticalFOV = 2 * Math.atan(1 / aspect * Math.tan(0.5 * this.inputs.horizontalFOV * DEG2RAD)) * RAD2DEG;
+    const verticalFOV = 2 * Math.atan((1 / aspect) * Math.tan(0.5 * this.inputs.horizontalFOV * DEG2RAD)) * RAD2DEG;
     this.projector = new THREE.PerspectiveCamera(verticalFOV, aspect, this.inputs.nearPlane, this.inputs.farPlane);
     // orientation of the projector is handled by the pivot
     this.pivot.add(this.projector);
@@ -103,7 +118,6 @@ class SecurityCamera extends SceneComponent {
       this.box.geometry.dispose();
       (this.box.material as MeshBasicMaterial).dispose();
     }
-
   }
 
   private makeFrustumVisuals() {
@@ -122,7 +136,6 @@ class SecurityCamera extends SceneComponent {
     }
 
     function edgesToCylinders(edgesGeometry: EdgesGeometry, thickness: number) {
-
       // Casting as a BufferAttribute, due to Types issue to be resolved in THREE.JS r160
       const vertices = (edgesGeometry.attributes.position as BufferAttribute).array;
       const count = edgesGeometry.attributes.position.count;
@@ -147,7 +160,7 @@ class SecurityCamera extends SceneComponent {
 
     const frustumLength = this.inputs.farPlane - this.inputs.nearPlane;
     const boxGeometry: BoxGeometry = new THREE.BoxGeometry(2, 2, frustumLength);
-    const halfHAngle = this.inputs.horizontalFOV * 0.5 * Math.PI / 180;
+    const halfHAngle = (this.inputs.horizontalFOV * 0.5 * Math.PI) / 180;
     const nearHalfWidth = Math.tan(halfHAngle) * this.inputs.nearPlane;
     const farHalfWidth = Math.tan(halfHAngle) * this.inputs.farPlane;
     const nearHalfHeight = nearHalfWidth / this.inputs.aspect;
@@ -163,12 +176,11 @@ class SecurityCamera extends SceneComponent {
       const vertexY = positions.getY(i);
       if (vertexZ > 0) {
         // back of the camera
-        positions.setX(i, vertexX * nearHalfWidth)
+        positions.setX(i, vertexX * nearHalfWidth);
         positions.setY(i, vertexY * nearHalfHeight);
-      }
-      else {
+      } else {
         // front of the camera
-        positions.setX(i, vertexX * farHalfWidth)
+        positions.setX(i, vertexX * farHalfWidth);
         positions.setY(i, vertexY * farHalfHeight);
       }
       positions.setZ(i, vertexZ - 0.5 * frustumLength - this.inputs.nearPlane);
@@ -184,22 +196,28 @@ class SecurityCamera extends SceneComponent {
     });
     this.box = new THREE.Mesh(boxGeometry, boxMaterial);
     const edgesGeometry = edgesToCylinders(new THREE.EdgesGeometry(boxGeometry), 0.015);
-    this.edges = new THREE.Mesh(edgesGeometry, new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      opacity: 0.25,
-      transparent: true,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-    }));
+    this.edges = new THREE.Mesh(
+      edgesGeometry,
+      new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        opacity: 0.25,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      })
+    );
 
     const edgesGeometry2 = edgesToCylinders(new THREE.EdgesGeometry(boxGeometry), 0.06);
-    const edges2 = new THREE.Mesh(edgesGeometry2, new THREE.MeshBasicMaterial({
-      color: this.inputs.color,
-      opacity: 0.05,
-      transparent: true,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-    }));
+    const edges2 = new THREE.Mesh(
+      edgesGeometry2,
+      new THREE.MeshBasicMaterial({
+        color: this.inputs.color,
+        opacity: 0.05,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      })
+    );
     this.pivot.add(edges2);
   }
 
@@ -236,14 +254,16 @@ class SecurityCamera extends SceneComponent {
     const frame1 = new THREE.Quaternion().setFromAxisAngle(yAxis, this.inputs.panAngle).premultiply(rootRotation);
 
     // a track that has delays at the start and end for 5% of the animation
-    const track = new THREE.QuaternionKeyframeTrack('.quaternion', [
-      0, this.inputs.panPeriod * 0.05, this.inputs.panPeriod * 0.95, this.inputs.panPeriod
-    ], [
-      frame0.x, frame0.y, frame0.z, frame0.w,
-      frame0.x, frame0.y, frame0.z, frame0.w,
-      frame1.x, frame1.y, frame1.z, frame1.w,
-      frame1.x, frame1.y, frame1.z, frame1.w,
-    ]);
+    const track = new THREE.QuaternionKeyframeTrack(
+      '.quaternion',
+      [0, this.inputs.panPeriod * 0.05, this.inputs.panPeriod * 0.95, this.inputs.panPeriod],
+      [
+        frame0.x, frame0.y, frame0.z, frame0.w,
+        frame0.x, frame0.y, frame0.z, frame0.w,
+        frame1.x, frame1.y, frame1.z, frame1.w,
+        frame1.x, frame1.y, frame1.z, frame1.w,
+      ]
+    );
 
     const clip = new THREE.AnimationClip('panning', this.inputs.panPeriod, [track]);
 
@@ -254,7 +274,6 @@ class SecurityCamera extends SceneComponent {
     action.loop = THREE.LoopPingPong;
     action.play();
   }
-
 }
 
 function vertexShader(): string {
@@ -292,12 +311,12 @@ function updateHighlightUniforms(projector: PerspectiveCamera, uniforms: Highlig
   // similar to a shadow matrix, but we're using it as a "rectangular" spotlight
   // [lightBias] * [projection] * [viewMatrix]
   uniforms.lightMatrix.value.makeScale(0.5, 0.5, 0.5);
-  uniforms.lightMatrix.value.setPosition(new Vector3(0.5, 0.5, 0.5))
+  uniforms.lightMatrix.value.setPosition(new Vector3(0.5, 0.5, 0.5));
   uniforms.lightMatrix.value.multiplyMatrices(uniforms.lightMatrix.value, projector.projectionMatrix);
   uniforms.lightMatrix.value.multiplyMatrices(uniforms.lightMatrix.value, projector.matrixWorldInverse);
 }
 
 export const securityCameraType = 'mp.securityCamera';
-export const makeSecurityCamera = function() {
+export const makeSecurityCamera = function () {
   return new SecurityCamera();
-}
+};

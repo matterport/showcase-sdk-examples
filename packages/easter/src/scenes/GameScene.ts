@@ -9,11 +9,11 @@ import { SceneEvents } from './SceneEvents';
 export class GameScene extends Scene {
   private config: ISceneConfig = null;
   private rabbit: GameObjects.Sprite = null;
-  private path: { x: number[], y: number[], scale: number[] } = { x: [], y: [], scale: [] };
+  private path: { x: number[]; y: number[]; scale: number[] } = { x: [], y: [], scale: [] };
   private increment: number = 0.01;
   private i: number = 0;
   private whooshPlayed: boolean = false;
-  private backgroundSound: Phaser.Sound.BaseSound|null = null;
+  private backgroundSound: Phaser.Sound.BaseSound | null = null;
 
   constructor() {
     super({ key: SceneIds.Game });
@@ -28,7 +28,7 @@ export class GameScene extends Scene {
     this.config.eventBus.addListener(SceneEvents.StartRabbit, this.onRabbitTrigger);
   }
 
-  private spawnRabbit(point: {x: number, y: number}) {
+  private spawnRabbit(point: { x: number; y: number }) {
     if (this.rabbit) {
       if (!this.whooshPlayed) {
         this.sound.play('mouth_pop', { volume: 0.1 });
@@ -44,7 +44,7 @@ export class GameScene extends Scene {
 
     // compute path
     this.path.x = [point.x];
-    this.path.x.push(point.x + ((targetX - point.x) * 0.25));
+    this.path.x.push(point.x + (targetX - point.x) * 0.25);
     this.path.x.push(targetX);
 
     this.path.y = [point.y];
@@ -74,7 +74,7 @@ export class GameScene extends Scene {
     this.sound.play('captured', { volume: 0.1 });
   }
 
-  private onRabbitTrigger(point: { x: number, y: number }) {
+  private onRabbitTrigger(point: { x: number; y: number }) {
     this.spawnRabbit(point);
   }
 
@@ -93,7 +93,7 @@ export class GameScene extends Scene {
     this.backgroundSound.play({ loop: true, volume: 0.1 });
 
     const that = this;
-    this.scene.systems.events.on('shutdown', function(systems: Scenes.Systems){
+    this.scene.systems.events.on('shutdown', function (systems: Scenes.Systems) {
       if (systems.scene === that) {
         that.backgroundSound.stop();
         that.backgroundSound = null;

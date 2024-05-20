@@ -3,7 +3,7 @@ import { ComponentOutput, SceneComponent } from '../SceneComponent';
 type Inputs = {
   sensor: any;
   radius: number;
-}
+};
 
 type Outputs = {
   source: any;
@@ -17,7 +17,7 @@ class SphereSource extends SceneComponent {
   inputs: Inputs = {
     sensor: null,
     radius: 0.5,
-  }
+  };
 
   outputs = {
     source: null,
@@ -25,18 +25,18 @@ class SphereSource extends SceneComponent {
 
   onInit() {
     if (this.inputs.sensor === null) {
-      console.warn('SphereSource needs a sensor to operate.')
+      console.warn('SphereSource needs a sensor to operate.');
       return;
     }
-    
+
     this.sdk.Sensor.createSource(this.sdk.Sensor.SourceType.SPHERE, {
       origin: {
         x: this.context.root.position.x,
         y: this.context.root.position.y,
-        z: this.context.root.position.z
+        z: this.context.root.position.z,
       },
       radius: this.inputs.radius,
-      userData: { }
+      userData: {},
     }).then((source: any) => {
       this.outputs.source = source;
       this.inputs.sensor.addSource(source);
@@ -44,7 +44,7 @@ class SphereSource extends SceneComponent {
   }
 
   onInputsUpdated(previousInputs: Inputs) {
-    if( previousInputs.sensor !== this.inputs.sensor) {
+    if (previousInputs.sensor !== this.inputs.sensor) {
       if (previousInputs.sensor) {
         // todo: when supported, remove this source from previous sensor
         this.outputs.source = null;
@@ -56,10 +56,10 @@ class SphereSource extends SceneComponent {
           origin: {
             x: this.context.root.position.x,
             y: this.context.root.position.y,
-            z: this.context.root.position.z
+            z: this.context.root.position.z,
           },
           radius: this.inputs.radius,
-          userData: { },
+          userData: {},
         }).then((source: any) => {
           this.outputs.source = source;
           this.inputs.sensor.addSource(source);
@@ -78,7 +78,7 @@ class SphereSource extends SceneComponent {
       const deltaX = Math.abs(this.outputs.source.volume.origin.x - this.context.root.position.x);
       const deltaY = Math.abs(this.outputs.source.volume.origin.y - this.context.root.position.y);
       const deltaZ = Math.abs(this.outputs.source.volume.origin.z - this.context.root.position.z);
-      
+
       this.outputs.source.volume.origin.x = this.context.root.position.x;
       this.outputs.source.volume.origin.y = this.context.root.position.y;
       this.outputs.source.volume.origin.z = this.context.root.position.z;
@@ -91,8 +91,8 @@ class SphereSource extends SceneComponent {
 }
 
 export const sphereSourceType = 'mp.sphereSource';
-export const makeSphereSource = function(sdk: any) {
+export const makeSphereSource = function (sdk: any) {
   return () => {
     return new SphereSource(sdk);
   };
-}
+};

@@ -38,9 +38,7 @@ export async function connect(options: ConnectOptions = {}): Promise<any> {
   iframe.src = embedUrl;
   const sdk = await window.MP_SDK.connect(iframe, applicationKey, interfaceVersion);
 
-  await sdk.App.state.waitUntil(
-    (state: any) => state.phase === sdk.App.Phase.PLAYING
-  );
+  await sdk.App.state.waitUntil((state: any) => state.phase === sdk.App.Phase.PLAYING);
 
   return sdk;
 }

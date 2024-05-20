@@ -1,7 +1,7 @@
 import { SceneComponent, ComponentOutput, Size, IPainter2d } from '@mp/common';
 
 type Inputs = {
-  position: { x: number; y: number; },
+  position: { x: number; y: number };
   size: Size;
   radius: number;
   text: string;
@@ -21,7 +21,7 @@ class CanvasText extends SceneComponent implements IPainter2d {
     text: 'Placeholder',
     font: 'normal bold 80px sans-serif',
     textWidth: 100,
-  }
+  };
 
   outputs = {
     painter: null,
@@ -45,12 +45,18 @@ class CanvasText extends SceneComponent implements IPainter2d {
   }
 }
 
-function wrapText(context: CanvasRenderingContext2D, text: string, x: number, y: number,
-  maxWidth: number, lineHeight: number) {
+function wrapText(
+  context: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  lineHeight: number
+) {
   var words = text.split(' ');
   var line = '';
 
-  for(var n = 0; n < words.length; n++) {
+  for (var n = 0; n < words.length; n++) {
     var testLine = line + words[n] + ' ';
     var metrics = context.measureText(testLine);
     var testWidth = metrics.width;
@@ -58,8 +64,7 @@ function wrapText(context: CanvasRenderingContext2D, text: string, x: number, y:
       context.fillText(line, x, y);
       line = words[n] + ' ';
       y += lineHeight;
-    }
-    else {
+    } else {
       line = testLine;
     }
   }

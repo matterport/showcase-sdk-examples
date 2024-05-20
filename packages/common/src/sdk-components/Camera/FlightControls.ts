@@ -1,6 +1,6 @@
-import { CameraRig } from "./CameraRig";
-import { Controls } from "./ControlBase";
-import { Quaternion, Euler, Vector3 } from "three";
+import { CameraRig } from './CameraRig';
+import { Controls } from './ControlBase';
+import { Quaternion, Euler, Vector3 } from 'three';
 
 /**
  * A control scheme that has a focal point. Often referred to orbit controls
@@ -30,9 +30,9 @@ export class FlightControls extends Controls {
     this.pivotRotation.set(-this.angularVelocity.x, -this.angularVelocity.y, 0, 'YXZ');
     this.pivotOrientation.setFromEuler(this.pivotRotation);
     this.cameraRig.quaternion.multiplyQuaternions(this.cameraRig.quaternion, this.pivotOrientation);
-    
+
     // remove roll
-    const euler = new Euler(0,0,0,'YXZ').setFromQuaternion(this.cameraRig.quaternion);
+    const euler = new Euler(0, 0, 0, 'YXZ').setFromQuaternion(this.cameraRig.quaternion);
     euler.z = 0;
     this.cameraRig.quaternion.setFromEuler(euler);
   }

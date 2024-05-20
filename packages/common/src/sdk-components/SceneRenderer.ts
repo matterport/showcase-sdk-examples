@@ -22,7 +22,7 @@ class SceneRenderer extends SceneComponent {
   inputs: Inputs = {
     painter: null,
     textureRes: { w: 512, h: 512 },
-  }
+  };
 
   outputs = {
     texture: null,
@@ -51,7 +51,6 @@ class SceneRenderer extends SceneComponent {
     this.outputs.texture = null;
     this.renderTarget.dispose();
   }
-
 }
 
 export interface ISceneRenderer extends SceneComponent {

@@ -1,4 +1,3 @@
-
 .select-mode-container {
   height: 60px;
   margin-top: -30px;
@@ -21,7 +20,10 @@
   font-family: 'Roboto', sans-serif;
 }
 
-.select-mode-button, .set-model-button, .iframeoverlay-button, .observing-button {
+.select-mode-button,
+.set-model-button,
+.iframeoverlay-button,
+.observing-button {
   color: #ffffff;
   background-color: #000000;
   margin: 5px;
@@ -30,7 +32,10 @@
   border: none;
 }
 
-.select-mode-button:hover, .set-model-button:hover, .iframeoverlay-button:hover, .observing-button:hover {
+.select-mode-button:hover,
+.set-model-button:hover,
+.iframeoverlay-button:hover,
+.observing-button:hover {
   background-color: #ff3158;
 }
 
@@ -78,7 +83,8 @@
   border-width: 0px;
 }
 
-.iframeoverlay-container, .observing-container {
+.iframeoverlay-container,
+.observing-container {
   height: 38px;
   width: 137px;
   position: absolute;
@@ -93,12 +99,14 @@
   display: flex;
 }
 
-.iframeoverlay-title, .observing-title {
+.iframeoverlay-title,
+.observing-title {
   font-weight: bold;
   font-size: 12px;
 }
 
-.iframeoverlay-details-container, .observing-details-container {
+.iframeoverlay-details-container,
+.observing-details-container {
   display: flex;
   flex-direction: column;
 }

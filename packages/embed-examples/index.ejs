@@ -1,39 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, shrink-to-fit=no"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        height: 100vh;
+        margin: 0px;
+        padding: 0px;
+        overflow: hidden;
+        font-family: 'Roboto', sans-serif;
+        position: relative;
+      }
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport"
-    content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, shrink-to-fit=no">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta charset="UTF-8">
-  <style>
-    body {
-      height: 100vh;
-      margin: 0px;
-      padding: 0px;
-      overflow: hidden;
-      font-family: 'Roboto', sans-serif;
-      position: relative;
-    }
+      html {
+        height: 100vh;
+      }
 
-    html {
-      height: 100vh;
-    }
+      #content {
+        height: 100vh;
+        background-color: #dadada;
+      }
+    </style>
+    <title><%= title %></title>
+    <script src="https://static.matterport.com/showcase-sdk/latest.js"></script>
+  </head>
 
-    #content {
-      height: 100vh;
-      background-color: #DADADA;
-    }
-  </style>
-  <title><%= title %></title>
-  <script src='https://static.matterport.com/showcase-sdk/latest.js'></script>
-</head>
-
-<body>
-  <%= apps %>
-</body>
-
+  <body>
+    <%= apps %>
+  </body>
 </html>

@@ -27,7 +27,7 @@ const applications = [
 /**
  * Generate a chunk entry for each examples sub directory.
  */
-const chunkEntries = function() {
+const chunkEntries = function () {
   const chunks = {};
   for (const application of applications) {
     chunks[application.chunkName] = `./examples/${application.chunkName}/index.ts`;
@@ -38,10 +38,10 @@ const chunkEntries = function() {
 /**
  * Generate application list html
  */
-const computeAppListHtml = function() {
+const computeAppListHtml = function () {
   const elements = [];
   elements.push('<ul>');
-  
+
   for (const application of applications) {
     elements.push(`<li><a href="${application.chunkName}/index.html">${application.title}</a></li>`);
   }
@@ -53,36 +53,40 @@ const computeAppListHtml = function() {
 /**
  * Generate the plugins array.
  */
-const computePlugins = function() {
+const computePlugins = function () {
   const plugins = [];
 
   plugins.push(new CleanWebpackPlugin());
 
   // application html
   for (const application of applications) {
-    plugins.push(new HtmlWebpackPlugin({
-      title: application.title,
-      template: 'examples/common/index.ejs',
-      filename: `${application.chunkName}/index.html`,
-      inject: false,
-    }));
+    plugins.push(
+      new HtmlWebpackPlugin({
+        title: application.title,
+        template: 'examples/common/index.ejs',
+        filename: `${application.chunkName}/index.html`,
+        inject: false,
+      })
+    );
   }
 
   // root html
-  plugins.push(new HtmlWebpackPlugin({
-    template: 'index.ejs',
-    templateParameters: {
-      title: 'Embed Examples',
-      apps: computeAppListHtml(),
-    },
-    filename: 'index.html',
-    inject: false,
-  }));
+  plugins.push(
+    new HtmlWebpackPlugin({
+      template: 'index.ejs',
+      templateParameters: {
+        title: 'Embed Examples',
+        apps: computeAppListHtml(),
+      },
+      filename: 'index.html',
+      inject: false,
+    })
+  );
 
   return plugins;
-}
+};
 
-module.exports = function(config) {
+module.exports = function (config) {
   const plugins = [];
 
   const buildConfig = {
@@ -90,7 +94,7 @@ module.exports = function(config) {
     entry: chunkEntries(),
     output: {
       path: path.resolve(__dirname, 'dist'),
-      filename: '[name]/bundle.js'
+      filename: '[name]/bundle.js',
     },
     devtool: 'source-map',
     resolve: {
@@ -100,24 +104,24 @@ module.exports = function(config) {
       rules: [
         {
           test: /\.(ts|tsx)$/,
-          loader: 'ts-loader'
+          loader: 'ts-loader',
         },
-        { enforce: "pre", test: /\.js$/, use: ["source-map-loader"] },
+        { enforce: 'pre', test: /\.js$/, use: ['source-map-loader'] },
         {
           test: /\.css$/i,
           use: ['style-loader', 'css-loader'],
         },
-      ]
+      ],
     },
     plugins: computePlugins(),
     devServer: {
       port: 8000,
       static: path.join(__dirname, 'dist'),
       devMiddleware: {
-        writeToDisk: true
-      }
-    }
-  }
+        writeToDisk: true,
+      },
+    },
+  };
 
   return buildConfig;
-}
+};

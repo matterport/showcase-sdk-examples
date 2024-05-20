@@ -7,7 +7,7 @@ type Inputs = {
   deviceId: string | null;
 
   enabled: boolean;
-}
+};
 
 type Outputs = {
   /**

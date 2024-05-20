@@ -1,6 +1,13 @@
 import { PhotonClient } from 'rc-app/PhotonClient';
 
-import { DefaultGetTime, GetTimeCallback, millisecondsPerStep, sendInterval, StepPayload, StepPayloadType } from './common';
+import {
+  DefaultGetTime,
+  GetTimeCallback,
+  millisecondsPerStep,
+  sendInterval,
+  StepPayload,
+  StepPayloadType,
+} from './common';
 
 export class LocalTime {
   private startTime: number = 0;
@@ -25,7 +32,7 @@ export class LocalTime {
       step: this.currentStep(),
       time: this.getTimeCallback(),
     };
-  
+
     this.photonClient.raiseEvent(0, event);
   }
 

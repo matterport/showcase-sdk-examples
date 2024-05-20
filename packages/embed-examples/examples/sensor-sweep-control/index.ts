@@ -1,5 +1,5 @@
+import type { MpSdk } from 'embedtypes/sdk';
 import { clearMesssage, connect, setMessage } from '../common';
-import type { MpSdk } from '../common/sdk';
 import '../common/main.css';
 
 const initialSweepSid = '85e7bf413ca344da81e6ec42bcb4aaea';
@@ -11,23 +11,17 @@ const checkDisableSweeps = (sdk: MpSdk, textElement: HTMLDivElement) => {
   if (!inRangeCache) {
     if (currentSweepId === initialSweepSid) {
       const sweepSub = sdk.Sweep.data.subscribe({
-        onCollectionUpdated: (sweeps: any) => {
+        onCollectionUpdated: (sweeps) => {
           const sids: string[] = Object.keys(sweeps).filter(
             (sid: string) => sid !== initialSweepSid && sid !== sourceSweepSid
           );
           sdk.Sweep.disable(...sids);
           sweepSub.cancel();
-          setMessage(
-            textElement,
-            'Move towards the source to enable the rest of the sweeps'
-          );
+          setMessage(textElement, 'Move towards the source to enable the rest of the sweeps');
         },
       });
     } else if (currentSweepId !== '') {
-      setMessage(
-        textElement,
-        'Navigate to the start location to disable sweeps'
-      );
+      setMessage(textElement, 'Navigate to the start location to disable sweeps');
     }
   }
 };
@@ -38,10 +32,7 @@ const checkEnableSweeps = (sdk: MpSdk, textElement: HTMLDivElement) => {
       onCollectionUpdated: (sweeps) => {
         sdk.Sweep.enable(...Object.keys(sweeps));
         sweepSub.cancel();
-        setMessage(
-          textElement,
-          'Navigate to the start location to disable sweeps'
-        );
+        setMessage(textElement, 'Navigate to the start location to disable sweeps');
       },
     });
   }
