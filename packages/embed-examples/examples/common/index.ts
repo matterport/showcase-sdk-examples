@@ -12,8 +12,11 @@ type ConnectOptions = {
 
 export async function connect(options: ConnectOptions = {}): Promise<any> {
   const urlParams = new URLSearchParams(window.location.search);
-  if (!urlParams.has('m')) {
-    urlParams.set('m', 'j4RZx7ZGM6T');
+
+  for (const key in options.urlParams) {
+    if (!urlParams.has(key)) {
+      urlParams.set(key, options.urlParams[key]);
+    }
   }
 
   let applicationKey = sdkKey;
@@ -26,10 +29,8 @@ export async function connect(options: ConnectOptions = {}): Promise<any> {
     apiHost = urlParams.get('apiHost');
   }
 
-  for (const key in options.urlParams) {
-    if (!urlParams.has(key)) {
-      urlParams.set(key, options.urlParams[key]);
-    }
+  if (!urlParams.has('m')) {
+    urlParams.set('m', 'j4RZx7ZGM6T');
   }
 
   const iframe = document.getElementById('sdk-frame') as HTMLIFrameElement;

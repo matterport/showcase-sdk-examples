@@ -1,0 +1,137 @@
+[
+  {
+    "title": "What brand is the fridge?",
+    "description": null,
+    "answer": "1",
+    "choices": ["GE", "Sub-Zero", "Kenmore", "LG"],
+    "tag": {
+      "id": "aUMYG5cfYMm",
+      "label": "What brand is the fridge?",
+      "description": "",
+      "anchorPosition": {
+        "x": 5.314893167599408,
+        "y": -0.1567343140995423,
+        "z": 10.455523925678921
+      },
+      "color": {
+        "r": 0,
+        "g": 0,
+        "b": 1
+      },
+      "stemVector": {
+        "x": 0,
+        "y": 0.2,
+        "z": 0
+      },
+      "stemVisible": true
+    }
+  },
+  {
+    "title": "How wide is the TV?",
+    "description": null,
+    "answer": "2",
+    "choices": ["10'", "3'2\"", "6'5\"", "1'"],
+    "tag": {
+      "id": "hDZVtcsGd5t",
+      "label": "How wide is the TV?",
+      "description": "",
+      "anchorPosition": {
+        "x": 6.808068364327917,
+        "y": -0.7514079923325638,
+        "z": 1.2463780759085934
+      },
+      "color": {
+        "r": 0,
+        "g": 0,
+        "b": 1
+      },
+      "stemVector": {
+        "x": 0,
+        "y": 0.2,
+        "z": 0
+      },
+      "stemVisible": true
+    }
+  },
+  {
+    "title": "What is the recommended procedure with a table during an earthquake?",
+    "description": null,
+    "answer": "2",
+    "choices": ["Get on top of the table", "Move the table outside", "Get under the table", "Get under a chandelier"],
+    "tag": {
+      "id": "ehDVQ3HF1al",
+      "label": "What is the recommended procedure with a table during an earthquake?",
+      "description": "",
+      "anchorPosition": {
+        "x": 0.4731829189866753,
+        "y": -0.8998377744732301,
+        "z": 5.968713694470143
+      },
+      "color": {
+        "r": 0,
+        "g": 0,
+        "b": 1
+      },
+      "stemVector": {
+        "x": 0,
+        "y": 0.2,
+        "z": 0
+      },
+      "stemVisible": true
+    }
+  },
+  {
+    "title": "Who should you call in an emergency?",
+    "description": null,
+    "answer": "0",
+    "choices": ["911", "Ghostbusters", "Grandma", "Matterport Customer Support"],
+    "tag": {
+      "id": "kMF3VzNIslo",
+      "label": "Who should you call in an emergency?",
+      "description": "",
+      "anchorPosition": {
+        "x": 5.015846850857473,
+        "y": -0.8528928246952776,
+        "z": 7.197700847992113
+      },
+      "color": {
+        "r": 0,
+        "g": 0,
+        "b": 1
+      },
+      "stemVector": {
+        "x": 0,
+        "y": 0.2,
+        "z": 0
+      },
+      "stemVisible": true
+    }
+  },
+  {
+    "title": "What color is this chair?",
+    "description": null,
+    "answer": "0",
+    "choices": ["Red", "Blue", "Yellow", "Green"],
+    "tag": {
+      "id": "DsYfDW00lSB",
+      "label": "What color is this chair?",
+      "description": "",
+      "anchorPosition": {
+        "x": 5.8739787740590685,
+        "y": 2.1396123213050684,
+        "z": 8.299051556795263
+      },
+      "color": {
+        "r": 0,
+        "g": 0,
+        "b": 1
+      },
+      "stemVector": {
+        "x": 0,
+        "y": 0.2,
+        "z": 0
+      },
+      "stemVisible": true
+    }
+  }
+]

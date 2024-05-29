@@ -1,0 +1,134 @@
+.right-overlay {
+  width: fit-content;
+  height: fit-content;
+  /* min-height: 50px; */
+  max-height: 70%;
+  min-width: 30%;
+  max-width: 30%;
+  background-color: rgb(56, 56, 56, 0.7);
+  color: white;
+  position: absolute;
+  right: 25px;
+  top: 25px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  overflow-y: scroll;
+}
+
+.popup-overlay {
+  width: fit-content;
+  max-width: 45%;
+  height: fit-content;
+  position: absolute;
+  display: flex;
+  margin-left: 5%;
+  margin-top: 10%;
+  background-color: rgb(56, 56, 56, 0.7);
+  color: white;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 25px;
+}
+
+.popup-exit {
+  color: rgb(255, 103, 103);
+  margin-left: -37px;
+  margin-top: -18px;
+  width: 100%;
+  align-self: flex-start;
+  justify-self: flex-start;
+}
+.popup-exit:hover {
+  cursor: pointer;
+}
+
+.popup-title {
+  width: fit-content;
+  max-width: 75%;
+}
+
+.popup-status {
+  width: fit-content;
+  font-style: italic;
+  margin-left: 15px;
+}
+
+.choices {
+  list-style: none;
+  margin: 10px;
+  width: 100%;
+  display: flex;
+  justify-items: flex-start;
+  flex-wrap: wrap;
+}
+.choices li {
+  width: 45%;
+  margin: 5px;
+}
+.choices li label {
+  margin-left: 5px;
+}
+
+.title {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  justify-self: center;
+  flex: 4;
+  width: 70%;
+  overflow-x: hidden;
+}
+
+.title:hover {
+  cursor: pointer;
+}
+
+.arrow {
+  width: 2%;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 5px solid white;
+  height: 0;
+  margin: 10px;
+  margin-top: 15px;
+}
+
+.active {
+  transform: rotate(-90deg);
+}
+
+.description {
+  width: 100%;
+  margin: 10px;
+  display: none;
+}
+
+.goto {
+  width: 25%;
+  margin: 10px;
+}
+
+.goto:hover {
+  cursor: pointer;
+  background-color: rgba(34, 34, 34, 0.7);
+}
+
+.nearby-tags {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.tag-info {
+  width: 100%;
+  border-bottom: 1px solid black;
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.tag-info:hover {
+  background-color: rgb(37, 37, 37);
+}

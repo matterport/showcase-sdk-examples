@@ -17,20 +17,15 @@ body{
   max-height: 98vh;
 }
 
-.showcase_wrapper {
+.showcase {
   flex: 2;
   position: relative;
   height: 95vh;
   overflow: hidden;
 }
 
-.showcase {
+iframe {
   box-shadow: 0 4px 8px rgb(43, 43, 43);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
 }
 
 .questions{

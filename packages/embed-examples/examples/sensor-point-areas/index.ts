@@ -56,6 +56,19 @@ const main = async () => {
         sourcePromises.push(sdk.Sensor.createSource(sdk.Sensor.SourceType.CYLINDER, desc.options));
         break;
     }
+    switch (desc.type) {
+      case sdk.Sensor.SourceType.BOX:
+        sourcePromises.push(sdk.Sensor.createSource(<MpSdk.Sensor.SourceType.BOX>desc.type, desc.options));
+        break;
+      // Example of handling a sphere source and setting types correctly.
+      case sdk.Sensor.SourceType.SPHERE:
+        sourcePromises.push(sdk.Sensor.createSource(<MpSdk.Sensor.SourceType.SPHERE>desc.type, desc.options));
+        break;
+      // Example of handling a cylinder source and setting types correctly.
+      case sdk.Sensor.SourceType.CYLINDER:
+        sourcePromises.push(sdk.Sensor.createSource(<MpSdk.Sensor.SourceType.CYLINDER>desc.type, desc.options));
+        break;
+    }
   }
   const sources = await Promise.all(sourcePromises);
   sensor.addSource(...sources);

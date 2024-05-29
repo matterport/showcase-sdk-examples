@@ -13,7 +13,6 @@
     - [inspector](#inspector)
     - [easter](#easter)
     - [embed examples](#embed-examples])
-    - [training tags demo](#training-tags-demo])
     - [common](#common)
     - [core](#core)
     - [bundle](#bundle)
@@ -58,7 +57,6 @@ All packages can run in a development environment by their respective names:
 > yarn easter
 > yarn rc-app
 > yarn embed-examples
-> yarn training-tags-demo
 ```
 
 ### Clean packages
@@ -106,11 +104,6 @@ frameworks: [Reactjs](https://reactjs.org/) + [Phaser](https://phaser.io/) + [SD
 
 - Hidden object minigame
 
-#### training-tags-demo
-
-frameworks: Vanilla JS
-
-- [training application](https://matterport.github.io/showcase-sdk/sdk_tags_quiz.html) + [SDK for Embeds](https://matterport.github.io/showcase-sdk/sdk_home.html)
 
 #### embed-examples
 
@@ -120,6 +113,9 @@ frameworks: Vanilla JS + [SDK for Embeds](https://matterport.github.io/showcase-
 - Sensor - Sweep Controls
 - Sensor - Tags Level of Details
 - Sensor - Tags per Sweep
+- Training Tags Demo - [Training Application](https://matterport.github.io/showcase-sdk/sdk_tags_quiz.html)
+- Training Tags Overlay Demo - [Training Application](https://matterport.github.io/showcase-sdk/sdk_tags_quiz_overlay.html)
+
 
 #### common
 

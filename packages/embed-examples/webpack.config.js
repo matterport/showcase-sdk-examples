@@ -22,6 +22,14 @@ const applications = [
     chunkName: 'sensor-tags-per-sweep',
     title: 'Sensor - Tags per sweep',
   },
+  {
+    chunkName: 'training-tags-demo',
+    title: 'Tags - Training Tags Demo',
+  },
+  {
+    chunkName: 'training-tags-overlay',
+    title: 'Tags - Training Tags Overlay',
+  },
 ];
 
 /**
