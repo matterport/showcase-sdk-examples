@@ -47,7 +47,7 @@
     "packages/*"
   ],
   "config": {
-    "bundle_version": "24.4.3_webgl-60-g22e9112908",
-    "embed_version": "24.5.1_webgl-89-g74a0f01508"
+    "bundle_version": "24.11.2_webgl-798-gf42d1db434",
+    "embed_version": "24.11.2_webgl-798-gf42d1db434"
   }
 }
