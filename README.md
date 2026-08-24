@@ -14,7 +14,6 @@
     - [easter](#easter)
     - [embed examples](#embed-examples])
     - [common](#common)
-    - [core](#core)
     - [bundle](#bundle)
   - [License](#license)
 
@@ -109,6 +108,7 @@ frameworks: [Reactjs](https://reactjs.org/) + [Phaser](https://phaser.io/) + [SD
 
 frameworks: Vanilla JS + [SDK for Embeds](https://matterport.github.io/showcase-sdk/sdk_home.html)
 
+- Pointer - Intersection Inspector
 - Sensor - Point Areas
 - Sensor - Sweep Controls
 - Sensor - Tags Level of Details
@@ -120,10 +120,6 @@ frameworks: Vanilla JS + [SDK for Embeds](https://matterport.github.io/showcase-
 #### common
 
 - Reusable SDK Bundle components
-
-#### core
-
-- Matterport observable library
 
 #### bundle
 

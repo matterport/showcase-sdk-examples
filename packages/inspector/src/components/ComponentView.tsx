@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import { IContext } from '../interfaces';
+import { IAppContext } from '../interfaces';
 import { AppContext } from '../AppContext';
-import { SceneComponent } from '@mp/common';
-import { Observable } from '@mp/core/src/observable/Observable';
-import { Dict, ISubscription } from '@mp/core';
+import type { MpSdk } from '../../../bundle/sdk';
 import { StringEditor } from './editors/StringEditor';
 import { NumberEditor } from './editors/NumberEditor';
 import { Typography, Divider } from '@mui/material';
-import { ObjectEditor } from './editors/ObjectEditor ';
+import { ObjectEditor } from './editors/ObjectEditor';
 import { BooleanEditor } from './editors/BooleanEditor';
 import { JsxBuffer } from '../utils';
 import styled from '@emotion/styled';
@@ -23,26 +21,26 @@ const styles = {
   },
   label: {
     fontSize: '11pt',
-    fontWeight: 'bold' as 'bold',
+    fontWeight: 'bold',
   },
   section: {
     marginTop: '10px',
     fontSize: '9pt',
-    fontWeight: 'bold' as 'bold',
+    fontWeight: 'bold',
   },
-};
+} as const;
 const ContainerDiv = styled.div(styles.container);
 interface Props {
-  component: SceneComponent;
+  component: MpSdk.Scene.IComponent;
 }
 interface State {
   forceRender: boolean;
 }
 
 export class ComponentView extends Component<Props, State> {
-  context: IContext;
+  context: IAppContext;
   static contextType = AppContext;
-  private sub: ISubscription | null = null;
+  private subs: MpSdk.ISubscription[] = [];
 
   constructor(props: Props) {
     super(props);
@@ -60,17 +58,25 @@ export class ComponentView extends Component<Props, State> {
   }
 
   componentDidMount() {
-    const inputs = this.props.component.inputs as Observable<Dict<any>>;
-    if (inputs) {
-      this.sub = inputs.onChanged(this.onInputsChanged);
+    // Spy on each declared input via the IObject path API — the supported
+    // way to observe input changes without relying on any runtime-wrapped
+    // Observable type that the SDK doesn't expose.
+    const { component } = this.props;
+    const { sceneObject } = this.context.scene;
+    for (const key of Object.keys(component.inputs)) {
+      const path = sceneObject.addInputPath(component, key);
+      this.subs.push(sceneObject.spyOnEvent({
+        path,
+        onEvent: this.onInputsChanged,
+      }));
     }
   }
 
   componentWillUnmount() {
-    if (this.sub) {
-      this.sub.cancel();
-      this.sub = null;
+    for (const sub of this.subs) {
+      sub.cancel();
     }
+    this.subs = [];
   }
 
   onPropertyChanged(property: string, value: any) {
@@ -78,13 +84,14 @@ export class ComponentView extends Component<Props, State> {
   }
 
   onChildPropertyChanged(property: string, childPropertyName: string, value: any) {
-    this.props.component.inputs[property][childPropertyName] = value;
+    const parent = this.props.component.inputs[property] as Record<string, unknown>;
+    parent[childPropertyName] = value;
   }
 
   render() {
     const properties = new JsxBuffer('props');
 
-    const outputSection = (name: string, section: Dict<any>, readonly: boolean) => {
+    const outputSection = (name: string, section: Record<string, any>, readonly: boolean) => {
       properties.push(<Typography sx={styles.label}>{name}</Typography>);
       properties.push(<Divider></Divider>);
 
@@ -134,7 +141,7 @@ export class ComponentView extends Component<Props, State> {
     };
 
     // only display events that are enabled and make events readonly
-    const outputEvents = (section: Dict<any>) => {
+    const outputEvents = (section: Record<string, any>) => {
       properties.push(<Typography sx={styles.section}>Events</Typography>);
       properties.push(<Divider></Divider>);
       for (const property in section) {

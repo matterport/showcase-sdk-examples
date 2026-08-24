@@ -1,21 +1,27 @@
-const SDK_VERSION = '3.2';
+import type { MpSdk, ShowcaseBundleWindow } from '../../bundle/sdk';
 
-export const GetSDK = function (elementId: string | HTMLIFrameElement, applicationKey: string): Promise<any> {
+// applicationKey is read from the iframe's query string by the bundle itself,
+// so it's not needed in the connect call. It remains in the GetSDK signature
+// so existing callers don't have to change.
+export const GetSDK = function (elementId: string | HTMLIFrameElement, _applicationKey: string): Promise<MpSdk> {
   return new Promise(function (resolve, reject) {
     const checkIframe = async function () {
-      var iframe = null;
+      let iframe: HTMLIFrameElement | null = null;
       if (elementId instanceof HTMLIFrameElement) {
-        iframe = elementId as HTMLIFrameElement;
+        iframe = elementId;
       } else {
-        iframe = document.getElementById(elementId);
+        iframe = document.getElementById(elementId) as HTMLIFrameElement | null;
       }
 
-      if (iframe && (iframe as any).contentWindow.MP_SDK) {
-        clearInterval(intervalId);
+      if (iframe) {
+        const showcaseWindow = iframe.contentWindow as ShowcaseBundleWindow | null;
+        if (showcaseWindow?.MP_SDK) {
+          clearInterval(intervalId);
 
-        const sdk = await (iframe as any).contentWindow.MP_SDK.connect(iframe, applicationKey, SDK_VERSION);
-        resolve(sdk);
-        console.log(sdk);
+          const sdk = await showcaseWindow.MP_SDK.connect(showcaseWindow);
+          resolve(sdk);
+          console.log(sdk);
+        }
       }
     };
     const intervalId = setInterval(checkIframe, 100);

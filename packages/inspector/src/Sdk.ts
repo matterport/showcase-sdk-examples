@@ -1,42 +1,54 @@
 import { interfaceVersion } from "@mp/common";
+import type { MpSdk } from '../../bundle/sdk';
+
+interface ShowcaseWindow extends Window {
+  MP_SDK: {
+    connect(iframe: HTMLIFrameElement, applicationKey: string, version: string): Promise<MpSdk>;
+  };
+}
+
+export type Sdk = MpSdk;
 
 export interface ISdk {
   init(applicationKey: string): void;
-  sdk: any;
-  onChanged(callback: (sdk: any) => void): void;
+  sdk: MpSdk;
+  onChanged(callback: (sdk: MpSdk) => void): void;
 }
 
 export function makeSdk(elementId: string): ISdk {
-  return new Sdk(elementId);
+  return new SdkLoader(elementId);
 }
 
-class Sdk implements ISdk {
-  private callback: (sdk: any) => void;
-  public sdk: any;
+class SdkLoader implements ISdk {
+  private callback: (sdk: MpSdk) => void;
+  public sdk: MpSdk;
 
   constructor(private elementId: string) {}
 
   public init(applicationKey: string) {
     const that = this;
     const checkIframe = function() {
-      var iframe = document.getElementById(that.elementId);
-      if (iframe && (iframe as any).contentWindow.MP_SDK) {
-        clearInterval(intervalId);
+      const iframe = document.getElementById(that.elementId) as HTMLIFrameElement | null;
+      if (iframe) {
+        const showcaseWindow = iframe.contentWindow as ShowcaseWindow | null;
+        if (showcaseWindow?.MP_SDK) {
+          clearInterval(intervalId);
 
-        (iframe as any).contentWindow.MP_SDK.connect(iframe, applicationKey, interfaceVersion).then((sdk: any) => {
-          that.sdk = sdk;
-          console.log(that.sdk);
-          if (that.callback) {
-            that.callback(sdk);
-          }
-        });
+          showcaseWindow.MP_SDK.connect(iframe, applicationKey, interfaceVersion).then((sdk) => {
+            that.sdk = sdk;
+            console.log(that.sdk);
+            if (that.callback) {
+              that.callback(sdk);
+            }
+          });
+        }
       }
     };
 
     const intervalId = setInterval(checkIframe, 100);
   }
 
-  public onChanged(callback: (sdk: any) => void): void {
+  public onChanged(callback: (sdk: MpSdk) => void): void {
     this.callback = callback;
   }
 }

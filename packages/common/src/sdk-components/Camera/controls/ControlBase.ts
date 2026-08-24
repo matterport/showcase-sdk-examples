@@ -1,33 +1,36 @@
-import { ICameraController } from './ICameraController';
-import { Axis } from './Axis';
-import { Vector3 } from 'three';
-
-type KeyedMap<E extends {}, V = any> = {
-  [key in Extract<E[keyof E], number | string>]: V;
-};
+import { ICameraController } from './types';
+import { Axis } from './enums';
+import type { Vector3 } from 'three';
+import type * as THREEType from 'three';
 
 export abstract class Controls implements ICameraController {
-  private accelerationMap: KeyedMap<typeof Axis, number> = {
+  private accelerationMap: Record<Axis, number> = {
     [Axis.X]: 0,
     [Axis.Y]: 0,
     [Axis.Z]: 0,
   };
-  private angularAccelerationMap: KeyedMap<typeof Axis, number> = {
+  private angularAccelerationMap: Record<Axis, number> = {
     [Axis.X]: 0,
     [Axis.Y]: 0,
     [Axis.Z]: 0,
   };
 
-  private acceleration = new Vector3();
-  private angularAcceleration = new Vector3();
+  private acceleration: Vector3;
+  private angularAcceleration: Vector3;
 
-  private preAccelVel = new Vector3();
-  protected velocity = new Vector3();
-  protected angularVelocity = new Vector3();
+  private preAccelVel: Vector3;
+  protected velocity: Vector3;
+  protected angularVelocity: Vector3;
 
   private friction = 13;
 
-  constructor(private drag: number, private angularDrag: number) {}
+  constructor(private drag: number, private angularDrag: number, THREE: typeof THREEType) {
+    this.acceleration = new THREE.Vector3();
+    this.angularAcceleration = new THREE.Vector3();
+    this.preAccelVel = new THREE.Vector3();
+    this.velocity = new THREE.Vector3();
+    this.angularVelocity = new THREE.Vector3();
+  }
 
   setAngularVelocity(axis: Axis, velocity: number) {
     switch (axis) {

@@ -16,7 +16,7 @@ import { MakeGameState } from '../GameState';
 import { GameOverScene } from '../scenes/GameOverScene';
 import { bunnyCaptureType, createBunnyCaptureClosure } from '../scene-components/BunnyCapture';
 import { bunnySelectorSphereType, createBunnySelectorClosure } from '../scene-components/BunnySelectorSphere';
-import bunnies from '../bunnies.json';
+import { createBunnies } from '../createBunnies';
 
 export const ModelSid = 'H3QvzfsVQHq';
 
@@ -134,16 +134,13 @@ export class MainView extends Component<{}, State> {
       this.sdk.Scene.register(bunnyCaptureType, createBunnyCaptureClosure(gameState, eventBus, this.sdk)),
     ]);
 
-    const object = await this.sdk.Scene.deserialize(JSON.stringify(bunnies));
-    const nodes = [...object.nodeIterator()];
+    const [object] = await this.sdk.Scene.createObjects(1);
+    createBunnies(object, this.sdk);
+    object.start();
 
     // set initial values of capture state
-    gameState.captured.value = 0;
-    gameState.total.value = this.winningCaptureTotal;
-
-    for (let i = 0; i < nodes.length; ++i) {
-      nodes[i].start();
-    }
+    gameState.captured = 0;
+    gameState.total = this.winningCaptureTotal;
 
     sceneConfig.eventBus.addListener(
       SceneEvents.SceneStart,

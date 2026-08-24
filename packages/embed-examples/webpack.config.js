@@ -7,6 +7,10 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
  */
 const applications = [
   {
+    chunkName: 'intersection-inspector',
+    title: 'Pointer - Intersection Inspector',
+  },
+  {
     chunkName: 'sensor-point-areas',
     title: 'Sensor - Point Areas',
   },

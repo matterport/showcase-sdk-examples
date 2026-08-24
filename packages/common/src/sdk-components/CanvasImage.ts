@@ -1,4 +1,5 @@
-import { SceneComponent, IPainter2d, Size, ComponentOutput } from '@mp/common';
+import type { MpSdk } from '../../../bundle/sdk';
+import { IPainter2d, Size } from '@mp/common';
 
 type Inputs = {
   src: string | null;
@@ -10,71 +11,74 @@ type Inputs = {
 
 type Outputs = {
   painter: IPainter2d | null;
-} & ComponentOutput;
+};
 
-class CanvasImage extends SceneComponent implements IPainter2d {
-  private image: HTMLImageElement | null = null;
-
-  inputs: Inputs = {
-    src: null,
-    srcPosition: { x: 0, y: 0 },
-    srcSize: { w: 64, h: 64 },
-    destPosition: { x: 0, y: 0 },
-    destSize: { w: 64, h: 64 },
-  };
-
-  outputs = {
-    painter: null,
-  } as Outputs;
-
-  onInit() {
-    this.outputs.painter = this;
-    this.maybeLoadImage();
+function paintImage(context2d: CanvasRenderingContext2D, image: HTMLImageElement | null, inputs: Inputs) {
+  if (!image) {
+    return;
   }
 
-  onInputsUpdated() {
-    this.maybeLoadImage();
-  }
-
-  paint(context2d: CanvasRenderingContext2D, size: Size): void {
-    if (!this.image) {
-      return;
-    }
-
-    context2d.clearRect(0, 0, this.inputs.destSize.w, this.inputs.destSize.h);
-    if (this.image.width > 0) {
-      context2d.drawImage(
-        this.image,
-        this.inputs.srcPosition.x,
-        this.inputs.srcPosition.y,
-        this.inputs.srcSize.w,
-        this.inputs.srcSize.h,
-        this.inputs.destPosition.x,
-        this.inputs.destPosition.y,
-        this.inputs.destSize.w,
-        this.inputs.destSize.h
-      );
-    }
-  }
-
-  private maybeLoadImage() {
-    this.image = null;
-
-    if (this.inputs.src !== null && this.inputs.src !== '') {
-      const that = this;
-      this.image = new Image();
-      this.image.crossOrigin = 'anonymous';
-      this.image.src = this.inputs.src;
-      this.image.onload = function (event: Event) {
-        that.notify('paint.ready');
-      };
-    }
-
-    this.notify('paint.ready');
+  context2d.clearRect(0, 0, inputs.destSize.w, inputs.destSize.h);
+  if (image.width > 0) {
+    context2d.drawImage(
+      image,
+      inputs.srcPosition.x,
+      inputs.srcPosition.y,
+      inputs.srcSize.w,
+      inputs.srcSize.h,
+      inputs.destPosition.x,
+      inputs.destPosition.y,
+      inputs.destSize.w,
+      inputs.destSize.h
+    );
   }
 }
 
 export const canvasImageType = 'mp.canvasImage';
-export function makeCanvasImage() {
-  return new CanvasImage();
-}
+export const makeCanvasImage: MpSdk.Scene.IComponentFactory<Inputs, Outputs> = () => {
+  let image: HTMLImageElement | null = null;
+
+  const maybeLoadImage = (self: MpSdk.Scene.IComponentThis<Inputs, Outputs>) => {
+    image = null;
+
+    if (self.inputs.src !== null && self.inputs.src !== '') {
+      image = new Image();
+      image.crossOrigin = 'anonymous';
+      image.src = self.inputs.src;
+      image.onload = function (_event: Event) {
+        self.notify('paint.ready');
+      };
+    }
+
+    self.notify('paint.ready');
+  };
+
+  return {
+    inputs: {
+      src: null,
+      srcPosition: { x: 0, y: 0 },
+      srcSize: { w: 64, h: 64 },
+      destPosition: { x: 0, y: 0 },
+      destSize: { w: 64, h: 64 },
+    },
+
+    outputs: {
+      painter: null,
+    },
+
+    emits: {
+      'paint.ready': true,
+    },
+
+    onInit() {
+      this.outputs.painter = {
+        paint: (context2d: CanvasRenderingContext2D, _size: Size) => paintImage(context2d, image, this.inputs),
+      };
+      maybeLoadImage(this);
+    },
+
+    onInputsUpdated() {
+      maybeLoadImage(this);
+    },
+  };
+};

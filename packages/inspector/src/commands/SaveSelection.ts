@@ -1,10 +1,10 @@
-import { IDialogUser, MenuCommandFactory, IContext } from '../interfaces';
+import { IDialogUser, MenuCommandFactory, IAppContext } from '../interfaces';
 import { IMenuCommand } from '../interfaces';
-import { ISceneNode } from '@mp/common';
+import type { MpSdk } from '../../../bundle/sdk';
 import { saveStringToFile } from '../utils';
 
 class SaveSelection implements IMenuCommand<void> {
-  constructor(private context: IContext, private selection: ISceneNode[]) {}
+  constructor(private appContext: IAppContext, private selection: MpSdk.Scene.INode[]) {}
   
   dialogUser(): IDialogUser|null {
     return null;
@@ -15,13 +15,13 @@ class SaveSelection implements IMenuCommand<void> {
       return;
     }
 
-    const serialized = await this.context.sdk.sdk.Scene.serialize(this.selection);
+    const serialized = await this.appContext.sdk.sdk.Scene.serialize(this.selection);
     saveStringToFile(serialized, 'selection.json');
   }
 }
 
-export const makeSaveSelectionFactory = (context: IContext): MenuCommandFactory => {
-  return (selection: ISceneNode[]) => {
-    return new SaveSelection(context, selection);
+export const makeSaveSelectionFactory = (appContext: IAppContext): MenuCommandFactory => {
+  return (selection: MpSdk.Scene.INode[]) => {
+    return new SaveSelection(appContext, selection);
   };
 };

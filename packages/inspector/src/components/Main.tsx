@@ -5,21 +5,15 @@ import { FrameView } from './Frame';
 import { Selection, TransformToolbar } from './TransformToolbar';
 import { SceneDropZone } from './SceneDropZone';
 import {
-  ISceneNode,
-  IComponentEventSpy,
   IInteractionEvent,
-  ComponentInteractionType,
-  IVector3,
-  IVector2,
   sdkKey,
 } from '@mp/common';
+import type { MpSdk } from '../../../bundle/sdk';
 //import { WithStyles, withStyles } from '@material-ui/core/styles';
 import { Grid, Button, Tabs, Tab } from '@mui/material';
-import { Vector3 } from 'three';
 import { MenuView, IMenuItem } from './MenuView';
-import { IContext, IDialogUser } from '../interfaces';
+import { IAppContext, IDialogUser } from '../interfaces';
 import { AppContext } from '../AppContext';
-import { ISubscription } from '@mp/common';
 import { CameraView } from './CameraView';
 import { Menus, MenuItemDescriptor, MenuDescriptor } from './Menus';
 import { saveStringToFile } from '../utils';
@@ -41,7 +35,7 @@ export const waitUntil = async (condition: () => boolean) => {
 const styles = {
   wrapper: {
     display: 'flex',
-    flexDirection: 'column' as 'column',
+    flexDirection: 'column',
     height: 'calc(100vh - 36px)',
   },
   root: {
@@ -77,14 +71,14 @@ const styles = {
   },
   tabPanel: {
     maxHeight: '100%',
-    overflowY: 'auto' as 'auto',
+    overflowY: 'auto',
     minWidth: 266,
   },
   tab: {
     minWidth: 125,
     padding: 0,
   }
-};
+} as const;
 
 const WrapperDiv = styled.div(styles.wrapper);
 const ContainerDiv = styled.div(styles.container);
@@ -94,19 +88,19 @@ const TabPanelDiv = styled.div(styles.tabPanel);
 interface Props {}
 
 interface State {
-  scene: ISceneNode[];
-  cameraPosition: IVector3;
-  cameraRotation: IVector2;
-  selection: ISceneNode;
+  scene: MpSdk.Scene.INode[];
+  cameraPosition: MpSdk.Vector3;
+  cameraRotation: MpSdk.Vector2;
+  selection: MpSdk.Scene.INode;
   user: IDialogUser | null;
   tabIndex: number;
 }
 
 export class MainView extends Component<Props, State> {
-  context: IContext;
+  context: IAppContext;
   static contextType = AppContext;
   private queryString: string = '';
-  private spySubs: ISubscription[] = [];
+  private spySubs: MpSdk.ISubscription[] = [];
 
   constructor(props: Props) {
     super(props);
@@ -140,7 +134,7 @@ export class MainView extends Component<Props, State> {
     this.onTabChanged = this.onTabChanged.bind(this);
   }
 
-  private itemSelected(item: ISceneNode|null) {
+  private itemSelected(item: MpSdk.Scene.INode|null) {
     const widget = this.context.scene.widget;
     const cameraInput = this.context.scene.cameraInput;
 
@@ -160,7 +154,7 @@ export class MainView extends Component<Props, State> {
     }
   }
 
-  private itemDoubleClick(item: ISceneNode) {
+  private itemDoubleClick(item: MpSdk.Scene.INode) {
     const widget = this.context.scene.widget;
     const cameraInput = this.context.scene.cameraInput;
 
@@ -170,10 +164,11 @@ export class MainView extends Component<Props, State> {
     if (widget) {
       widget.inputs.selection = item;
     }
-    cameraInput.inputs.focus = new Vector3().copy((item as any).obj3D.position);
+    const THREE = this.context.sdk.sdk.Scene.THREE;
+    cameraInput.inputs.focus = new THREE.Vector3().copy(item.position);
   }
 
-  private itemDeleted(item: ISceneNode) {
+  private itemDeleted(item: MpSdk.Scene.INode) {
     this.setState({
       selection: null,
     });
@@ -214,9 +209,10 @@ export class MainView extends Component<Props, State> {
         }
         this.spySubs = [];
 
-        class ClickSpy implements IComponentEventSpy<IInteractionEvent> {
-          public eventType = ComponentInteractionType.CLICK;
-          constructor(private mainView: MainView, private node: ISceneNode) {}
+        const sdk = this.context.sdk.sdk;
+        class ClickSpy implements MpSdk.Scene.IComponentEventSpy<IInteractionEvent> {
+          public eventType = sdk.Scene.InteractionType.CLICK;
+          constructor(private mainView: MainView, private node: MpSdk.Scene.INode) {}
           onEvent(payload: IInteractionEvent) {
             this.mainView.itemSelected(this.node);
           }
@@ -231,7 +227,7 @@ export class MainView extends Component<Props, State> {
           }
 
           for (const component of node.componentIterator()) {
-            if (!component.emits || !(component.emits[ComponentInteractionType.CLICK])) continue;
+            if (!component.emits || !(component.emits[sdk.Scene.InteractionType.CLICK])) continue;
             const sub = component.spyOnEvent(new ClickSpy(this, node));
             this.spySubs.push(sub);
           }

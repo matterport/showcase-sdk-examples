@@ -1,20 +1,20 @@
-import { IDialogUser, MenuCommandFactory, IContext } from '../interfaces';
+import { IDialogUser, MenuCommandFactory, IAppContext } from '../interfaces';
 import { IMenuCommand } from '../interfaces';
-import { ISceneNode } from '@mp/common';
+import type { MpSdk } from '../../../bundle/sdk';
 
 class ResetScene implements IMenuCommand<void> {
-  constructor(private context: IContext) {}
+  constructor(private appContext: IAppContext) {}
   
   dialogUser(): IDialogUser|null {
     return null;
   }
   async execute(): Promise<void> {
-    this.context.scene.reset();
+    this.appContext.scene.reset();
   }
 }
 
-export const makeResetSceneFactory = (context: IContext): MenuCommandFactory => {
-  return (selection: ISceneNode[]) => {
-    return new ResetScene(context);
+export const makeResetSceneFactory = (appContext: IAppContext): MenuCommandFactory => {
+  return (selection: MpSdk.Scene.INode[]) => {
+    return new ResetScene(appContext);
   };
 };

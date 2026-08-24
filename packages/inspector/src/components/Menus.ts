@@ -1,4 +1,4 @@
-import { MenuCommandFactory, IContext } from '../interfaces';
+import { MenuCommandFactory, IAppContext } from '../interfaces';
 import { makeAddChairFactory } from '../commands/AddChair';
 import { makeAddCameraFactory } from '../commands/AddCamera';
 import { makeCloseupViewFactory } from '../commands/CloseupView';
@@ -13,9 +13,10 @@ import {
 import { makeBoxSourceFactory, makeCylinderSourceFactory, makeSphereSourceFactory } from '../commands/AddSource';
 import { makeSaveSourcesFactory } from '../commands/SaveSources';
 
+
 export type MenuItemDescriptor = {
   title: string;
-  factoryMaker: (context: IContext) => MenuCommandFactory;
+  factoryMaker: (appContext: IAppContext) => MenuCommandFactory;
 
   // filled in by Main.tsx
   commandFactory?: MenuCommandFactory;

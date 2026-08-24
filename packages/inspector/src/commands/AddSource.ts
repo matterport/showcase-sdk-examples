@@ -1,43 +1,43 @@
-import { MenuCommandFactory, IMenuCommand, IDialogUser, IContext } from '../interfaces';
-import { ISceneNode, sphereSourceType } from '@mp/common';
-import { boxSourceType } from '@mp/common/src/sdk-components/BoxSource';
-import { cylinderSourceType } from '@mp/common/src/sdk-components/CylinderSource';
+import { MenuCommandFactory, IMenuCommand, IDialogUser, IAppContext } from '../interfaces';
+import { sphereSourceType, boxSourceType, cylinderSourceType } from '@mp/common';
+import type { MpSdk } from '../../../bundle/sdk';
 
 class AddSource implements IMenuCommand<void> {
   static sourceCount = 1;
 
-  constructor(private context: IContext, private componentType: string, private name: string) {}
+  constructor(private appContext: IAppContext, private componentType: string, private name: string) {}
 
   dialogUser(): IDialogUser {
     return null;
   }
 
   async execute(): Promise<void> {
-    const node = await this.context.sdk.sdk.Scene.createNode() as ISceneNode;
+    const node = this.appContext.scene.sceneObject.addNode();
     node.name = `${this.name}-Source-${AddSource.sourceCount++}`;
+    node.position.copy(await this.appContext.scene.getSpawnPosition());
     node.addComponent(this.componentType, {
-      sensor: this.context.scene.sensor,
+      sensor: this.appContext.scene.sensor,
     });
     node.start();
 
-    this.context.scene.addObject(node);
+    this.appContext.scene.addObject(node);
   }
 }
 
-export const makeSphereSourceFactory = (context: IContext): MenuCommandFactory => {
-  return (selection: ISceneNode[]) => {
-    return new AddSource(context, sphereSourceType, 'Sphere');
+export const makeSphereSourceFactory = (appContext: IAppContext): MenuCommandFactory => {
+  return (selection: MpSdk.Scene.INode[]) => {
+    return new AddSource(appContext, sphereSourceType, 'Sphere');
   }
 };
 
-export const makeBoxSourceFactory = (context: IContext): MenuCommandFactory => {
-  return (selection: ISceneNode[]) => {
-    return new AddSource(context, boxSourceType, 'Box');
+export const makeBoxSourceFactory = (appContext: IAppContext): MenuCommandFactory => {
+  return (selection: MpSdk.Scene.INode[]) => {
+    return new AddSource(appContext, boxSourceType, 'Box');
   }
 };
 
-export const makeCylinderSourceFactory = (context: IContext): MenuCommandFactory => {
-  return (selection: ISceneNode[]) => {
-    return new AddSource(context, cylinderSourceType, 'Cylinder');
+export const makeCylinderSourceFactory = (appContext: IAppContext): MenuCommandFactory => {
+  return (selection: MpSdk.Scene.INode[]) => {
+    return new AddSource(appContext, cylinderSourceType, 'Cylinder');
   }
 };

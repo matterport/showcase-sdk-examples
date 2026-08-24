@@ -1,6 +1,7 @@
-import { CameraRig } from './CameraRig';
+import type { CameraRig } from './CameraRig';
 import { Controls } from './ControlBase';
-import { Quaternion, Euler, Vector3 } from 'three';
+import type { Quaternion, Euler, Vector3 } from 'three';
+import type * as THREEType from 'three';
 
 /**
  * A control scheme that has a focal point. Often referred to orbit controls
@@ -9,12 +10,17 @@ import { Quaternion, Euler, Vector3 } from 'three';
  *   accelerate the camera away/toward the rig base
  */
 export class FlightControls extends Controls {
-  private localVelocity = new Vector3();
-  private pivotRotation = new Euler();
-  private pivotOrientation = new Quaternion();
+  private localVelocity: Vector3;
+  private pivotRotation: Euler;
+  private pivotOrientation: Quaternion;
+  private THREE: typeof THREEType;
 
-  constructor(private cameraRig: CameraRig) {
-    super(0.5, 1);
+  constructor(private cameraRig: CameraRig, THREE: typeof THREEType) {
+    super(0.5, 1, THREE);
+    this.THREE = THREE;
+    this.localVelocity = new THREE.Vector3();
+    this.pivotRotation = new THREE.Euler();
+    this.pivotOrientation = new THREE.Quaternion();
   }
 
   tick(deltaMsec: number) {
@@ -32,7 +38,7 @@ export class FlightControls extends Controls {
     this.cameraRig.quaternion.multiplyQuaternions(this.cameraRig.quaternion, this.pivotOrientation);
 
     // remove roll
-    const euler = new Euler(0, 0, 0, 'YXZ').setFromQuaternion(this.cameraRig.quaternion);
+    const euler = new this.THREE.Euler(0, 0, 0, 'YXZ').setFromQuaternion(this.cameraRig.quaternion);
     euler.z = 0;
     this.cameraRig.quaternion.setFromEuler(euler);
   }

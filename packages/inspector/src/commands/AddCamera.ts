@@ -1,43 +1,46 @@
-import { IDialogUser, MenuCommandFactory, IContext } from '../interfaces';
+import { IDialogUser, MenuCommandFactory, IAppContext } from '../interfaces';
 import { IMenuCommand } from '../interfaces';
 import { splineCameraType, DoneEvent } from '../SplineCamera';
-import { SceneComponent, ISceneNode, IComponentEventSpy } from '@mp/common';
+import type { MpSdk } from '../../../bundle/sdk';
 
 class AddCamera implements IMenuCommand<void> {
-  constructor(private context: IContext) {}
+  constructor(private appContext: IAppContext) {}
   
   dialogUser(): IDialogUser|null {
     return null;
   }
   async execute(): Promise<void> {
-    const node = await this.context.sdk.sdk.Scene.createNode() as ISceneNode;
+    const obj = this.appContext.scene.sceneObject;
+    const node = obj.addNode();
     node.name = 'New SplineCamera';
+    node.position.copy(await this.appContext.scene.getSpawnPosition());
     const splineCamera = node.addComponent(splineCameraType);
     const cameraControl = node.addComponent('mp.camera', {
       enabled: true,
-    }) as SceneComponent;
-    cameraControl.bind('camera', splineCamera, 'camera');
-    
+    });
+
+    obj.bindPath(obj.addInputPath(cameraControl, 'camera'), obj.addOutputPath(splineCamera, 'camera'));
+
     node.start();
-    this.context.scene.addObject(node);
+    this.appContext.scene.addObject(node);
 
     /**
      * Use this spy to remove the object from the scene when the animation is complete.
      */
-    class DoneSpy implements IComponentEventSpy<void> {
+    class DoneSpy implements MpSdk.Scene.IComponentEventSpy<void> {
       public eventType = DoneEvent;
-      constructor(private context: IContext, private node: ISceneNode) {}
+      constructor(private appContext: IAppContext, private node: MpSdk.Scene.INode) {}
       onEvent() {
-        this.context.scene.removeObject(this.node);
+        this.appContext.scene.removeObject(this.node);
       }
     }
 
-    splineCamera.spyOnEvent(new DoneSpy(this.context, node));
+    splineCamera.spyOnEvent(new DoneSpy(this.appContext, node));
   }
 }
 
-export const makeAddCameraFactory = (context: IContext): MenuCommandFactory => {
-  return (selection: ISceneNode[]) => {
-    return new AddCamera(context);
+export const makeAddCameraFactory = (appContext: IAppContext): MenuCommandFactory => {
+  return (selection: MpSdk.Scene.INode[]) => {
+    return new AddCamera(appContext);
   };
 };

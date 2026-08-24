@@ -1,49 +1,9 @@
-import { SceneComponent, IPainter2d, Size, ComponentOutput, ComponentInteractionType } from '@mp/common';
+import type { MpSdk } from '../../../bundle/sdk';
+import { IPainter2d, Size } from '@mp/common';
 
 type Outputs = {
   painter: IPainter2d | null;
-} & ComponentOutput;
-
-class ClockPainterComponent extends SceneComponent {
-  private digitalPainter: IPainter2d;
-  private analogPainter: IPainter2d;
-  private activePainter: IPainter2d;
-  private currentTick: number = 0;
-  private lastUpdate: number = 0;
-  private readonly updateFreq: number = 500;
-
-  outputs = {
-    painter: null,
-  } as Outputs;
-
-  onInit() {
-    this.digitalPainter = new DigitalClockPainter();
-    this.analogPainter = new AnalogClockPainter();
-    this.activePainter = this.analogPainter;
-    this.outputs.painter = this.analogPainter;
-  }
-
-  onTick(delta: number) {
-    this.currentTick += delta;
-    // only update the clock every half second
-    if (this.lastUpdate + this.updateFreq > this.currentTick) return;
-    this.lastUpdate = this.currentTick;
-
-    this.notify('paint.ready');
-  }
-
-  onEvent(eventType: string) {
-    if (eventType === ComponentInteractionType.CLICK) {
-      if (this.activePainter === this.digitalPainter) {
-        this.activePainter = this.analogPainter;
-      } else {
-        this.activePainter = this.digitalPainter;
-      }
-    }
-    this.outputs.painter = this.activePainter;
-    this.notify('paint.ready');
-  }
-}
+};
 
 class DigitalClockPainter implements IPainter2d {
   paint(context: CanvasRenderingContext2D, size: Size) {
@@ -135,11 +95,50 @@ class AnalogClockPainter implements IPainter2d {
   }
 }
 
-export interface IClockPainter extends SceneComponent {
+export interface IClockPainter {
   outputs: Outputs;
 }
 
 export const clockPainterType = 'mp.clockPainter';
-export function makeClockPainter() {
-  return new ClockPainterComponent();
-}
+export const makeClockPainter = (sdk: MpSdk): MpSdk.Scene.IComponentFactory<Record<string, unknown>, Outputs> => () => {
+  let digitalPainter: IPainter2d;
+  let analogPainter: IPainter2d;
+  let activePainter: IPainter2d;
+  let currentTick: number = 0;
+  let lastUpdate: number = 0;
+  const updateFreq: number = 500;
+
+  return {
+    outputs: {
+      painter: null,
+    },
+
+    onInit() {
+      digitalPainter = new DigitalClockPainter();
+      analogPainter = new AnalogClockPainter();
+      activePainter = analogPainter;
+      this.outputs.painter = analogPainter;
+    },
+
+    onTick(delta) {
+      currentTick += delta;
+      // only update the clock every half second
+      if (lastUpdate + updateFreq > currentTick) return;
+      lastUpdate = currentTick;
+
+      this.notify('paint.ready');
+    },
+
+    onEvent(eventType, _eventData) {
+      if (eventType === sdk.Scene.InteractionType.CLICK) {
+        if (activePainter === digitalPainter) {
+          activePainter = analogPainter;
+        } else {
+          activePainter = digitalPainter;
+        }
+      }
+      this.outputs.painter = activePainter;
+      this.notify('paint.ready');
+    },
+  };
+};
