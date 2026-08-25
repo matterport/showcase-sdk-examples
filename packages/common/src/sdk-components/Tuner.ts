@@ -1,4 +1,4 @@
-import { SceneComponent, ComponentOutput } from '../SceneComponent';
+import type { MpSdk } from '../../../bundle/sdk';
 
 type Inputs = {
   urls: string[];
@@ -6,50 +6,42 @@ type Inputs = {
 
 type Outputs = {
   src: string;
-} & ComponentOutput;
+};
 
 enum Event {
   Next = 'next',
 }
 
-type Events = {
-  [Event.Next]: boolean;
-};
-
-class Tuner extends SceneComponent {
-  private urlIndex = 0;
-
-  inputs = {
-    urls: [],
-  } as Inputs;
-
-  outputs = {
-    src: '',
-  } as Outputs;
-
-  events: Events = {
-    [Event.Next]: true,
-  };
-
-  onInit() {
-    this.outputs.src = this.inputs.urls.length > 0 ? this.inputs.urls[0] : '';
-  }
-
-  onEvent(eventType: string, eventData: unknown) {
-    if (eventType === Event.Next) {
-      this.urlIndex++;
-      if (this.urlIndex >= this.inputs.urls.length) {
-        this.urlIndex = 0;
-      }
-
-      if (this.inputs.urls.length > 0) {
-        this.outputs.src = this.inputs.urls[this.urlIndex];
-      }
-    }
-  }
-}
-
 export const tunerType = 'mp.tuner';
-export function makeTuner() {
-  return new Tuner();
-}
+export const makeTuner: MpSdk.Scene.IComponentFactory<Inputs, Outputs> = () => {
+  let urlIndex = 0;
+
+  return {
+    inputs: {
+      urls: [],
+    },
+    outputs: {
+      src: '',
+    },
+    events: {
+      [Event.Next]: true,
+    },
+
+    onInit() {
+      this.outputs.src = this.inputs.urls.length > 0 ? this.inputs.urls[0] : '';
+    },
+
+    onEvent(eventType, _eventData) {
+      if (eventType === Event.Next) {
+        urlIndex++;
+        if (urlIndex >= this.inputs.urls.length) {
+          urlIndex = 0;
+        }
+
+        if (this.inputs.urls.length > 0) {
+          this.outputs.src = this.inputs.urls[urlIndex];
+        }
+      }
+    },
+  };
+};

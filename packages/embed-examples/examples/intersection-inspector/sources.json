@@ -1,0 +1,18 @@
+[
+  {
+    "type": "sensor.sourcetype.sphere",
+    "options": {
+      "origin": { "x": -1.0644665391660868, "y": 1.4270183432919503, "z": 6.701293798150196 },
+      "radius": 0.6,
+      "userData": { "id": "Debug sphere" }
+    }
+  },
+  {
+    "type": "sensor.sourcetype.box",
+    "options": {
+      "center": { "x": 3.9310310154893155, "y": 1.3855723171329912, "z": 0.35887605007941703 },
+      "size": { "x": 0.8, "y": 0.8, "z": 0.8 },
+      "userData": { "id": "Debug box" }
+    }
+  }
+]

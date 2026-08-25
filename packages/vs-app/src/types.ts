@@ -1,4 +1,4 @@
-import { Vector3 } from 'three';
+import type { MpSdk } from '../../bundle/sdk';
 
 export enum Category {
   Sofa = 'Sofa',
@@ -10,9 +10,9 @@ export enum Category {
 export type ItemDesc = {
   name: string;
   url: string;
-  position: Vector3;
-  rotation: Vector3;
-  scale: Vector3;
+  position: MpSdk.Vector3;
+  rotation: MpSdk.Vector3;
+  scale: MpSdk.Vector3;
   categories: Category[];
 };
 

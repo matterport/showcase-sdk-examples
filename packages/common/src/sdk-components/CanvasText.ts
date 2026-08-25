@@ -1,4 +1,5 @@
-import { SceneComponent, ComponentOutput, Size, IPainter2d } from '@mp/common';
+import type { MpSdk } from '../../../bundle/sdk';
+import { Size, IPainter2d } from '@mp/common';
 
 type Inputs = {
   position: { x: number; y: number };
@@ -11,39 +12,7 @@ type Inputs = {
 
 type Outputs = {
   painter: IPainter2d | null;
-} & ComponentOutput;
-
-class CanvasText extends SceneComponent implements IPainter2d {
-  inputs: Inputs = {
-    position: { x: 0, y: 0 },
-    size: { h: 100, w: 100 },
-    radius: 1,
-    text: 'Placeholder',
-    font: 'normal bold 80px sans-serif',
-    textWidth: 100,
-  };
-
-  outputs = {
-    painter: null,
-  } as Outputs;
-
-  onInit() {
-    this.outputs.painter = this;
-  }
-
-  onInputsUpdated() {
-    this.notify('paint.ready');
-  }
-
-  paint(context2d: CanvasRenderingContext2D, size: Size): void {
-    context2d.strokeStyle = 'black';
-    context2d.fillStyle = 'black';
-    context2d.font = this.inputs.font;
-    context2d.textAlign = 'left';
-    context2d.textBaseline = 'top';
-    wrapText(context2d, this.inputs.text, this.inputs.position.x, this.inputs.position.y, this.inputs.textWidth, 30);
-  }
-}
+};
 
 function wrapText(
   context: CanvasRenderingContext2D,
@@ -53,13 +22,13 @@ function wrapText(
   maxWidth: number,
   lineHeight: number
 ) {
-  var words = text.split(' ');
-  var line = '';
+  const words = text.split(' ');
+  let line = '';
 
-  for (var n = 0; n < words.length; n++) {
-    var testLine = line + words[n] + ' ';
-    var metrics = context.measureText(testLine);
-    var testWidth = metrics.width;
+  for (let n = 0; n < words.length; n++) {
+    const testLine = line + words[n] + ' ';
+    const metrics = context.measureText(testLine);
+    const testWidth = metrics.width;
     if (testWidth > maxWidth && n > 0) {
       context.fillText(line, x, y);
       line = words[n] + ' ';
@@ -71,7 +40,38 @@ function wrapText(
   context.fillText(line, x, y);
 }
 
-export const canvasTextType = 'mp.canvasText';
-export function makeCanvasText() {
-  return new CanvasText();
+function paintText(context2d: CanvasRenderingContext2D, inputs: Inputs) {
+  context2d.strokeStyle = 'black';
+  context2d.fillStyle = 'black';
+  context2d.font = inputs.font;
+  context2d.textAlign = 'left';
+  context2d.textBaseline = 'top';
+  wrapText(context2d, inputs.text, inputs.position.x, inputs.position.y, inputs.textWidth, 30);
 }
+
+export const canvasTextType = 'mp.canvasText';
+export const makeCanvasText: MpSdk.Scene.IComponentFactory<Inputs, Outputs> = () => {
+  return {
+    inputs: {
+      position: { x: 0, y: 0 },
+      size: { h: 100, w: 100 },
+      radius: 1,
+      text: 'Placeholder',
+      font: 'normal bold 80px sans-serif',
+      textWidth: 100,
+    },
+    outputs: {
+      painter: null,
+    },
+
+    onInit() {
+      this.outputs.painter = {
+        paint: (context2d: CanvasRenderingContext2D, _size: Size) => paintText(context2d, this.inputs),
+      };
+    },
+
+    onInputsUpdated() {
+      this.notify('paint.ready');
+    },
+  };
+};

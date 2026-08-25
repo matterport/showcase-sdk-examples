@@ -1,21 +1,20 @@
-import {
+import type {
   Object3D,
   Mesh,
   PerspectiveCamera,
   BufferAttribute,
   MeshBasicMaterial,
-  BoxGeometry,
+  BufferGeometry,
   ShaderMaterial,
-  LineBasicMaterial,
   EdgesGeometry,
   AnimationMixer,
   Color,
   Matrix4,
   Vector3,
 } from 'three';
-import { SceneComponent } from '../SceneComponent';
+import type { MpSdk } from '../../../bundle/sdk';
 
-interface Inputs {
+type Inputs = {
   nearPlane: number;
   farPlane: number;
   horizontalFOV: number;
@@ -25,7 +24,7 @@ interface Inputs {
   color: number;
   panPeriod: number;
   panAngle: number;
-}
+};
 
 type HighlightUniforms = {
   color: { value: Color };
@@ -33,114 +32,48 @@ type HighlightUniforms = {
   lightMatrix: { value: Matrix4 };
 };
 
-class SecurityCamera extends SceneComponent {
-  private root: Object3D | null = null;
-  private pivot: Object3D | null = null;
-  private box: Mesh | null = null;
-  private edges: Mesh | null = null;
-  private projector: PerspectiveCamera;
-  private highlight: Mesh | null = null;
-  private highlightUniforms: HighlightUniforms = {
-    color: { value: new Color() },
-    projPosition: { value: new Vector3() },
-    lightMatrix: { value: new Matrix4() },
-  };
-  private mixer: AnimationMixer;
+export const securityCameraType = 'mp.securityCamera';
+export const makeSecurityCamera: MpSdk.Scene.IComponentFactory<Inputs, Record<string, unknown>> = () => {
+  let root: Object3D | null = null;
+  let pivot: Object3D | null = null;
+  let box: Mesh<BufferGeometry, MeshBasicMaterial> | null = null;
+  let edges: Mesh<BufferGeometry, MeshBasicMaterial> | null = null;
+  let projector: PerspectiveCamera;
+  let highlight: Mesh<BufferGeometry, ShaderMaterial> | null = null;
+  let highlightUniforms: HighlightUniforms;
+  let mixer: AnimationMixer;
 
-  inputs: Inputs = {
-    nearPlane: 0.1,
-    farPlane: 4,
-    horizontalFOV: 80,
-    aspect: 16 / 9,
-    localPosition: { x: 0, y: 0, z: 0 },
-    localRotation: { x: 0, y: 0, z: 0 },
-    color: 0xffffff,
-    panPeriod: 20,
-    panAngle: 180,
+  const updateHighlightUniforms = (THREE: typeof import('three')) => {
+    projector.getWorldPosition(highlightUniforms.projPosition.value);
+
+    // similar to a shadow matrix, but we're using it as a "rectangular" spotlight
+    // [lightBias] * [projection] * [viewMatrix]
+    highlightUniforms.lightMatrix.value.makeScale(0.5, 0.5, 0.5);
+    highlightUniforms.lightMatrix.value.setPosition(new THREE.Vector3(0.5, 0.5, 0.5));
+    highlightUniforms.lightMatrix.value.multiplyMatrices(highlightUniforms.lightMatrix.value, projector.projectionMatrix);
+    highlightUniforms.lightMatrix.value.multiplyMatrices(highlightUniforms.lightMatrix.value, projector.matrixWorldInverse);
   };
 
-  onInit() {
-    const THREE = this.context.three;
-    this.root = new THREE.Object3D();
-    this.pivot = new THREE.Object3D();
-    this.root.add(this.pivot);
-    this.outputs.objectRoot = this.root;
-    this.root.position.set(this.inputs.localPosition.x, this.inputs.localPosition.y, this.inputs.localPosition.z);
-
-    const euler = new THREE.Euler(
-      (this.inputs.localRotation.x * Math.PI) / 180,
-      (this.inputs.localRotation.y * Math.PI) / 180,
-      (this.inputs.localRotation.z * Math.PI) / 180,
-      'YXZ'
-    );
-    this.pivot.quaternion.setFromEuler(euler);
-
-    const aspect = this.inputs.aspect;
-    const DEG2RAD = Math.PI / 180;
-    const RAD2DEG = 1 / DEG2RAD;
-    const verticalFOV = 2 * Math.atan((1 / aspect) * Math.tan(0.5 * this.inputs.horizontalFOV * DEG2RAD)) * RAD2DEG;
-    this.projector = new THREE.PerspectiveCamera(verticalFOV, aspect, this.inputs.nearPlane, this.inputs.farPlane);
-    // orientation of the projector is handled by the pivot
-    this.pivot.add(this.projector);
-
-    this.makeFrustumVisuals();
-
-    this.pivot.add(this.box);
-    this.pivot.add(this.edges);
-
-    this.makeHighlight();
-
-    // attach highighting to the mesh it represents
-    // TODO (scene query): this is very brittle but is the only way to attach something to a room of the model
-    this.outputs.objectRoot.parent.parent.add(this.highlight);
-
-    // create the animation mixer to rotate the camera
-    this.makeAnimation();
-  }
-
-  onTick(delta: number) {
-    updateHighlightUniforms(this.projector, this.highlightUniforms);
-    if (this.mixer) {
-      this.mixer.update(delta / 1000);
+  const makeFrustumVisuals = (THREE: typeof import('three'), inputs: Inputs) => {
+    if (box) {
+      root.remove(box);
+      box.material.dispose();
+      box.geometry.dispose();
+      box = null;
     }
-  }
-
-  onDestroy() {
-    if (this.highlight && this.highlight.parent) {
-      this.highlight.parent.remove(this.highlight);
-      (this.highlight.material as ShaderMaterial).dispose();
-    }
-    if (this.edges) {
-      this.edges.geometry.dispose();
-      (this.edges.material as LineBasicMaterial).dispose();
-    }
-    if (this.box) {
-      this.box.geometry.dispose();
-      (this.box.material as MeshBasicMaterial).dispose();
-    }
-  }
-
-  private makeFrustumVisuals() {
-    const THREE = this.context.three;
-    if (this.box) {
-      this.root.remove(this.box);
-      (this.box.material as MeshBasicMaterial).dispose();
-      (this.box.geometry as BoxGeometry).dispose();
-      this.box = null;
-    }
-    if (this.edges) {
-      this.root.remove(this.edges);
-      (this.edges.material as LineBasicMaterial).dispose();
-      (this.edges.geometry as EdgesGeometry).dispose();
-      this.edges = null;
+    if (edges) {
+      root.remove(edges);
+      edges.material.dispose();
+      edges.geometry.dispose();
+      edges = null;
     }
 
-    function edgesToCylinders(edgesGeometry: EdgesGeometry, thickness: number) {
+    function edgesToCylinders(edgesGeometry: EdgesGeometry, thickness: number, material: MeshBasicMaterial): Mesh<BufferGeometry, MeshBasicMaterial> {
       // Casting as a BufferAttribute, due to Types issue to be resolved in THREE.JS r160
       const vertices = (edgesGeometry.attributes.position as BufferAttribute).array;
       const count = edgesGeometry.attributes.position.count;
       const r = thickness / 2;
-      const geoms = [];
+      const geoms: BufferGeometry[] = [];
       for (let i = 0; i < count * 3 - 1; i += 6) {
         const a = new THREE.Vector3(vertices[i], vertices[i + 1], vertices[i + 2]);
         const b = new THREE.Vector3(vertices[i + 3], vertices[i + 4], vertices[i + 5]);
@@ -154,17 +87,43 @@ class SecurityCamera extends SceneComponent {
         geom.translate(a.x, a.y, a.z);
         geoms.push(geom);
       }
-      // API to be updated in bundle - JSSDK-1222
-      return (THREE as any).mergeBufferGeometries(geoms);
+
+      // Manually merge the per-edge geometries into one.
+      let totalVerts = 0, totalIdx = 0;
+      for (const g of geoms) { totalVerts += g.attributes.position.count; totalIdx += g.index.count; }
+
+      const posAttr  = new THREE.BufferAttribute(new THREE.Float32BufferAttribute(totalVerts * 3, 1).array, 3);
+      const normAttr = new THREE.BufferAttribute(new THREE.Float32BufferAttribute(totalVerts * 3, 1).array, 3);
+      const uvAttr   = new THREE.BufferAttribute(new THREE.Float32BufferAttribute(totalVerts * 2, 1).array, 2);
+      const idxAttr  = new THREE.BufferAttribute(new THREE.Uint16BufferAttribute(totalIdx, 1).array, 1);
+
+      let vOff = 0, iOff = 0;
+      for (const g of geoms) {
+        const pc = g.attributes.position.count;
+        posAttr.array.set(g.attributes.position.array,  vOff * 3);
+        normAttr.array.set(g.attributes.normal.array,   vOff * 3);
+        uvAttr.array.set(g.attributes.uv.array,         vOff * 2);
+        const idx = g.index.array;
+        for (let i = 0; i < idx.length; i++) idxAttr.array[iOff + i] = idx[i] + vOff;
+        vOff += pc; iOff += idx.length;
+        g.dispose();
+      }
+
+      const merged = new THREE.BufferGeometry();
+      merged.setAttribute('position', posAttr);
+      merged.setAttribute('normal',   normAttr);
+      merged.setAttribute('uv',       uvAttr);
+      merged.setIndex(idxAttr);
+      return new THREE.Mesh(merged, material);
     }
 
-    const frustumLength = this.inputs.farPlane - this.inputs.nearPlane;
-    const boxGeometry: BoxGeometry = new THREE.BoxGeometry(2, 2, frustumLength);
-    const halfHAngle = (this.inputs.horizontalFOV * 0.5 * Math.PI) / 180;
-    const nearHalfWidth = Math.tan(halfHAngle) * this.inputs.nearPlane;
-    const farHalfWidth = Math.tan(halfHAngle) * this.inputs.farPlane;
-    const nearHalfHeight = nearHalfWidth / this.inputs.aspect;
-    const farHalfHeight = farHalfWidth / this.inputs.aspect;
+    const frustumLength = inputs.farPlane - inputs.nearPlane;
+    const boxGeometry = new THREE.BoxGeometry(2, 2, frustumLength);
+    const halfHAngle = (inputs.horizontalFOV * 0.5 * Math.PI) / 180;
+    const nearHalfWidth = Math.tan(halfHAngle) * inputs.nearPlane;
+    const farHalfWidth = Math.tan(halfHAngle) * inputs.farPlane;
+    const nearHalfHeight = nearHalfWidth / inputs.aspect;
+    const farHalfHeight = farHalfWidth / inputs.aspect;
 
     // Casting as a BufferAttribute, due to Types issue with GLBufferAttribute
     // to be resolved in THREE.JS r160
@@ -183,80 +142,70 @@ class SecurityCamera extends SceneComponent {
         positions.setX(i, vertexX * farHalfWidth);
         positions.setY(i, vertexY * farHalfHeight);
       }
-      positions.setZ(i, vertexZ - 0.5 * frustumLength - this.inputs.nearPlane);
+      positions.setZ(i, vertexZ - 0.5 * frustumLength - inputs.nearPlane);
     }
 
-    var boxMaterial: MeshBasicMaterial = new THREE.MeshBasicMaterial({
-      color: this.inputs.color,
+    const boxMaterial: MeshBasicMaterial = new THREE.MeshBasicMaterial({
+      color: inputs.color,
       opacity: 0.05,
       transparent: true,
       side: THREE.BackSide,
       blending: THREE.NormalBlending,
       depthWrite: false,
     });
-    this.box = new THREE.Mesh(boxGeometry, boxMaterial);
-    const edgesGeometry = edgesToCylinders(new THREE.EdgesGeometry(boxGeometry), 0.015);
-    this.edges = new THREE.Mesh(
-      edgesGeometry,
-      new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        opacity: 0.25,
-        transparent: true,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-      })
-    );
+    box = new THREE.Mesh(boxGeometry, boxMaterial);
+    edges = edgesToCylinders(new THREE.EdgesGeometry(boxGeometry), 0.015, new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      opacity: 0.25,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    }));
 
-    const edgesGeometry2 = edgesToCylinders(new THREE.EdgesGeometry(boxGeometry), 0.06);
-    const edges2 = new THREE.Mesh(
-      edgesGeometry2,
-      new THREE.MeshBasicMaterial({
-        color: this.inputs.color,
-        opacity: 0.05,
-        transparent: true,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-      })
-    );
-    this.pivot.add(edges2);
-  }
+    const edges2 = edgesToCylinders(new THREE.EdgesGeometry(boxGeometry), 0.06, new THREE.MeshBasicMaterial({
+      color: inputs.color,
+      opacity: 0.05,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    }));
+    pivot.add(edges2);
+  };
 
-  private makeHighlight() {
-    const THREE = this.context.three;
-
+  const makeHighlight = (THREE: typeof import('three'), inputs: Inputs, objectRoot: Object3D) => {
     // TODO (scene query): this is very brittle and hardcoded but is the only way to get room geometries until we have a better way to query the scene graph
-    const floorMesh = this.outputs.objectRoot.parent.parent.getObjectByName('FloorMesh:0');
+    // FloorMesh:0 may not exist in all showcase bundle versions — guard against it
+    const floorMesh = objectRoot.parent?.parent?.getObjectByName('FloorMesh:0');
+    if (!floorMesh || !floorMesh.children[0]) return;
     const roomMesh = floorMesh.children[0] as Mesh;
 
-    updateHighlightUniforms(this.projector, this.highlightUniforms);
-    this.highlightUniforms.color.value.setHex(this.inputs.color);
+    updateHighlightUniforms(THREE);
+    highlightUniforms.color.value.setHex(inputs.color);
 
     const shader = new THREE.ShaderMaterial({
       polygonOffset: true,
       polygonOffsetUnits: -0.1,
       transparent: true,
-      uniforms: this.highlightUniforms,
+      uniforms: highlightUniforms,
       vertexShader: vertexShader(),
       fragmentShader: fragmentShader(),
     });
 
     // a mesh to represent the "highlight"
-    this.highlight = new THREE.Mesh(roomMesh.geometry, shader);
-  }
+    highlight = new THREE.Mesh(roomMesh.geometry, shader);
+  };
 
-  private makeAnimation() {
-    const THREE = this.context.three;
-
+  const makeAnimation = (THREE: typeof import('three'), inputs: Inputs, sceneRoot: MpSdk.Scene.INode) => {
     // preapply the initial rotation of the root so that panAngle is relative to it.
-    const rootRotation = this.context.root.quaternion;
+    const rootRotation = sceneRoot.quaternion;
     const yAxis = new THREE.Vector3(0, 1, 0);
     const frame0 = new THREE.Quaternion().setFromAxisAngle(yAxis, 0).premultiply(rootRotation);
-    const frame1 = new THREE.Quaternion().setFromAxisAngle(yAxis, this.inputs.panAngle).premultiply(rootRotation);
+    const frame1 = new THREE.Quaternion().setFromAxisAngle(yAxis, inputs.panAngle).premultiply(rootRotation);
 
     // a track that has delays at the start and end for 5% of the animation
     const track = new THREE.QuaternionKeyframeTrack(
       '.quaternion',
-      [0, this.inputs.panPeriod * 0.05, this.inputs.panPeriod * 0.95, this.inputs.panPeriod],
+      [0, inputs.panPeriod * 0.05, inputs.panPeriod * 0.95, inputs.panPeriod],
       [
         frame0.x, frame0.y, frame0.z, frame0.w,
         frame0.x, frame0.y, frame0.z, frame0.w,
@@ -265,16 +214,103 @@ class SecurityCamera extends SceneComponent {
       ]
     );
 
-    const clip = new THREE.AnimationClip('panning', this.inputs.panPeriod, [track]);
+    const clip = new THREE.AnimationClip('panning', inputs.panPeriod, [track]);
 
     // There is no api to change the rotation of the root, so we will use a private property to access the Object3D.
     // This will likely need to change in the future.
-    this.mixer = new THREE.AnimationMixer((this.context.root as any).obj3D);
-    const action = this.mixer.clipAction(clip);
+    // NOTE: `obj3D` is an undocumented runtime property on INode — the SDK does not
+    // expose it in its type declarations, so we must use a type assertion here.
+    const obj3D = (sceneRoot as unknown as { obj3D: Object3D }).obj3D;
+    mixer = new THREE.AnimationMixer(obj3D);
+    const action = mixer.clipAction(clip);
     action.loop = THREE.LoopPingPong;
     action.play();
-  }
-}
+  };
+
+  return {
+    inputs: {
+      nearPlane: 0.1,
+      farPlane: 4,
+      horizontalFOV: 80,
+      aspect: 16 / 9,
+      localPosition: { x: 0, y: 0, z: 0 },
+      localRotation: { x: 0, y: 0, z: 0 },
+      color: 0xffffff,
+      panPeriod: 20,
+      panAngle: 180,
+    },
+
+    onInit() {
+      const THREE = this.context.three;
+      highlightUniforms = {
+        color: { value: new THREE.Color() },
+        projPosition: { value: new THREE.Vector3() },
+        lightMatrix: { value: new THREE.Matrix4() },
+      };
+      root = new THREE.Object3D();
+      pivot = new THREE.Object3D();
+      root.add(pivot);
+      this.outputs.objectRoot = root;
+      root.position.set(this.inputs.localPosition.x, this.inputs.localPosition.y, this.inputs.localPosition.z);
+
+      const euler = new THREE.Euler(
+        (this.inputs.localRotation.x * Math.PI) / 180,
+        (this.inputs.localRotation.y * Math.PI) / 180,
+        (this.inputs.localRotation.z * Math.PI) / 180,
+        'YXZ'
+      );
+      pivot.quaternion.setFromEuler(euler);
+
+      const aspect = this.inputs.aspect;
+      const DEG2RAD = Math.PI / 180;
+      const RAD2DEG = 1 / DEG2RAD;
+      const verticalFOV = 2 * Math.atan((1 / aspect) * Math.tan(0.5 * this.inputs.horizontalFOV * DEG2RAD)) * RAD2DEG;
+      projector = new THREE.PerspectiveCamera(verticalFOV, aspect, this.inputs.nearPlane, this.inputs.farPlane);
+      // orientation of the projector is handled by the pivot
+      pivot.add(projector);
+
+      makeFrustumVisuals(THREE, this.inputs);
+
+      pivot.add(box);
+      pivot.add(edges);
+
+      makeHighlight(THREE, this.inputs, this.outputs.objectRoot as Object3D);
+
+      // attach highighting to the mesh it represents
+      // TODO (scene query): this is very brittle but is the only way to attach something to a room of the model
+      if (highlight) {
+        (this.outputs.objectRoot as Object3D).parent?.parent?.add(highlight);
+      }
+
+      // create the animation mixer to rotate the camera
+      // @deprecated context.root not in sdk.d.ts
+      const sceneRoot: MpSdk.Scene.INode = (this.context as any).root;
+      makeAnimation(THREE, this.inputs, sceneRoot);
+    },
+
+    onTick(delta) {
+      updateHighlightUniforms(this.context.three);
+      if (mixer) {
+        mixer.update(delta / 1000);
+      }
+    },
+
+    onDestroy() {
+      if (highlight && highlight.parent) {
+        highlight.parent.remove(highlight);
+        highlight.material.dispose();
+      }
+      if (edges) {
+        edges.geometry.dispose();
+        edges.material.dispose();
+      }
+      if (box) {
+        box.geometry.dispose();
+        box.material.dispose();
+      }
+    },
+  };
+};
 
 function vertexShader(): string {
   return `
@@ -304,19 +340,3 @@ function fragmentShader() {
     }
   `;
 }
-
-function updateHighlightUniforms(projector: PerspectiveCamera, uniforms: HighlightUniforms) {
-  projector.getWorldPosition(uniforms.projPosition.value);
-
-  // similar to a shadow matrix, but we're using it as a "rectangular" spotlight
-  // [lightBias] * [projection] * [viewMatrix]
-  uniforms.lightMatrix.value.makeScale(0.5, 0.5, 0.5);
-  uniforms.lightMatrix.value.setPosition(new Vector3(0.5, 0.5, 0.5));
-  uniforms.lightMatrix.value.multiplyMatrices(uniforms.lightMatrix.value, projector.projectionMatrix);
-  uniforms.lightMatrix.value.multiplyMatrices(uniforms.lightMatrix.value, projector.matrixWorldInverse);
-}
-
-export const securityCameraType = 'mp.securityCamera';
-export const makeSecurityCamera = function () {
-  return new SecurityCamera();
-};

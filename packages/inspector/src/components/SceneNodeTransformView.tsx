@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Subscription, timer } from 'rxjs';
-import { ISceneNode, IVector3 } from '@mp/common';
+import type { MpSdk } from '../../../bundle/sdk';
 import { switchMap, map, distinctUntilChanged } from 'rxjs/operators';
-import { MathUtils, Euler } from 'three';
 import { Vector3View } from './Vector3View';
+import { AppContext } from '../AppContext';
+import { IAppContext } from '../interfaces';
 import styled from '@emotion/styled';
 
 const defaultVector3 = { x: 0, y: 0, z: 0 };
@@ -22,16 +23,18 @@ const styles = {
 
 const ContainerDiv = styled.div(styles.container);
 interface Props {
-  selection: ISceneNode;
+  selection: MpSdk.Scene.INode;
 }
 
 interface State {
-  position: IVector3;
-  rotation: IVector3;
-  scale: IVector3;
+  position: MpSdk.Vector3;
+  rotation: MpSdk.Vector3;
+  scale: MpSdk.Vector3;
 }
 
 export class SceneNodeTransformView extends Component<Props, State> {
+  static contextType = AppContext;
+  declare context: IAppContext;
   private posSub: Subscription = null;
   private scaleSub: Subscription = null;
   private rotSub: Subscription = null;
@@ -55,12 +58,12 @@ export class SceneNodeTransformView extends Component<Props, State> {
       this.posSub = timer(0, 50)
         .pipe(
           switchMap(() => [this.props.selection]),
-          map<ISceneNode, IVector3>((value: ISceneNode) => {
+          map<MpSdk.Scene.INode, MpSdk.Vector3>((value: MpSdk.Scene.INode) => {
             return { x: value.position.x, y: value.position.y, z: value.position.z };
           }),
-          distinctUntilChanged((a: IVector3, b: IVector3) => a.x === b.x && a.y === b.y && a.z === b.z)
+          distinctUntilChanged((a: MpSdk.Vector3, b: MpSdk.Vector3) => a.x === b.x && a.y === b.y && a.z === b.z)
         )
-        .subscribe((position: IVector3) => {
+        .subscribe((position: MpSdk.Vector3) => {
           this.setState({
             position,
           });
@@ -71,12 +74,12 @@ export class SceneNodeTransformView extends Component<Props, State> {
       this.scaleSub = timer(0, 50)
         .pipe(
           switchMap(() => [this.props.selection]),
-          map<ISceneNode, IVector3>((value: ISceneNode) => {
+          map<MpSdk.Scene.INode, MpSdk.Vector3>((value: MpSdk.Scene.INode) => {
             return { x: value.scale.x, y: value.scale.y, z: value.scale.z };
           }),
-          distinctUntilChanged((a: IVector3, b: IVector3) => a.x === b.x && a.y === b.y && a.z === b.z)
+          distinctUntilChanged((a: MpSdk.Vector3, b: MpSdk.Vector3) => a.x === b.x && a.y === b.y && a.z === b.z)
         )
-        .subscribe((scale: IVector3) => {
+        .subscribe((scale: MpSdk.Vector3) => {
           this.setState({
             scale,
           });
@@ -84,17 +87,18 @@ export class SceneNodeTransformView extends Component<Props, State> {
     }
 
     if (this.rotSub === null) {
-      const euler = new Euler(0, 0, 0, 'YXZ');
+      const THREE = this.context.sdk.sdk.Scene.THREE;
+      const euler = new THREE.Euler(0, 0, 0, 'YXZ');
       this.rotSub = timer(0, 50)
         .pipe(
           switchMap(() => [this.props.selection]),
-          map<ISceneNode, IVector3>((value: ISceneNode) => {
+          map<MpSdk.Scene.INode, MpSdk.Vector3>((value: MpSdk.Scene.INode) => {
             euler.setFromQuaternion(value.quaternion);
-            return { x: MathUtils.radToDeg(euler.x), y: MathUtils.radToDeg(euler.y), z: MathUtils.radToDeg(euler.z) };
+            return { x: THREE.MathUtils.radToDeg(euler.x), y: THREE.MathUtils.radToDeg(euler.y), z: THREE.MathUtils.radToDeg(euler.z) };
           }),
-          distinctUntilChanged((a: IVector3, b: IVector3) => a.x === b.x && a.y === b.y && a.z === b.z)
+          distinctUntilChanged((a: MpSdk.Vector3, b: MpSdk.Vector3) => a.x === b.x && a.y === b.y && a.z === b.z)
         )
-        .subscribe((rotation: IVector3) => {
+        .subscribe((rotation: MpSdk.Vector3) => {
           this.setState({
             rotation,
           });

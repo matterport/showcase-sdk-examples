@@ -10,7 +10,6 @@ const styles = {
 
 interface Props {
   user: IDialogUser|null;
-  children: React.ReactNode;
 };
 
 export class SelectUrlDialog extends Component<Props> {

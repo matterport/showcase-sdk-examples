@@ -1,4 +1,4 @@
 import React from 'react';
-import { IContext } from './interfaces';
+import { IAppContext } from './interfaces';
 
-export const AppContext = React.createContext({} as IContext);
+export const AppContext = React.createContext({} as IAppContext);

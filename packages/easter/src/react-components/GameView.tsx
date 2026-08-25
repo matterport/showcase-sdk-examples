@@ -77,8 +77,8 @@ export class GameView extends Component<Props, State> {
     this.canvasRef = React.createRef<HTMLCanvasElement>();
 
     this.state = {
-      captured: props.config.gameState.captured.value,
-      total: props.config.gameState.total.value,
+      captured: props.config.gameState.captured,
+      total: props.config.gameState.total,
       time: 0,
       timeString: secondsToString(0),
     };
@@ -91,8 +91,8 @@ export class GameView extends Component<Props, State> {
   }
 
   componentDidMount() {
-    this.props.config.gameState.captured.onChanged(this.onCapturedChanged);
-    this.props.config.gameState.total.onChanged(this.onTotalChanged);
+    this.props.config.gameState.events.addListener('captured', this.onCapturedChanged);
+    this.props.config.gameState.events.addListener('total', this.onTotalChanged);
     this.props.config.eventBus.addListener(SceneEvents.CaptureComplete, this.onCaptureComplete);
 
     this.interval = setInterval(this.onTimeElapsed, 1000) as unknown as number;
@@ -128,8 +128,8 @@ export class GameView extends Component<Props, State> {
       this.interval = null;
     }
 
-    this.props.config.gameState.total.removeOnChanged(this.onTotalChanged);
-    this.props.config.gameState.captured.removeOnChanged(this.onCapturedChanged);
+    this.props.config.gameState.events.removeListener('total', this.onTotalChanged);
+    this.props.config.gameState.events.removeListener('captured', this.onCapturedChanged);
   }
 
   onTotalChanged(total: number) {
@@ -145,7 +145,7 @@ export class GameView extends Component<Props, State> {
   }
 
   onScoreClicked() {
-    if (this.props.config.gameState.debug.value) {
+    if (this.props.config.gameState.debug) {
       this.props.config.eventBus.emit(SceneEvents.EndGame);
     }
   }

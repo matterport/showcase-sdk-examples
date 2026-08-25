@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ISceneNode } from '@mp/common';
+import type { MpSdk } from '../../../bundle/sdk';
 import { ComponentView } from './ComponentView';
 import { SceneNodeTransformView } from './SceneNodeTransformView';
 import { JsxBuffer } from '../utils';
@@ -11,14 +11,14 @@ const styles = {
     height: '100%',
     alignItems: 'stretch',
     minWidth: 250,
-    overflowX: 'hidden' as 'hidden',
-    overflowY: 'auto' as 'auto',
+    overflowX: 'hidden',
+    overflowY: 'auto',
     maxWidth: 264,
   },
-};
+} as const;
 const ContainerDiv = styled.div(styles.container);
 interface Props {
-  selection: ISceneNode;
+  selection: MpSdk.Scene.INode;
 }
 
 export class SceneNodeView extends Component<Props> {

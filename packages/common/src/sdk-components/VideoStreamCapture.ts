@@ -1,4 +1,4 @@
-import { SceneComponent, ComponentOutput } from '../SceneComponent';
+import type { MpSdk } from '../../../bundle/sdk';
 
 type Inputs = {
   /**
@@ -18,86 +18,87 @@ type Outputs = {
    * The aspect ratio of the first video track of the `stream`. Useful in maintaining the proportion when rendered to a `TextureRenderer`
    */
   aspect: number;
-} & ComponentOutput;
+};
 
-class VideoStreamCapture extends SceneComponent {
-  inputs: Inputs = {
-    deviceId: null,
-    enabled: false,
-  };
-
-  outputs = {
-    stream: null,
-    aspect: 1,
-  } as Outputs;
-
-  onInit() {
-    if (this.inputs.enabled) {
-      this.setupStream();
-    }
-  }
-
-  onInputsUpdated(oldInputs: Inputs) {
-    if (!this.inputs.enabled) {
-      this.destroyOutputStream();
-      return;
-    }
-
-    if (oldInputs.deviceId !== this.inputs.deviceId) {
-      this.destroyOutputStream();
-    }
-
-    this.setupStream();
-  }
-
-  private setupStream() {
-    // if a specific device is specified, open that stream
-    if (this.inputs.deviceId) {
-      this.updateVideoDevice({
-        video: {
-          deviceId: {
-            exact: this.inputs.deviceId,
-          },
-        },
-      });
-    } else {
-      // otherwise, fallback to the default video device
-      this.updateVideoDevice({ video: true });
-    }
-  }
-
-  onDestroy() {
-    this.destroyOutputStream();
-  }
-
-  private async updateVideoDevice(constraints: MediaStreamConstraints) {
-    const source = await navigator.mediaDevices.getUserMedia(constraints);
-    const videoTrack = source.getVideoTracks()[0];
-    if (videoTrack) {
-      this.outputs.stream = source;
-      const videoSettings = videoTrack.getSettings();
-      this.outputs.aspect = videoSettings.aspectRatio;
-    }
-  }
-
-  private destroyOutputStream() {
-    const stream = this.outputs.stream;
-    if (stream) {
-      for (const track of stream.getTracks()) {
-        track.stop();
-      }
-
-      this.outputs.stream = null;
-    }
-  }
-}
-
-export interface IVideoStreamCapture extends SceneComponent {
+export interface IVideoStreamCapture {
   inputs: Inputs;
   outputs: Outputs;
 }
 
 export const videoStreamCaptureType = 'mp.videoStreamCapture';
-export function makeVideoStreamCapture() {
-  return new VideoStreamCapture();
-}
+export const makeVideoStreamCapture: MpSdk.Scene.IComponentFactory<Inputs, Outputs> = () => {
+  const updateVideoDevice = async (
+    self: MpSdk.Scene.IComponentThis<Inputs, Outputs>,
+    constraints: MediaStreamConstraints
+  ) => {
+    const source = await navigator.mediaDevices.getUserMedia(constraints);
+    const videoTrack = source.getVideoTracks()[0];
+    if (videoTrack) {
+      self.outputs.stream = source;
+      const videoSettings = videoTrack.getSettings();
+      self.outputs.aspect = videoSettings.aspectRatio;
+    }
+  };
+
+  const setupStream = (self: MpSdk.Scene.IComponentThis<Inputs, Outputs>) => {
+    // if a specific device is specified, open that stream
+    if (self.inputs.deviceId) {
+      updateVideoDevice(self, {
+        video: {
+          deviceId: {
+            exact: self.inputs.deviceId,
+          },
+        },
+      });
+    } else {
+      // otherwise, fallback to the default video device
+      updateVideoDevice(self, { video: true });
+    }
+  };
+
+  const destroyOutputStream = (self: MpSdk.Scene.IComponentThis<Inputs, Outputs>) => {
+    const stream = self.outputs.stream;
+    if (stream) {
+      for (const track of stream.getTracks()) {
+        track.stop();
+      }
+
+      self.outputs.stream = null;
+    }
+  };
+
+  return {
+    inputs: {
+      deviceId: null,
+      enabled: false,
+    },
+
+    outputs: {
+      stream: null,
+      aspect: 1,
+    } as Partial<Outputs>,
+
+    onInit() {
+      if (this.inputs.enabled) {
+        setupStream(this);
+      }
+    },
+
+    onInputsUpdated(oldInputs) {
+      if (!this.inputs.enabled) {
+        destroyOutputStream(this);
+        return;
+      }
+
+      if (oldInputs.deviceId !== this.inputs.deviceId) {
+        destroyOutputStream(this);
+      }
+
+      setupStream(this);
+    },
+
+    onDestroy() {
+      destroyOutputStream(this);
+    },
+  };
+};

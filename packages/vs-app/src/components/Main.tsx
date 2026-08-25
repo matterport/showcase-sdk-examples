@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
-import { Frame, GetSDK, initComponents, orientedBoxType, slotType, sdkKey } from '@mp/common';
-import { MpSdk } from '@mp/bundle-sdk/sdk';
+import {
+  Frame, GetSDK, sdkKey,
+  orientedBoxType, slotType,
+  cameraInputType, makeCameraInput,
+  makeOrientedBox, makeSlot, makeSecurityCamera, makeLoadingIndicator,
+  makePlaneRenderer, makeCanvasRenderer, makeVideoRenderer, makeVideoStreamCapture,
+  makeNestThermostat, makeToggleState, makeCanvasBorder, makeCanvasText,
+  makeCanvasImage, makeTuner, makeHlsLoader,
+} from '@mp/common';
+import type { MpSdk } from '../../../bundle/sdk';
 
 import { AppState } from '../AppState';
-import { SceneLoader } from '../SceneLoader';
+import { Scene } from '../Scene';
 import { ItemList } from './ItemList';
 import { ItemDesc } from 'src/types';
-import { cameraInputType } from '@mp/common/src/sdk-components/Camera';
-import { Vector3, Quaternion, Euler, Matrix4 } from 'three';
+import type * as THREEjs from 'three';
 
 const SelectedColor = 0xffff00;
 const SelectedOpacity = 0.1;
@@ -39,7 +46,8 @@ type ModelComponentInputs = {
 
 export class Main extends Component<Props, State> {
   private sdk: MpSdk = null;
-  private scene: SceneLoader = null;
+  private THREE: typeof THREEjs = null;
+  private scene: Scene = null;
   private slots: SlotNode[] = [];
   private cameraInput: MpSdk.Scene.IComponent;
   private src: string;
@@ -75,7 +83,25 @@ export class Main extends Component<Props, State> {
 
   async componentDidMount() {
     this.sdk = await GetSDK('sdk-iframe', this.applicationKey);
-    await initComponents(this.sdk);
+    await Promise.all([
+      this.sdk.Scene.register(orientedBoxType, makeOrientedBox(this.sdk)),
+      this.sdk.Scene.register(slotType, makeSlot(this.sdk)),
+      this.sdk.Scene.register('mp.securityCamera', makeSecurityCamera),
+      this.sdk.Scene.register('mp.loadingIndicator', makeLoadingIndicator),
+      this.sdk.Scene.register('mp.planeRenderer', makePlaneRenderer(this.sdk)),
+      this.sdk.Scene.register('mp.canvasRenderer', makeCanvasRenderer),
+      this.sdk.Scene.register('mp.videoRenderer', makeVideoRenderer),
+      this.sdk.Scene.register('mp.videoStreamCapture', makeVideoStreamCapture),
+      this.sdk.Scene.register('mp.nestThermostat', makeNestThermostat),
+      this.sdk.Scene.register('mp.toggleState', makeToggleState),
+      this.sdk.Scene.register('mp.canvasBorder', makeCanvasBorder),
+      this.sdk.Scene.register('mp.canvasText', makeCanvasText),
+      this.sdk.Scene.register('mp.canvasImage', makeCanvasImage),
+      this.sdk.Scene.register('mp.tuner', makeTuner),
+      this.sdk.Scene.register('mp.hlsLoader', makeHlsLoader),
+      this.sdk.Scene.register(cameraInputType, makeCameraInput),
+    ]);
+    this.THREE = this.sdk.Scene.THREE;
     await this.createCameraControl();
     await this.sdk.Scene.configure((renderer: any, three: any) => {
       renderer.physicallyCorrectLights = true;
@@ -84,7 +110,8 @@ export class Main extends Component<Props, State> {
       renderer.shadowMap.bias = 0.0001;
       renderer.shadowMap.type = three.PCFSoftShadowMap;
     });
-    this.scene = new SceneLoader(this.sdk);
+    await this.createCameraControl();
+    this.scene = new Scene(this.sdk, this.THREE);
     const slots: SlotNode[] = [];
 
     let count = 0;
@@ -96,7 +123,7 @@ export class Main extends Component<Props, State> {
       for (const component of componentIterator) {
         if (component.componentType === slotType) {
           slot = component;
-        } else if (component.componentType === 'mp.gltfLoader') {
+        } else if (component.componentType === this.sdk.Scene.Component.GLTF_LOADER) {
           model = component;
         } else if (component.componentType == orientedBoxType) {
           box = component as MpSdk.Scene.IComponent;
@@ -229,20 +256,20 @@ export class Main extends Component<Props, State> {
     this.cameraInput = cameraNode.addComponent(cameraInputType);
     // convert sdk pose to THREE.js objects
     this.cameraInput.inputs.startPose = {
-      position: new Vector3(
+      position: new this.THREE.Vector3(
         cameraPose.position.x,
         cameraPose.position.y,
         cameraPose.position.z
       ),
-      quaternion: new Quaternion().setFromEuler(
-        new Euler(
+      quaternion: new this.THREE.Quaternion().setFromEuler(
+        new this.THREE.Euler(
           cameraPose.rotation.x * (Math.PI / 180),
           cameraPose.rotation.y * (Math.PI / 180),
           0, // No Z value on cameraPose
           'YXZ'
         )
       ),
-      projection: new Matrix4().fromArray(cameraPose.projection).transpose(),
+      projection: new this.THREE.Matrix4().fromArray(cameraPose.projection).transpose(),
     };
     const cameraControl = cameraNode.addComponent('mp.camera');
 

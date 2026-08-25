@@ -34,7 +34,7 @@ module.exports = {
     }),
     new CopyPlugin({
       patterns: [
-        { from: 'node_modules/@mp/bundle-sdk', to: 'bundle' },
+        { from: '../bundle', to: 'bundle' },
         { from: 'assets', to: 'assets' },
       ],
     }),

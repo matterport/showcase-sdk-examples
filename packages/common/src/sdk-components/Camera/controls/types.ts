@@ -1,4 +1,4 @@
-import { Axis } from './Axis';
+import { Axis } from './enums';
 
 export interface ICameraController {
   setAngularVelocity(axis: Axis, velocity: number): void;
