@@ -1,25 +1,26 @@
-import { IDialogUser, MenuCommandFactory, IContext } from '../interfaces';
+import { IDialogUser, MenuCommandFactory, IAppContext } from '../interfaces';
 import { IMenuCommand } from '../interfaces';
-import { ISceneNode, sphereSourceType } from '@mp/common';
+import { sphereSourceType, boxSourceType } from '@mp/common';
+import type { MpSdk } from '../../../bundle/sdk';
 import { saveStringToFile } from '../utils';
-import { boxSourceType } from '@mp/common/src/sdk-components/BoxSource';
 
 /**
  * This command loops over all components and saves the properties of each
  * sphere or box source as a javascript array.
  */
 class SaveSources implements IMenuCommand<void> {
-  constructor(private context: IContext) {}
+  constructor(private appContext: IAppContext) {}
   
   dialogUser(): IDialogUser|null {
     return null;
   }
   async execute(): Promise<void> {
     const sources = [];
-    for (const node of this.context.scene.objects.value) {
+    for (const node of this.appContext.scene.objects.value) {
       for (const component of node.componentIterator()) {
         if (component.componentType === boxSourceType || component.componentType === sphereSourceType) {
-          const source = component.outputs.source;
+          const source = component.outputs.source as MpSdk.Sensor.ISource;
+          if (!source) continue;
           const options = {
             ...source.volume,
             userData: {
@@ -45,8 +46,8 @@ class SaveSources implements IMenuCommand<void> {
   }
 }
 
-export const makeSaveSourcesFactory = (context: IContext): MenuCommandFactory => {
-  return (selection: ISceneNode[]) => {
-    return new SaveSources(context);
+export const makeSaveSourcesFactory = (appContext: IAppContext): MenuCommandFactory => {
+  return (selection: MpSdk.Scene.INode[]) => {
+    return new SaveSources(appContext);
   };
 };

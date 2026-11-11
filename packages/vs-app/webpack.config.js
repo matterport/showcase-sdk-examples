@@ -2,6 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
+const { assetDefinePlugin, withAssetDevServer } = require('../../tools/webpack-assets');
 
 module.exports = {
   mode: 'development',
@@ -38,16 +39,16 @@ module.exports = {
     }),
     new CopyPlugin({patterns: [
       {
-        from: 'node_modules/@mp/bundle-sdk',
+        from: '../bundle',
         to: 'bundle'
       },
-      { from: 'assets', to: 'assets'}
     ]}),
+    assetDefinePlugin(),
   ],
-  devServer: {
+  devServer: withAssetDevServer({
     port: 8000,
     devMiddleware: {
       writeToDisk: true
     }
-  }
+  })
 }

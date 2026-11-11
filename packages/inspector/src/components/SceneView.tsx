@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {AddBox, IndeterminateCheckBox} from '@mui/icons-material';
 import { TreeView, TreeItem } from '@mui/lab';
-import { ISceneNode } from '@mp/common';
+import type { MpSdk } from '../../../bundle/sdk';
 import styled from '@emotion/styled';
 
 
@@ -19,7 +19,7 @@ const styles = {
     minWidth: 250,
     maxWidth: 264,
     height: '100%',
-    overflowY: 'auto' as 'auto',
+    overflowY: 'auto',
   },
   paper: {
     height: '100%',
@@ -28,15 +28,14 @@ const styles = {
     borderWidth: '1px',
     borderColor: '#BBBBBB',
   },
-};
+} as const;
 const PaperDiv = styled.div(styles.paper);
 
 interface Props {
-  scene: ISceneNode[];
-  onSingleClick: (item: ISceneNode|null) => void;
-  onDoubleClick: (item: ISceneNode|null) => void;
-  selectionDeleted: (item: ISceneNode) => void;
-  children: React.ReactNode;
+  scene: MpSdk.Scene.INode[];
+  onSingleClick: (item: MpSdk.Scene.INode|null) => void;
+  onDoubleClick: (item: MpSdk.Scene.INode|null) => void;
+  selectionDeleted: (item: MpSdk.Scene.INode) => void;
 }
 
 interface State {
@@ -56,13 +55,13 @@ export class SceneView extends Component<Props, State> {
     this.onDoubleClick = this.onDoubleClick.bind(this);
   }
 
-  private onKeyDown(event: React.KeyboardEvent, item: ISceneNode) {
+  private onKeyDown(event: React.KeyboardEvent, item: MpSdk.Scene.INode) {
     if (event.keyCode === 8 && this.props.selectionDeleted) {
       this.props.selectionDeleted(item);
     }
   }
 
-  private onClick(event: React.MouseEvent, nodeId: string, item: ISceneNode) {
+  private onClick(event: React.MouseEvent, nodeId: string, item: MpSdk.Scene.INode) {
     let newNodeId = '';
     if (nodeId !== this.selectedId) {
       newNodeId = nodeId;
@@ -81,7 +80,7 @@ export class SceneView extends Component<Props, State> {
     this.selectedId = newNodeId;
   }
 
-  private onDoubleClick(event: React.MouseEvent, nodeId: string, item: ISceneNode) {
+  private onDoubleClick(event: React.MouseEvent, nodeId: string, item: MpSdk.Scene.INode) {
     this.setState({
       selected: nodeId,
     });
@@ -91,7 +90,7 @@ export class SceneView extends Component<Props, State> {
 
   public render() {
     let count = 0;
-    const emitObject3D = (objects: ISceneNode[]) => {
+    const emitObject3D = (objects: MpSdk.Scene.INode[]) => {
       return objects.map((object) => {
         count++;
         const nodeId = count;

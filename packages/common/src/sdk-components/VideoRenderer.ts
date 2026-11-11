@@ -1,5 +1,5 @@
-import { SceneComponent, ComponentOutput } from '../SceneComponent';
-import { Texture, VideoTexture } from 'three';
+import type { MpSdk } from '../../../bundle/sdk';
+import type { Texture, VideoTexture } from 'three';
 
 type Inputs = {
   src: MediaStream | string | HTMLVideoElement | null;
@@ -7,82 +7,80 @@ type Inputs = {
 
 type Outputs = {
   texture: Texture | null;
-} & ComponentOutput;
+};
 
-class VideoRenderer extends SceneComponent {
-  private video: HTMLVideoElement;
-  private texture: VideoTexture;
-
-  inputs: Inputs = {
-    src: null,
-  };
-
-  outputs = {
-    texture: null,
-  } as Outputs;
-
-  onInit() {}
-
-  onInputsUpdated() {
-    this.releaseTexture();
-
-    const THREE = this.context.three;
-    if (!this.inputs.src) {
-      this.video.src = '';
-      return;
-    }
-
-    if (this.inputs.src instanceof HTMLVideoElement) {
-      this.video = this.inputs.src;
-    } else {
-      this.video = this.createVideoElement();
-
-      if (typeof this.inputs.src === 'string') {
-        this.video.src = this.inputs.src;
-      } else {
-        this.video.srcObject = this.inputs.src;
-      }
-
-      this.video.load();
-    }
-
-    this.texture = new THREE.VideoTexture(this.video);
-    this.texture.minFilter = THREE.LinearFilter;
-    this.texture.magFilter = THREE.LinearFilter;
-    this.texture.format = THREE.RGBAFormat;
-
-    this.outputs.texture = this.texture;
-    this.video.play();
-  }
-
-  onDestroy() {
-    this.releaseTexture();
-  }
-
-  releaseTexture() {
-    if (this.texture) {
-      this.outputs.texture = null;
-      this.texture.dispose();
-    }
-  }
-
-  private createVideoElement() {
-    const video = document.createElement('video');
-    video.crossOrigin = 'anonymous';
-    video.autoplay = true;
-    video.muted = true;
-    video.loop = true;
-
-    return video;
-  }
-}
-
-export interface IVideoRenderer extends SceneComponent {
+export interface IVideoRenderer {
   inputs: Inputs;
   outputs: Outputs;
 }
 
 export const videoRendererType = 'mp.videoRenderer';
-export function makeVideoRenderer() {
-  return new VideoRenderer();
-}
+export const makeVideoRenderer: MpSdk.Scene.IComponentFactory<Inputs, Outputs> = () => {
+  let video: HTMLVideoElement;
+  let texture: VideoTexture;
+
+  const createVideoElement = () => {
+    const v = document.createElement('video');
+    v.crossOrigin = 'anonymous';
+    v.autoplay = true;
+    v.muted = true;
+    v.loop = true;
+
+    return v;
+  };
+
+  const releaseTexture = (self: MpSdk.Scene.IComponentThis<Inputs, Outputs>) => {
+    if (texture) {
+      self.outputs.texture = null;
+      texture.dispose();
+    }
+  };
+
+  return {
+    inputs: {
+      src: null,
+    },
+
+    outputs: {
+      texture: null,
+    },
+
+    onInit() {},
+
+    onInputsUpdated() {
+      releaseTexture(this);
+
+      const THREE = this.context.three;
+      if (!this.inputs.src) {
+        video.src = '';
+        return;
+      }
+
+      if (this.inputs.src instanceof HTMLVideoElement) {
+        video = this.inputs.src;
+      } else {
+        video = createVideoElement();
+
+        if (typeof this.inputs.src === 'string') {
+          video.src = this.inputs.src;
+        } else {
+          video.srcObject = this.inputs.src;
+        }
+
+        video.load();
+      }
+
+      texture = new THREE.VideoTexture(video);
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.format = THREE.RGBAFormat;
+
+      this.outputs.texture = texture;
+      video.play();
+    },
+
+    onDestroy() {
+      releaseTexture(this);
+    },
+  };
+};

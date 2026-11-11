@@ -1,0 +1,30 @@
+[
+  {
+    "label": "Kitchen tag",
+    "description": "Hover me — the inspector reports intersectedobject.tag",
+    "anchorPosition": { "x": 5.871212838948768, "y": 1.400763060979906, "z": 6.777743840295724 },
+    "stemVector": { "x": 0, "y": 0.3, "z": 0 },
+    "color": { "r": 0.2, "g": 0.6, "b": 1 }
+  },
+  {
+    "label": "Living Room tag",
+    "description": "Hover me — the inspector reports intersectedobject.tag",
+    "anchorPosition": { "x": -0.06908380774912815, "y": 1.305243608846709, "z": 0.07077912018687582 },
+    "stemVector": { "x": 0, "y": 0.3, "z": 0 },
+    "color": { "r": 1, "g": 0.5, "b": 0.2 }
+  },
+  {
+    "label": "Office tag",
+    "description": "Hover me — the inspector reports intersectedobject.tag",
+    "anchorPosition": { "x": 7.020610206615631, "y": 1.312582527962432, "z": 0.47577342877707407 },
+    "stemVector": { "x": 0, "y": 0.3, "z": 0 },
+    "color": { "r": 0.6, "g": 0.3, "b": 1 }
+  },
+  {
+    "label": "Front Door tag",
+    "description": "Hover me — the inspector reports intersectedobject.tag",
+    "anchorPosition": { "x": -3.2965438206536373, "y": 2.032718785575968, "z": 0.04179048603792046 },
+    "stemVector": { "x": 0, "y": 0.3, "z": 0 },
+    "color": { "r": 0.4, "g": 0.9, "b": 0.5 }
+  }
+]

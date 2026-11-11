@@ -15,7 +15,7 @@ const addTags = async (sdk: MpSdk) => {
       const tagInfos: any[] = Object.keys(collection).map((key: string) => {
         const sweep = collection[key];
         return {
-          label: sweep.uuid,
+          label: sweep.id,
           description: `x: ${sweep.position.x}\ny: ${sweep.position.y}\nz: ${sweep.position.z}`,
           anchorPosition: {
             x: sweep.position.x,

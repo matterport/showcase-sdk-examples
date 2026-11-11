@@ -6,5 +6,5 @@
     "resolveJsonModule": true,
     "lib": ["dom", "es2015"]
   },
-  "include": ["./src/**/**/*"]
+  "include": ["./src/**/**/*", "../common/src/global.d.ts"]
 }

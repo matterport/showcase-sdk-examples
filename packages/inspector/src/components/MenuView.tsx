@@ -12,9 +12,9 @@ const styles = {
     zIndex: 100,
   },
   button: {
-    textTransform: 'none' as 'none',
+    textTransform: 'none',
   }
-};
+} as const;
 const RootDiv = styled.div(styles.root);
 interface State {
   open: boolean;

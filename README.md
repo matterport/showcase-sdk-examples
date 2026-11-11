@@ -7,6 +7,7 @@
   - [Run packages](#run-packages)
   - [Clean packages](#clean-packages)
   - [Make a prod build](#make-a-prod-build)
+  - [Assets](#assets)
   - [Packages](#packages)
     - [vs-app](#vs-app)
     - [rc-app](#rc-app)
@@ -14,7 +15,6 @@
     - [easter](#easter)
     - [embed examples](#embed-examples])
     - [common](#common)
-    - [core](#core)
     - [bundle](#bundle)
   - [License](#license)
 
@@ -73,6 +73,10 @@ You will need to bootstrap after cleaning.
 > yarn build-all-prod
 ```
 
+### Assets
+
+The examples load their 3D models and textures from `https://static.matterport.com/showcase-sdk/examples/<version>/assets`, where `<version>` comes from `assetVersion` in the root `package.json`.
+
 ### Packages
 
 The repository is a [Lerna](https://lerna.js.org/) monorepo. This means that the package.json dependencies at the root of the repository are shared with each of the individual packages. Please keep in mind that not all root-level dependencies are used by all examples. The packages include:
@@ -109,6 +113,7 @@ frameworks: [Reactjs](https://reactjs.org/) + [Phaser](https://phaser.io/) + [SD
 
 frameworks: Vanilla JS + [SDK for Embeds](https://matterport.github.io/showcase-sdk/sdk_home.html)
 
+- Pointer - Intersection Inspector
 - Sensor - Point Areas
 - Sensor - Sweep Controls
 - Sensor - Tags Level of Details
@@ -120,10 +125,6 @@ frameworks: Vanilla JS + [SDK for Embeds](https://matterport.github.io/showcase-
 #### common
 
 - Reusable SDK Bundle components
-
-#### core
-
-- Matterport observable library
 
 #### bundle
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { IContext, CameraPose } from 'src/interfaces';
+import { IAppContext, CameraPose } from '../interfaces';
 import { AppContext } from '../AppContext';
 
 interface State {
@@ -7,7 +7,7 @@ interface State {
 }
 
 export class CameraView extends Component<{}, State> {
-  context: IContext;
+  context: IAppContext;
   static contextType = AppContext;
 
   constructor(props: {}) {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { IContext, IDialogUser } from '../interfaces';
+import { IAppContext, IDialogUser } from '../interfaces';
 import { AppContext } from '../AppContext';
 import styled from '@emotion/styled';
 
@@ -30,7 +30,7 @@ interface State {
 }
 
 export class FrameView extends Component<Props, State> {
-  context: IContext;
+  context: IAppContext;
   static contextType = AppContext;
 
   constructor(props: Props){

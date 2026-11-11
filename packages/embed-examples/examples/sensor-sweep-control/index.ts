@@ -2,40 +2,36 @@ import type { MpSdk } from 'embedtypes/sdk';
 import { clearMesssage, connect, setMessage } from '../common';
 import '../common/main.css';
 
-const initialSweepSid = '85e7bf413ca344da81e6ec42bcb4aaea';
-const sourceSweepSid = '96fe9ff2682148878399aa2af5da847c';
-let inRangeCache: boolean = false;
-let currentSweepId: string = '';
+const collectionUpdated = () => true;
 
-const checkDisableSweeps = (sdk: MpSdk, textElement: HTMLDivElement) => {
-  if (!inRangeCache) {
-    if (currentSweepId === initialSweepSid) {
-      const sweepSub = sdk.Sweep.data.subscribe({
-        onCollectionUpdated: (sweeps) => {
-          const sids: string[] = Object.keys(sweeps).filter(
-            (sid: string) => sid !== initialSweepSid && sid !== sourceSweepSid
-          );
-          sdk.Sweep.disable(...sids);
-          sweepSub.cancel();
-          setMessage(textElement, 'Move towards the source to enable the rest of the sweeps');
-        },
-      });
-    } else if (currentSweepId !== '') {
-      setMessage(textElement, 'Navigate to the start location to disable sweeps');
+/**
+ * The source sweep is the start sweep's neighbor that is currently on screen, so
+ * it sits in front of the user.
+ *
+ * `worldToScreen` returns negative x/y for points behind the camera or outside the
+ * frustum, so a neighbor that projects inside the viewport is one the user faces.
+ * This avoids deriving a camera-forward vector from the pose rotation.
+ */
+const pickSourceSweepSid = async (
+  sdk: MpSdk,
+  sweeps: MpSdk.Dictionary<MpSdk.Sweep.ObservableSweepData>,
+  startSweep: MpSdk.Sweep.ObservableSweepData
+): Promise<string> => {
+  const { neighbors } = startSweep;
+  const pose = await sdk.Camera.pose.waitUntil(() => true);
+  const frame = document.getElementById('sdk-frame') as HTMLIFrameElement;
+  const size = { w: frame.clientWidth, h: frame.clientHeight };
+
+  const onScreen = neighbors.find((sid) => {
+    const sweep = sweeps[sid];
+    if (!sweep) {
+      return false;
     }
-  }
-};
+    const screen = sdk.Conversion.worldToScreen(sweep.position, pose, size);
+    return screen.x >= 0 && screen.x <= size.w && screen.y >= 0 && screen.y <= size.h;
+  });
 
-const checkEnableSweeps = (sdk: MpSdk, textElement: HTMLDivElement) => {
-  if (inRangeCache) {
-    const sweepSub = sdk.Sweep.data.subscribe({
-      onCollectionUpdated: (sweeps) => {
-        sdk.Sweep.enable(...Object.keys(sweeps));
-        sweepSub.cancel();
-        setMessage(textElement, 'Navigate to the start location to disable sweeps');
-      },
-    });
-  }
+  return onScreen ?? neighbors[0];
 };
 
 const main = async () => {
@@ -51,39 +47,55 @@ const main = async () => {
   const textElement = document.getElementById('text') as HTMLDivElement;
   clearMesssage(textElement);
 
-  sdk.Sweep.current.subscribe((sweep) => {
-    currentSweepId = sweep.sid;
-    checkDisableSweeps(sdk, textElement);
-    checkEnableSweeps(sdk, textElement);
-  });
+  // Start sweep and full sweep list, each resolved once from the loaded model.
+  const startSweep = await sdk.Sweep.current.waitUntil((sweep) => sweep.id !== '');
+  const sweeps = await sdk.Sweep.data.waitUntil(collectionUpdated);
+  const sids = Object.keys(sweeps);
+  const initialSweepSid = startSweep.id;
+  const sourceSweepSid = await pickSourceSweepSid(sdk, sweeps, startSweep);
 
   const sensor = await sdk.Sensor.createSensor(sdk.Sensor.SensorType.CAMERA);
   sensor.showDebug(true);
   const source = await sdk.Sensor.createSource(sdk.Sensor.SourceType.CYLINDER, {
-    basePoint: { x: -0.629, y: 1, z: 5.909 },
+    basePoint: sweeps[sourceSweepSid].position,
     radius: 2.5,
     height: 2.5,
     userData: {
-      id: 'Family Room',
+      id: 'Source',
     },
   });
-
   sensor.addSource(source);
+
+  let inRange = false;
+  let currentSweepId = initialSweepSid;
+
+  const update = () => {
+    if (inRange) {
+      sdk.Sweep.enable(...sids);
+      setMessage(textElement, 'Navigate to the start location to disable sweeps');
+    } else if (currentSweepId === initialSweepSid) {
+      sdk.Sweep.disable(...sids.filter((sid) => sid !== initialSweepSid && sid !== sourceSweepSid));
+      setMessage(textElement, 'Move towards the source to enable the rest of the sweeps');
+    } else {
+      setMessage(textElement, 'Navigate to the start location to disable sweeps');
+    }
+  };
+
+  sdk.Sweep.current.subscribe((sweep) => {
+    currentSweepId = sweep.id;
+    update();
+  });
+
   sensor.readings.subscribe({
     onCollectionUpdated: (sourceCollection) => {
-      for (const [source, reading] of sourceCollection) {
-        console.log(source.userData.id);
-        inRangeCache = reading.inRange;
-        if (reading.inRange) {
-          checkEnableSweeps(sdk, textElement);
-        } else {
-          checkDisableSweeps(sdk, textElement);
-        }
+      for (const [, reading] of sourceCollection) {
+        inRange = reading.inRange;
       }
+      update();
     },
   });
 
-  checkDisableSweeps(sdk, textElement);
+  update();
 };
 
 main();

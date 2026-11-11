@@ -159,7 +159,7 @@ export class RemoteSimulator {
     if (currentEvent && currentEvent.type === 'sweep.exit' && !this.inTransition && !this.inRotation) {
       this.inTransition = true;
       this.sdk.Sweep.moveTo(currentEvent.args[1], {
-        transition: this.sdk.Sweep.Transition.FLY,
+        transition: this.sdk.Camera.TransitionType.FLY,
       }).finally(() => {
         this.inTransition = false;
       });
@@ -187,7 +187,7 @@ export class RemoteSimulator {
         if (!this.inTransition && !this.inRotation) {
           this.inTransition = true;
           this.sdk.Sweep.moveTo(currentFrame.pose.sweep, {
-            transition: this.sdk.Sweep.Transition.INSTANT,
+            transition: this.sdk.Camera.TransitionType.INSTANT,
             transitionTime: 0.01,
           }).finally(() => {
             this.inTransition = false;

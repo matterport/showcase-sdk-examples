@@ -15,13 +15,13 @@ const styles = {
     color: '#9dbd9d',
     outline: 'none',
     transition: 'border .24s ease-in-out',
-    textAlign: 'center' as 'center', // type cant be string.
+    textAlign: 'center',
     alignItems: 'center',
   },
   text: {
     margin: '12px',
   }
-};
+} as const;
 const RootDiv = styled.div(styles.root);
 const TextP = styled.p(styles.text);
 interface Props {

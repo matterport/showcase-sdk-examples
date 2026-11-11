@@ -1,11 +1,16 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { assetDefinePlugin, withAssetDevServer } = require('../../tools/webpack-assets');
 
 /**
  * List of application directories w/ titles.
  */
 const applications = [
+  {
+    chunkName: 'intersection-inspector',
+    title: 'Pointer - Intersection Inspector',
+  },
   {
     chunkName: 'sensor-point-areas',
     title: 'Sensor - Point Areas',
@@ -121,14 +126,14 @@ module.exports = function (config) {
         },
       ],
     },
-    plugins: computePlugins(),
-    devServer: {
+    plugins: [...computePlugins(), assetDefinePlugin()],
+    devServer: withAssetDevServer({
       port: 8000,
       static: path.join(__dirname, 'dist'),
       devMiddleware: {
         writeToDisk: true,
       },
-    },
+    }),
   };
 
   return buildConfig;

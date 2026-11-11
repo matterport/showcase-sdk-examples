@@ -1,6 +1,6 @@
 {
   "name": "easter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "lib/easter.js",
   "scripts": {
     "develop": "webpack-dev-server",
@@ -10,7 +10,6 @@
   "dependencies": {
     "@mp/bundle-sdk": "^1.0.0",
     "@mp/common": "^1.0.0",
-    "@mp/core": "^1.0.0",
     "phaser": "^3.55.2"
   }
 }

@@ -1,4 +1,3 @@
-import { Dict } from '@mp/core';
 
 /* eslint-disable no-shadow */
 export enum ShareMedium {
@@ -41,7 +40,7 @@ export const shareWindow: {
  * Build a query string from a dictionary of parameters
  * @param params
  */
-const makeQueryString = (params: Dict<string>) => {
+const makeQueryString = (params: Record<string, string>) => {
   return Object.keys(params)
     .map((key) => key + '=' + encodeURIComponent(params[key]))
     .join('&');

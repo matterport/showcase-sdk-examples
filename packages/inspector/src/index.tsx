@@ -3,7 +3,7 @@ import * as React from 'react';
 import { MainView } from './components/Main';
 import { makeSdk } from './Sdk';
 import { makeScene } from './Scene';
-import { IContext, IDialogUser } from './interfaces';
+import { IAppContext, IDialogUser } from './interfaces';
 import { AppContext } from './AppContext';
 import { BehaviorSubject } from 'rxjs';
 import { sdkKey } from "@mp/common";
@@ -20,7 +20,7 @@ const initialize = async () => {
   const scene = makeScene(sdk);
   const frameOverlay = new BehaviorSubject<IDialogUser|null>(null);
 
-  const context: IContext = {
+  const appContext: IAppContext = {
     scene,
     sdk,
     frameOverlay,
@@ -30,7 +30,7 @@ const initialize = async () => {
   const root = ReactDOMClient.createRoot(container);
   root.render(
       <AppContext.Provider
-        value={context}
+        value={appContext}
       >
         <MainView/>
       </AppContext.Provider>

@@ -1,209 +1,195 @@
-import { Dict } from '@mp/core';
-import { SceneComponent, ComponentInteractionType, ComponentOutput } from '@mp/common';
-import { Object3D, MeshBasicMaterial, SphereGeometry, Vector3, WebGLRenderTarget } from 'three';
-import { Mesh } from 'three';
+import type { MpSdk } from '../../../bundle/sdk';
+import type { Object3D, MeshBasicMaterial, SphereGeometry, PlaneGeometry, Vector3, WebGLRenderTarget, Mesh } from 'three';
 import { SceneEvents } from '../scenes/SceneEvents';
 import { Events } from 'phaser';
 
-interface Inputs {
+type Inputs = {
   size: number;
   color: number;
   lineColor: number;
   hoverOpacity: number;
-}
+};
 
-type Outputs = {} & ComponentOutput;
+const HINT_DURATION = 3000;
+let caughtMarker: WebGLRenderTarget | undefined;
 
-class BunnySelector extends SceneComponent {
-  private static caughtMarker: WebGLRenderTarget;
-  private cameraPose: any = null;
-  private cameraDirty = true;
-  private opacity = 0;
-  private hoverOpacity = 0.75;
-  private root: Object3D | null = null;
-  private sphere: Mesh | null = null;
-  private checkPlane: Mesh | null = null;
-  private sphereWP = new Vector3();
-  private markerVisible = false;
-  private hovered = false;
-  private caught = false;
-  private cameraSub: { cancel(): void } | null = null;
-  private hintActiveTime = 0;
-  private static hintDuration = 3000;
+function createCaughtMarker(renderTargetFactory: typeof WebGLRenderTarget) {
+  const renderTargetSize = 64;
+  const canvas = document.createElement('canvas');
+  const renderContext2D = canvas.getContext('2d');
+  canvas.width = renderTargetSize;
+  canvas.height = renderTargetSize;
 
-  inputs: Inputs = {
-    size: 1.0,
-    color: 0xffff00,
-    lineColor: 0x000000,
-    hoverOpacity: 0.8,
-  };
+  renderContext2D.textAlign = 'center';
+  renderContext2D.textBaseline = 'middle';
+  renderContext2D.fillStyle = '#fff';
+  renderContext2D.font = renderTargetSize + 'px Roboto';
+  renderContext2D.fillText('✓', 0.5 * renderTargetSize, 0.5 * renderTargetSize);
 
-  outputs = {} as Outputs;
-
-  events = {
-    [ComponentInteractionType.CLICK]: true,
-    [ComponentInteractionType.HOVER]: true,
-    [ComponentInteractionType.DRAG]: false,
-  };
-
-  constructor(private eventBus: Events.EventEmitter, private sdk: any) {
-    super();
-  }
-
-  onInit() {
-    const THREE = this.context.three;
-    if (!BunnySelector.caughtMarker) {
-      BunnySelector.createCaughtMarker(THREE.WebGLRenderTarget);
-    }
-    this.root = new THREE.Object3D();
-    this.outputs.objectRoot = this.root;
-    this.outputs.collider = this.root;
-
-    this.makeSphere();
-
-    this.onCameraPoseChanged = this.onCameraPoseChanged.bind(this);
-    this.onHintActivated = this.onHintActivated.bind(this);
-    this.cameraSub = this.sdk.Camera.pose.subscribe(this.onCameraPoseChanged);
-    this.eventBus.addListener(SceneEvents.DisplayHint, this.onHintActivated);
-  }
-
-  onEvent(eventType: string, eventData: Dict): void {
-    if (!this.caught) {
-      if (eventType === ComponentInteractionType.CLICK) {
-        this.sphere.getWorldPosition(this.sphereWP);
-        this.notify(eventType, {
-          position: this.sphereWP,
-        });
-        this.caught = true;
-        // show check after click
-        const planeMat = this.checkPlane.material as MeshBasicMaterial;
-        planeMat.opacity = this.hoverOpacity;
-        // if the bunny was captured, we don't need the "hint" alwasys on top
-        this.setAlwaysOnTop(false);
-      }
-      if (eventType === ComponentInteractionType.HOVER) {
-        this.hovered = eventData.hover;
-      }
-    }
-  }
-
-  onTick() {
-    if (this.cameraDirty && this.cameraPose) {
-      const target = this.cameraPose.position;
-      this.root.lookAt(target.x, target.y, target.z);
-      this.cameraDirty = false;
-    }
-
-    const hintActive = this.hintActiveTime + BunnySelector.hintDuration > Date.now();
-    const markerVisible = this.hovered || hintActive;
-    if (this.markerVisible !== markerVisible) {
-      const sphereMat = this.sphere.material as MeshBasicMaterial;
-      sphereMat.opacity = markerVisible ? this.hoverOpacity : this.opacity;
-
-      const planeMat = this.checkPlane.material as MeshBasicMaterial;
-      planeMat.opacity = this.caught && markerVisible ? this.hoverOpacity : 0;
-    }
-    if (!this.caught && hintActive) {
-      this.setAlwaysOnTop(true);
-    }
-    this.markerVisible = markerVisible;
-  }
-
-  onDestroy() {
-    if (this.sphere) {
-      this.sphere.geometry.dispose();
-      (this.sphere.material as MeshBasicMaterial).dispose();
-    }
-    this.cameraSub.cancel();
-    this.eventBus.removeListener(SceneEvents.DisplayHint, this.onHintActivated);
-  }
-
-  private makeSphere() {
-    const THREE = this.context.three;
-
-    if (this.sphere) {
-      this.root.remove(this.sphere);
-      (this.sphere.material as MeshBasicMaterial).dispose();
-      (this.sphere.geometry as SphereGeometry).dispose();
-      this.sphere = null;
-    }
-
-    const sphereGeometry = new THREE.SphereGeometry(0.5 * this.inputs.size, 12, 10);
-
-    var sphereMaterial = new THREE.MeshBasicMaterial({
-      transparent: true,
-      color: this.inputs.color,
-      opacity: this.opacity,
-      depthTest: false,
-      depthWrite: false,
-    });
-
-    this.sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    this.root.add(this.sphere);
-
-    const planeSize = 0.5 * this.inputs.size;
-    this.checkPlane = new THREE.Mesh(
-      new THREE.PlaneGeometry(planeSize, planeSize),
-      new THREE.MeshBasicMaterial({
-        transparent: true,
-        opacity: 0,
-        color: 0x00ff00,
-        map: BunnySelector.caughtMarker.texture,
-        side: THREE.DoubleSide,
-        depthTest: false,
-        depthWrite: false,
-      })
-    );
-    this.checkPlane.position.z = this.inputs.size;
-    this.sphere.renderOrder = 10;
-    this.checkPlane.renderOrder = 11;
-
-    this.root.add(this.checkPlane);
-  }
-
-  private static createCaughtMarker(renderTargetFactory: typeof WebGLRenderTarget) {
-    const renderTargetSize = 64;
-    const canvas = document.createElement('canvas');
-    const renderContext2D = canvas.getContext('2d');
-    canvas.width = renderTargetSize;
-    canvas.height = renderTargetSize;
-
-    renderContext2D.textAlign = 'center';
-    renderContext2D.textBaseline = 'middle';
-    renderContext2D.fillStyle = '#fff';
-    renderContext2D.font = renderTargetSize + 'px Roboto';
-    renderContext2D.fillText('✓', 0.5 * renderTargetSize, 0.5 * renderTargetSize);
-
-    // create three.js objects to render
-    this.caughtMarker = new renderTargetFactory(renderTargetSize, renderTargetSize);
-    this.caughtMarker.texture.image = renderContext2D.canvas;
-    this.caughtMarker.texture.needsUpdate = true;
-  }
-
-  private onCameraPoseChanged(pose: any) {
-    this.cameraPose = pose;
-    this.cameraDirty = true;
-  }
-
-  private onHintActivated() {
-    this.hintActiveTime = Date.now();
-  }
-
-  private setAlwaysOnTop(onTop: boolean) {
-    const sphereMat = this.sphere.material as MeshBasicMaterial;
-    sphereMat.depthTest = !onTop;
-    sphereMat.depthWrite = !onTop;
-
-    const planeMat = this.checkPlane.material as MeshBasicMaterial;
-    planeMat.depthTest = !onTop;
-    planeMat.depthWrite = !onTop;
-  }
+  // create three.js objects to render
+  caughtMarker = new renderTargetFactory(renderTargetSize, renderTargetSize);
+  caughtMarker.texture.image = renderContext2D.canvas;
+  caughtMarker.texture.needsUpdate = true;
 }
 
 export const bunnySelectorSphereType = 'easter.bunnyselectorsphere';
 
-export const createBunnySelectorClosure = function (eventBus: Events.EventEmitter, sdk: any) {
-  return function () {
-    return new BunnySelector(eventBus, sdk);
+export const createBunnySelectorClosure = (eventBus: Events.EventEmitter, sdk: MpSdk): MpSdk.Scene.IComponentFactory<Inputs, Record<string, unknown>> =>
+  () => {
+    let cameraPose: MpSdk.Camera.Pose = null;
+    let cameraDirty = true;
+    const opacity = 0;
+    const hoverOpacity = 0.75;
+    let root: Object3D | null = null;
+    let sphere: Mesh<SphereGeometry, MeshBasicMaterial> | null = null;
+    let checkPlane: Mesh<PlaneGeometry, MeshBasicMaterial> | null = null;
+    let sphereWP: Vector3;
+    let markerVisible = false;
+    let hovered = false;
+    let caught = false;
+    let cameraSub: { cancel(): void } | null = null;
+    let hintActiveTime = 0;
+
+    const setAlwaysOnTop = (onTop: boolean) => {
+      const sphereMat = sphere.material;
+      sphereMat.depthTest = !onTop;
+      sphereMat.depthWrite = !onTop;
+
+      const planeMat = checkPlane.material;
+      planeMat.depthTest = !onTop;
+      planeMat.depthWrite = !onTop;
+    };
+
+    const onCameraPoseChanged = (pose: MpSdk.Camera.Pose) => {
+      cameraPose = pose;
+      cameraDirty = true;
+    };
+
+    const onHintActivated = () => {
+      hintActiveTime = Date.now();
+    };
+
+    return {
+      inputs: {
+        size: 1.0,
+        color: 0xffff00,
+        lineColor: 0x000000,
+        hoverOpacity: 0.8,
+      },
+
+      events: {
+        [sdk.Scene.InteractionType.CLICK]: true,
+        [sdk.Scene.InteractionType.HOVER]: true,
+        [sdk.Scene.InteractionType.DRAG]: false,
+      },
+
+      emits: {
+        [sdk.Scene.InteractionType.CLICK]: true,
+      },
+
+      onInit() {
+        const THREE = this.context.three;
+        sphereWP = new THREE.Vector3();
+        if (!caughtMarker) {
+          createCaughtMarker(THREE.WebGLRenderTarget);
+        }
+        root = new THREE.Object3D();
+        this.outputs.objectRoot = root;
+        this.outputs.collider = root;
+
+        if (sphere) {
+          root.remove(sphere);
+          (sphere.material).dispose();
+          (sphere.geometry).dispose();
+          sphere = null;
+        }
+
+        const sphereGeometry = new THREE.SphereGeometry(0.5 * this.inputs.size, 12, 10);
+
+        const sphereMaterial = new THREE.MeshBasicMaterial({
+          transparent: true,
+          color: this.inputs.color,
+          opacity: opacity,
+          depthTest: false,
+          depthWrite: false,
+        });
+
+        sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        root.add(sphere);
+
+        const planeSize = 0.5 * this.inputs.size;
+        checkPlane = new THREE.Mesh(
+          new THREE.PlaneGeometry(planeSize, planeSize),
+          new THREE.MeshBasicMaterial({
+            transparent: true,
+            opacity: 0,
+            color: 0x00ff00,
+            map: caughtMarker.texture,
+            side: THREE.DoubleSide,
+            depthTest: false,
+            depthWrite: false,
+          })
+        );
+        checkPlane.position.z = this.inputs.size;
+        sphere.renderOrder = 10;
+        checkPlane.renderOrder = 11;
+
+        root.add(checkPlane);
+
+        cameraSub = sdk.Camera.pose.subscribe(onCameraPoseChanged);
+        eventBus.addListener(SceneEvents.DisplayHint, onHintActivated);
+      },
+
+      onEvent(eventType, eventData) {
+        const data = eventData as { hover?: boolean };
+        if (!caught) {
+          if (eventType === sdk.Scene.InteractionType.CLICK) {
+            sphere.getWorldPosition(sphereWP);
+            this.notify(eventType, {
+              position: sphereWP,
+            });
+            caught = true;
+            // show check after click
+            const planeMat = checkPlane.material;
+            planeMat.opacity = hoverOpacity;
+            // if the bunny was captured, we don't need the "hint" alwasys on top
+            setAlwaysOnTop(false);
+          }
+          if (eventType === sdk.Scene.InteractionType.HOVER) {
+            hovered = data.hover;
+          }
+        }
+      },
+
+      onTick() {
+        if (cameraDirty && cameraPose) {
+          const target = cameraPose.position;
+          root.lookAt(target.x, target.y, target.z);
+          cameraDirty = false;
+        }
+
+        const hintActive = hintActiveTime + HINT_DURATION > Date.now();
+        const newMarkerVisible = hovered || hintActive;
+        if (markerVisible !== newMarkerVisible) {
+          const sphereMat = sphere.material;
+          sphereMat.opacity = newMarkerVisible ? hoverOpacity : opacity;
+
+          const planeMat = checkPlane.material;
+          planeMat.opacity = caught && newMarkerVisible ? hoverOpacity : 0;
+        }
+        if (!caught && hintActive) {
+          setAlwaysOnTop(true);
+        }
+        markerVisible = newMarkerVisible;
+      },
+
+      onDestroy() {
+        if (sphere) {
+          sphere.geometry.dispose();
+          (sphere.material).dispose();
+        }
+        cameraSub.cancel();
+        eventBus.removeListener(SceneEvents.DisplayHint, onHintActivated);
+      },
+    };
   };
-};

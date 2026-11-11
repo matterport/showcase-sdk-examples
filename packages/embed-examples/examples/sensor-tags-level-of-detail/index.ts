@@ -2,8 +2,15 @@ import type { MpSdk } from 'embedtypes/sdk';
 import { clearMesssage, connect, setMessage } from '../common';
 import '../common/main.css';
 
+// Detail level driven by how many concentric sensor sources the camera is inside.
+type DetailLevel = 'none' | 'low' | 'high';
+
 let lowDetailTag: string[] | null = null;
 let tags: string[] | null = null;
+let currentLevel: DetailLevel = 'none';
+// Serializes tag add/remove so a fast exit can't remove a not-yet-added tag and
+// leave it stranded, and so we don't re-add on every reading tick.
+let transition: Promise<void> = Promise.resolve();
 
 const createLowDetailTag = async (sdk: MpSdk) => {
   const tagInfo: MpSdk.Tag.Descriptor[] = [
@@ -79,6 +86,26 @@ const removeTags = (sdk: MpSdk) => {
   }
 };
 
+const setDetailLevel = (sdk: MpSdk, textElement: HTMLDivElement, level: DetailLevel) => {
+  if (level === currentLevel) {
+    return;
+  }
+  currentLevel = level;
+  transition = transition.then(async () => {
+    removeTags(sdk);
+    removeLowDetailTag(sdk);
+    if (level === 'low') {
+      setMessage(textElement, 'Single tag representing a cluster of tags');
+      await createLowDetailTag(sdk);
+    } else if (level === 'high') {
+      setMessage(textElement, 'A cluster of tags');
+      await createTags(sdk);
+    } else {
+      clearMesssage(textElement);
+    }
+  });
+};
+
 const main = async () => {
   const sdk: MpSdk = await connect({
     urlParams: {
@@ -126,18 +153,12 @@ const main = async () => {
 
       if (inRange.length === 1) {
         // far range
-        setMessage(textElement, 'Single tag representing a cluster of tags');
-        removeTags(sdk);
-        createLowDetailTag(sdk);
+        setDetailLevel(sdk, textElement, 'low');
       } else if (inRange.length === 2) {
         // near range
-        setMessage(textElement, 'A cluster of tags');
-        removeLowDetailTag(sdk);
-        createTags(sdk);
+        setDetailLevel(sdk, textElement, 'high');
       } else {
-        clearMesssage(textElement);
-        removeTags(sdk);
-        removeLowDetailTag(sdk);
+        setDetailLevel(sdk, textElement, 'none');
       }
     },
   });

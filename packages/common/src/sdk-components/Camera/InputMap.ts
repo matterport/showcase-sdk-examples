@@ -1,20 +1,4 @@
-import { Axis } from './Axis';
-import { ICameraController } from './ICameraController';
-
-export enum Keys {
-  W = 87,
-  A = 65,
-  S = 83,
-  D = 68,
-  Q = 81,
-  E = 69,
-  LEFT = 37,
-  RIGHT = 39,
-  UP = 38,
-  DOWN = 40,
-  SHIFT = 16,
-  SPACE = 32,
-}
+import { Axis, ICameraController } from './controls';
 
 export interface HasControls {
   controls: ICameraController;

@@ -46,7 +46,7 @@ declare module Exitgames.Common {
             @method Exitgames.Common.Logger#setExceptionHandler
             @param {(string) => boolean} handler Exception handler. Return true to cancel throwing.
         */
-        static setExceptionHandler(handler: (number, string) => boolean): void;
+        static setExceptionHandler(handler: (arg0: number, arg1: string) => boolean): void;
         /**
             @summary Checks if logging level active.
             @method Exitgames.Common.Logger#isLevelEnabled
@@ -250,14 +250,14 @@ declare module Photon {
             @param {number} eventCode Custom event code.
             @param {Function} callback The listener function that processes the event. This function may accept object with event content.
         */
-        addEventListener(eventCode: number, callback: (any) => void): void;
+        addEventListener(eventCode: number, callback: (arg0: any) => void): void;
         /**
             @summary Registers listener for operation response.
             @method Photon.PhotonPeer#addResponseListener
             @param {number} operationCode Operation code.
             @param {Function} callback The listener function that processes the event. This function may accept object with operation response content.
         */
-        addResponseListener(operationCode: number, callback: (any) => void): void;
+        addResponseListener(operationCode: number, callback: (arg0: any) => void): void;
         /**
             @summary Removes listener if exists for peer status change.
             @method Photon.PhotonPeer#removePeerStatusListener

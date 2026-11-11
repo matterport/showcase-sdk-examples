@@ -1,15 +1,15 @@
 import React from 'react';
-import { IDialogUser, MenuCommandFactory, IContext } from '../interfaces';
+import { IDialogUser, MenuCommandFactory, IAppContext } from '../interfaces';
 import { IMenuCommand } from '../interfaces';
 import { SelectUrlDialog } from '../components/SelectUrlDialog';
 import { waitUntil } from '../components/Main';
-import { ISceneNode } from '@mp/common';
+import type { MpSdk } from '../../../bundle/sdk';
 
 class AddModel implements IMenuCommand<void>, IDialogUser {
   private urlToLoad: string = null;
   private cancelled: boolean = false;
 
-  constructor(private context: IContext) {}
+  constructor(private appContext: IAppContext) {}
 
   public dialogUser(): IDialogUser {
     return this;
@@ -17,15 +17,16 @@ class AddModel implements IMenuCommand<void>, IDialogUser {
 
   async execute(): Promise<void> {
     await waitUntil(() => this.urlToLoad !== null || this.cancelled);
-    
-    const node = await this.context.sdk.sdk.Scene.createNode();
+
+    const node = this.appContext.scene.sceneObject.addNode();
     node.name = 'New Model';
+    node.position.copy(await this.appContext.scene.getSpawnPosition());
     node.addComponent('mp.gltfLoader', {
       url: this.urlToLoad,
     });
     node.start();
 
-    this.context.scene.addObject(node);
+    this.appContext.scene.addObject(node);
   }
 
   onComplete(url: string): void {
@@ -45,8 +46,8 @@ class AddModel implements IMenuCommand<void>, IDialogUser {
   }
 }
 
-export const makeAddModelFactory = (context: IContext): MenuCommandFactory => {
-  return (selection: ISceneNode[]) => {
-    return new AddModel(context);
+export const makeAddModelFactory = (appContext: IAppContext): MenuCommandFactory => {
+  return (selection: MpSdk.Scene.INode[]) => {
+    return new AddModel(appContext);
   }
 };

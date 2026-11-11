@@ -255,7 +255,7 @@ async function loadedShowcaseHandler(mpSdk: MpSdk) {
       goto.addEventListener('click', () => {
         let existing_overlay = document.querySelector('.popup-overlay');
         if (existing_overlay) existing_overlay.remove();
-        mpSdk.Mattertag.navigateToTag(tagEle.id, mpSdk.Mattertag.Transition.FADEOUT).catch(console.error);
+        mpSdk.Mattertag.navigateToTag(tagEle.id, mpSdk.Camera.TransitionType.FADEOUT).catch(console.error);
         popupQuestion(tagEle.id);
       });
 
