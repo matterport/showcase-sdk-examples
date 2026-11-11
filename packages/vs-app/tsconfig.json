@@ -12,6 +12,7 @@
     ],
   },
   "include": [
-    "./src/**/**/*"
+    "./src/**/**/*",
+    "../common/src/global.d.ts"
   ]
 }

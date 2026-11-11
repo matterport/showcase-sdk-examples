@@ -4,21 +4,25 @@ import type {
   AnimationMixer,
   AnimationAction,
   AnimationClip,
-  Material,
-  Mesh,
+  CircleGeometry,
+  CylinderGeometry,
+  MeshBasicMaterial,
+  MeshStandardMaterial,
   Texture,
-  LineSegments,
-  BufferGeometry,
 } from 'three';
 import { IPainter2d } from './CanvasRenderer';
 import { Size } from './PlaneRenderer';
 
-const HoverEvent = 'hover';
-const UnhoverEvent = 'unhover';
 const RepaintEvent = 'repaint';
 
+// back face flush with the wall at z = 0, centred 6.8 cm above the node origin
+const BezelRadius = 0.066;
+const BezelDepth = 0.048;
+const FaceRadius = 0.0614;
+const FaceOffset = 0.001;
+const BodyCenter = { x: 0.005, y: 0.068, z: BezelDepth / 2 };
+
 type Inputs = {
-  loadingState: string;
   texture: Texture | null;
   updateInterval: number;
 };
@@ -26,14 +30,18 @@ type Inputs = {
 type Outputs = {
   painter: IPainter2d | null;
   visible: boolean;
+  objectRoot?: Object3D;
+  collider?: Object3D;
 };
 
-export const nestThermostatType = 'mp.nestThermostat';
-export const makeNestThermostat: MpSdk.Scene.IComponentFactory<Inputs, Outputs> = () => {
-  let daeComponent: MpSdk.Scene.IComponent | null = null;
+export const thermostatType = 'mp.thermostat';
+export const makeThermostat = (sdk: MpSdk): MpSdk.Scene.IComponentFactory<Inputs, Outputs> => () => {
   let mixer: AnimationMixer | null = null;
   let onEnterClip: AnimationClip | null = null;
-  let mesh: Mesh<BufferGeometry, Material> | null = null;
+  let bezelGeometry: CylinderGeometry | null = null;
+  let bezelMaterial: MeshStandardMaterial | null = null;
+  let faceGeometry: CircleGeometry | null = null;
+  let faceMaterial: MeshBasicMaterial | null = null;
   let currentTime: number = 0;
   let nextUpdate: number = 0;
   let temperature: number = 0;
@@ -69,7 +77,6 @@ export const makeNestThermostat: MpSdk.Scene.IComponentFactory<Inputs, Outputs> 
 
   return {
     inputs: {
-      loadingState: 'Idle',
       texture: null,
       updateInterval: 1000,
     },
@@ -80,8 +87,7 @@ export const makeNestThermostat: MpSdk.Scene.IComponentFactory<Inputs, Outputs> 
     },
 
     events: {
-      [HoverEvent]: true,
-      [UnhoverEvent]: true,
+      [sdk.Scene.InteractionType.HOVER]: true,
     },
 
     emits: {
@@ -95,9 +101,7 @@ export const makeNestThermostat: MpSdk.Scene.IComponentFactory<Inputs, Outputs> 
 
       let planeRendererRoot: Object3D | null = null;
       for (const component of root.componentIterator()) {
-        if (component.componentType === 'mp.daeLoader') {
-          daeComponent = component;
-        } else if (component.componentType === 'mp.planeRenderer') {
+        if (component.componentType === 'mp.planeRenderer') {
           planeRendererRoot = component.outputs.objectRoot;
           planeRendererRoot.translateZ(0.05);
           planeRendererRoot.translateY(0.4);
@@ -106,6 +110,22 @@ export const makeNestThermostat: MpSdk.Scene.IComponentFactory<Inputs, Outputs> 
       }
 
       this.outputs.painter = painter;
+
+      // the body's +Z axis is the node's front
+      const body = new THREE.Group();
+      body.position.set(BodyCenter.x, BodyCenter.y, BodyCenter.z);
+      bezelGeometry = new THREE.CylinderGeometry(BezelRadius, BezelRadius, BezelDepth, 48).rotateX(Math.PI / 2);
+      bezelMaterial = new THREE.MeshStandardMaterial({ color: 0x8a8d91, metalness: 0.6, roughness: 0.4 });
+      body.add(new THREE.Mesh(bezelGeometry, bezelMaterial));
+
+      faceGeometry = new THREE.CircleGeometry(FaceRadius, 48);
+      faceMaterial = new THREE.MeshBasicMaterial({ map: this.inputs.texture });
+      const face = new THREE.Mesh(faceGeometry, faceMaterial);
+      face.position.z = BezelDepth / 2 + FaceOffset;
+      body.add(face);
+
+      this.outputs.objectRoot = body;
+      this.outputs.collider = body;
 
       mixer = new THREE.AnimationMixer(planeRendererRoot);
 
@@ -120,34 +140,13 @@ export const makeNestThermostat: MpSdk.Scene.IComponentFactory<Inputs, Outputs> 
     },
 
     onInputsUpdated() {
-      const THREE = this.context.three;
-      if (this.inputs.loadingState === 'Loaded') {
-        const lines: LineSegments[] = [];
-        daeComponent.outputs.objectRoot.traverse((obj: Object3D) => {
-          // we dont want line segments, track them and remove them.
-          if (obj.type === 'LineSegments') {
-            lines.push(obj as LineSegments);
-          } else if (obj.type === 'Mesh') {
-            mesh = obj as Mesh<BufferGeometry, Material>;
-
-            const material = mesh.material;
-            if (material && material.name === '_5b76dbe388862300126c1e14') {
-              const newMaterial = new THREE.MeshBasicMaterial({ map: this.inputs.texture });
-              mesh.material = newMaterial;
-            }
-          }
-        });
-
-        // remove the line segments.
-        lines.forEach((line: LineSegments) => {
-          line.parent.remove(line);
-        });
-      }
+      faceMaterial.map = this.inputs.texture;
+      faceMaterial.needsUpdate = true;
     },
 
     onEvent(eventType, eventData) {
       const THREE = this.context.three;
-      if (eventType === HoverEvent) {
+      if (eventType === sdk.Scene.InteractionType.HOVER) {
         const data = eventData as { hover: boolean };
         if (data.hover) {
           this.outputs.visible = true;
@@ -160,6 +159,13 @@ export const makeNestThermostat: MpSdk.Scene.IComponentFactory<Inputs, Outputs> 
           this.outputs.visible = false;
         }
       }
+    },
+
+    onDestroy() {
+      bezelGeometry.dispose();
+      bezelMaterial.dispose();
+      faceGeometry.dispose();
+      faceMaterial.dispose();
     },
 
     onTick(delta) {

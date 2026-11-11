@@ -5,7 +5,7 @@ import {
   cameraInputType, makeCameraInput,
   makeOrientedBox, makeSlot, makeSecurityCamera, makeLoadingIndicator,
   makePlaneRenderer, makeCanvasRenderer, makeVideoRenderer, makeVideoStreamCapture,
-  makeNestThermostat, makeToggleState, makeCanvasBorder, makeCanvasText,
+  makeThermostat, makeToggleState, makeCanvasBorder, makeCanvasText,
   makeCanvasImage, makeTuner, makeHlsLoader,
 } from '@mp/common';
 import type { MpSdk } from '../../../bundle/sdk';
@@ -92,7 +92,7 @@ export class Main extends Component<Props, State> {
       this.sdk.Scene.register('mp.canvasRenderer', makeCanvasRenderer),
       this.sdk.Scene.register('mp.videoRenderer', makeVideoRenderer),
       this.sdk.Scene.register('mp.videoStreamCapture', makeVideoStreamCapture),
-      this.sdk.Scene.register('mp.nestThermostat', makeNestThermostat),
+      this.sdk.Scene.register('mp.thermostat', makeThermostat(this.sdk)),
       this.sdk.Scene.register('mp.toggleState', makeToggleState),
       this.sdk.Scene.register('mp.canvasBorder', makeCanvasBorder),
       this.sdk.Scene.register('mp.canvasText', makeCanvasText),

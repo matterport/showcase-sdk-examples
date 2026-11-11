@@ -47,8 +47,9 @@
   margin: 12px 0 0;
   min-height: 16px;
   font-size: 12px;
+  line-height: 1.6;
   font-family: 'Roboto Mono', monospace;
-  color: #6cf2a0;
+  color: #a8a7a5;
 }
 
 .inspector-marker {
@@ -58,15 +59,38 @@
   width: 16px;
   height: 16px;
   margin: -8px 0 0 -8px;
+  padding: 0;
   border-radius: 50%;
   border: 2px solid #ffffff;
   background: rgba(108, 242, 160, 0.6);
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  /* Hidden marker never sits between the cursor and Showcase; only a revealed one takes clicks. */
   pointer-events: none;
   opacity: 0;
   transition: opacity var(--transition-duration) linear;
 }
 
 .inspector-marker.visible {
+  pointer-events: auto;
   opacity: 1;
+}
+
+.inspector-marker.visible:hover {
+  background: rgba(108, 242, 160, 0.9);
+}
+
+.inspector-trail-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: #6cf2a0;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-duration) linear;
 }

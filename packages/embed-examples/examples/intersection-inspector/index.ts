@@ -15,8 +15,8 @@ async function inspect(mpSdk: MpSdk) {
   // Seed a few tags so the pointer can intersect them (object: intersectedobject.tag).
   await mpSdk.Tag.add(...tags);
 
-  // Draw Sensor debug volumes — SDK-added 3D geometry. Point at them to see what
-  // the intersection reports for geometry the SDK injects (object: intersectedobject.unknown).
+  // Sensor debug volumes are SDK-injected geometry; pointing at them reports
+  // object: intersectedobject.unknown.
   const sensor = await mpSdk.Sensor.createSensor(mpSdk.Sensor.SensorType.CAMERA);
   const sources = await Promise.all(
     sourceDescs.map((desc) => {
@@ -33,7 +33,11 @@ async function inspect(mpSdk: MpSdk) {
   sensor.addSource(...sources);
   sensor.showDebug(true);
 
-  const marker = document.createElement('div');
+  // The Embed SDK exposes no click-in-3D event, so there's no click to capture a point with.
+  // Instead we watch for a dwell — a gap in the intersection stream — and reveal the marker at
+  // the settled point to click.
+  const marker = document.createElement('button');
+  marker.type = 'button';
   marker.classList.add('inspector-marker');
   container.appendChild(marker);
 
@@ -41,7 +45,7 @@ async function inspect(mpSdk: MpSdk) {
   panel.classList.add('inspector-panel');
   panel.innerHTML = `
     <h4 class="inspector-title">Intersection Inspector</h4>
-    <p class="inspector-hint">Point at the model, a tag, a sweep, or a debug volume. Click to pin a reading.</p>
+    <p class="inspector-hint">Point at the model, a tag, a sweep, or a debug volume. Pause on a spot, then click the marker to pin its reading.</p>
     <dl class="inspector-readout">
       <dt>Object</dt><dd data-field="object">—</dd>
       <dt>Position</dt><dd data-field="position">—</dd>
@@ -60,28 +64,73 @@ async function inspect(mpSdk: MpSdk) {
     pinned: panel.querySelector('[data-field="pinned"]') as HTMLElement,
   };
 
+  // How long the pointer must hold still before the marker appears. The delay also lets
+  // ordinary navigation clicks reach Showcase, since the marker only exists once you settle.
+  const dwellMs = 500;
+
+  // Recent pins kept in the fading trail.
+  const maxPins = 5;
+  const trailPalette = ['#6cf2a0', '#4dd2ff', '#ffd166', '#ff6b6b', '#c792ea', '#f78c6c'];
+
   let latestIntersection: MpSdk.Pointer.Intersection | undefined;
   let latestPose: MpSdk.Camera.Pose | undefined;
+  let dwellTimer: number | undefined;
+  let pinCount = 0;
 
-  // Reproject the world-space hit point to screen pixels and place the marker.
-  // Runs on every intersection change and every camera move — no polling loop.
-  function updateMarker() {
-    const iframe = document.getElementById('sdk-frame') as HTMLIFrameElement;
-    const overModel = latestIntersection?.object === mpSdk.Pointer.Colliders.MODEL;
-    if (!latestIntersection || !latestPose || !overModel) {
-      marker.classList.remove('visible');
+  const pins: Array<{ position: MpSdk.Vector3; color: string }> = [];
+  const trailDots = Array.from({ length: maxPins }, () => {
+    const dot = document.createElement('div');
+    dot.classList.add('inspector-trail-dot');
+    container.appendChild(dot);
+    return dot;
+  });
+
+  function positionMarker() {
+    if (!latestIntersection || !latestPose) {
       return;
     }
-
+    const iframe = document.getElementById('sdk-frame') as HTMLIFrameElement;
     const size = { w: iframe.clientWidth, h: iframe.clientHeight };
     const coord = mpSdk.Conversion.worldToScreen(latestIntersection.position, latestPose, size);
     marker.style.transform = `translate(${coord.x}px, ${coord.y}px)`;
-    marker.classList.add('visible');
+  }
+
+  // Place and color each pin's trail dot, hiding those off screen, and list the on-screen pins.
+  function renderTrail() {
+    const pose = latestPose;
+    if (!pose) {
+      return;
+    }
+    const iframe = document.getElementById('sdk-frame') as HTMLIFrameElement;
+    const size = { w: iframe.clientWidth, h: iframe.clientHeight };
+    const rows: string[] = [];
+    trailDots.forEach((dot, i) => {
+      const pin = pins[i];
+      if (!pin) {
+        dot.style.opacity = '0';
+        return;
+      }
+      const coord = mpSdk.Conversion.worldToScreen(pin.position, pose, size);
+      // Only draw a pin while it projects inside the viewport.
+      const onScreen = coord.x >= 0 && coord.x <= size.w && coord.y >= 0 && coord.y <= size.h;
+      dot.style.background = pin.color;
+      dot.style.transform = `translate(${coord.x}px, ${coord.y}px)`;
+      // Fade older pins: index 0 full opacity, oldest down to 0.5.
+      dot.style.opacity = onScreen ? `${1 - (0.5 * i) / Math.max(maxPins - 1, 1)}` : '0';
+      if (onScreen) {
+        rows.push(`<span style="color: ${pin.color}">${formatPoint(pin.position)}</span>`);
+      }
+    });
+    fields.pinned.innerHTML = rows.length ? `Pinned<br>${rows.join('<br>')}` : '';
   }
 
   mpSdk.Camera.pose.subscribe((pose) => {
     latestPose = pose;
-    updateMarker();
+    // Keep a visible marker on its point as the camera moves.
+    if (marker.classList.contains('visible')) {
+      positionMarker();
+    }
+    renderTrail();
   });
 
   mpSdk.Pointer.intersection.subscribe((intersection) => {
@@ -90,14 +139,32 @@ async function inspect(mpSdk: MpSdk) {
     fields.position.innerText = formatPoint(intersection.position);
     fields.normal.innerText = formatPoint(intersection.normal);
     fields.floor.innerText = intersection.floorIndex === undefined ? '—' : `${intersection.floorIndex}`;
-    updateMarker();
+
+    // A new intersection means the pointer moved: hide the marker and restart the dwell timer.
+    marker.classList.remove('visible');
+    window.clearTimeout(dwellTimer);
+    dwellTimer = window.setTimeout(() => {
+      if (!latestIntersection || latestIntersection.object === mpSdk.Pointer.Colliders.NONE) {
+        return;
+      }
+      positionMarker();
+      marker.classList.add('visible');
+    }, dwellMs);
   });
 
-  panel.addEventListener('click', () => {
-    if (!latestIntersection || latestIntersection.object !== mpSdk.Pointer.Colliders.MODEL) {
+  // Marker sits on the hit point, so clicking it pins exactly the settled reading.
+  marker.addEventListener('click', () => {
+    if (!latestIntersection) {
       return;
     }
-    fields.pinned.innerText = `Pinned: ${formatPoint(latestIntersection.position)}`;
+    // Newest pin to the front with the next palette color; drop the oldest past maxPins.
+    pins.unshift({ position: { ...latestIntersection.position }, color: trailPalette[pinCount % trailPalette.length] });
+    pinCount += 1;
+    if (pins.length > maxPins) {
+      pins.pop();
+    }
+    renderTrail();
+    marker.classList.remove('visible');
   });
 }
 

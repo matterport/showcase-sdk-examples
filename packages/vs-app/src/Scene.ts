@@ -4,7 +4,7 @@ import {
   slotType,
   orientedBoxType,
   securityCameraType,
-  nestThermostatType,
+  thermostatType,
   planeRendererType,
   canvasRendererType,
   videoRendererType,
@@ -65,7 +65,7 @@ export class Scene {
 
     this.buildSecurityCamera(obj);
     this.buildLights(obj);
-    this.buildNestThermostat(obj);
+    this.buildThermostat(obj);
     this.buildWebcam(obj);
     this.buildVideo(obj);
 
@@ -91,7 +91,7 @@ export class Scene {
 
     node.addComponent(slotType, { size: config.slotSize });
     node.addComponent(orientedBoxType);
-    node.addComponent(this.sdk.Scene.Component.GLTF_LOADER);
+    const gltfLoader = node.addComponent(this.sdk.Scene.Component.GLTF_LOADER);
     const objLoader = node.addComponent(this.sdk.Scene.Component.OBJ_LOADER, {
       url: cdnUrl + '/models/mp-logo/brand.obj',
       localScale: PLACEHOLDER_SCALE,
@@ -103,6 +103,7 @@ export class Scene {
     });
 
     obj.bindPath(obj.addInputPath(loadingIndicator, 'logo'), obj.addOutputPath(objLoader, 'objectRoot'));
+    obj.bindPath(obj.addInputPath(loadingIndicator, 'loadingState'), obj.addOutputPath(gltfLoader, 'loadingState'));
   }
 
   private buildSecurityCamera(obj: MpSdk.Scene.IObject) {
@@ -154,33 +155,26 @@ export class Scene {
     });
   }
 
-  private buildNestThermostat(obj: MpSdk.Scene.IObject) {
+  private buildThermostat(obj: MpSdk.Scene.IObject) {
     const node = obj.addNode();
-    node.name = 'nest';
+    node.name = 'thermostat';
     node.position.set(-3.22, 1.371, 3.7805);
     node.quaternion.copy(
       new this.THREE.Quaternion().setFromEuler(new this.THREE.Euler(0, 180 * Math.PI / 180, 0))
     );
 
-    const daeLoader = node.addComponent(this.sdk.Scene.Component.DAE_LOADER, {
-      url: cdnUrl + '/models/iot/nest-1/model.dae',
-      localScale: { x: 0.04, y: 0.04, z: 0.04 },
-      localRotation: { x: 0, y: 0, z: 0 },
-    });
     const planeRenderer = node.addComponent(planeRendererType);
     const canvasRenderer = node.addComponent(canvasRendererType, {
       textureRes: { w: 1024, h: 1024 },
     });
-    const nestThermostat = node.addComponent(nestThermostatType);
+    const thermostat = node.addComponent(thermostatType);
 
-    obj.bindPath(obj.addInputPath(nestThermostat, 'loadingState'), obj.addOutputPath(daeLoader, 'loadingState'));
     obj.bindPath(obj.addInputPath(planeRenderer, 'texture'), obj.addOutputPath(canvasRenderer, 'texture'));
-    obj.bindPath(obj.addInputPath(canvasRenderer, 'painter'), obj.addOutputPath(nestThermostat, 'painter'));
-    obj.bindPath(obj.addInputPath(nestThermostat, 'texture'), obj.addOutputPath(canvasRenderer, 'texture'));
-    obj.bindPath(obj.addInputPath(planeRenderer, 'visible'), obj.addOutputPath(nestThermostat, 'visible'));
+    obj.bindPath(obj.addInputPath(canvasRenderer, 'painter'), obj.addOutputPath(thermostat, 'painter'));
+    obj.bindPath(obj.addInputPath(thermostat, 'texture'), obj.addOutputPath(canvasRenderer, 'texture'));
+    obj.bindPath(obj.addInputPath(planeRenderer, 'visible'), obj.addOutputPath(thermostat, 'visible'));
 
-    obj.bindPath(obj.addEventPath(nestThermostat, 'hover'), obj.addEmitPath(daeLoader, this.sdk.Scene.InteractionType.HOVER));
-    obj.bindPath(obj.addEventPath(canvasRenderer, 'repaint'), obj.addEmitPath(nestThermostat, 'repaint'));
+    obj.bindPath(obj.addEventPath(canvasRenderer, 'repaint'), obj.addEmitPath(thermostat, 'repaint'));
   }
 
   private buildWebcam(obj: MpSdk.Scene.IObject) {
@@ -259,7 +253,6 @@ export class Scene {
 
     const tuner = node.addComponent(tunerType, {
       urls: [
-        'https://video2archives.earthcam.com/archives/_definst_/MP4:permanent/14162/2019/07/22/1300.mp4/chunklist_w1401431259.m3u8',
         'https://www.bloomberg.com/media-manifest/streams/us.m3u8',
       ],
     });

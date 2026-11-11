@@ -15,7 +15,7 @@ slots.set('slot_4', Category.CoffeTable);
 
 const sofaItems: ItemDesc[] = [
   {
-    name: 'sofa 11',
+    name: 'Grey Fabric',
     url: cdnUrl + '/models/sofa/11/scene.gltf',
     categories: [Category.Sofa],
     position: { x: 0, y: -0.5, z: 0 },
@@ -23,7 +23,7 @@ const sofaItems: ItemDesc[] = [
     scale: { x: 0.009, y: 0.009, z: 0.009 },
   },
   {
-    name: 'sofa 7',
+    name: 'Linen',
     url: cdnUrl + '/models/sofa/7/scene.gltf',
     categories: [Category.Sofa],
     position: { x: 5.2, y: -0.5, z: 0 },
@@ -31,7 +31,7 @@ const sofaItems: ItemDesc[] = [
     scale: { x: 1, y: 1, z: 1 },
   },
   {
-    name: 'sofa 9',
+    name: 'Scandinavian',
     url: cdnUrl + '/models/sofa/9/scene.gltf',
     categories: [Category.Sofa],
     position: { x: 0, y: 0, z: 0 },
@@ -42,7 +42,7 @@ const sofaItems: ItemDesc[] = [
 
 const endTableItems: ItemDesc[] = [
   {
-    name: 'end table 2',
+    name: 'Aula White',
     url: cdnUrl + '/models/end-table/2/scene.gltf',
     categories: [Category.EndTable],
     position: { x: 0, y: -0.32, z: 0 },
@@ -50,7 +50,7 @@ const endTableItems: ItemDesc[] = [
     scale: { x: 0.01, y: 0.01, z: 0.01 },
   },
   {
-    name: 'Aula',
+    name: 'Jenson Oak',
     url: cdnUrl + '/models/end-table/3/scene.gltf',
     categories: [Category.EndTable],
     position: { x: 0, y: -0.32, z: 0 },
@@ -74,7 +74,7 @@ const endTableItems: ItemDesc[] = [
     scale: { x: 0.01, y: 0.01, z: 0.01 },
   },
   {
-    name: 'Aula 2',
+    name: 'Aula Copper',
     url: cdnUrl + '/models/end-table/6/scene.gltf',
     categories: [Category.EndTable],
     position: { x: 0, y: -0.32, z: 0 },
@@ -90,7 +90,7 @@ const endTableItems: ItemDesc[] = [
     scale: { x: 0.01, y: 0.01, z: 0.01 },
   },
   {
-    name: 'Global',
+    name: 'Globe',
     url: cdnUrl + '/models/end-table/8/scene.gltf',
     categories: [Category.EndTable],
     position: { x: -0.32, y: -0.32, z: -0.5 },
@@ -98,7 +98,7 @@ const endTableItems: ItemDesc[] = [
     scale: { x: 0.001, y: 0.001, z: 0.001 },
   },
   {
-    name: 'Aula 3',
+    name: 'Aula Black',
     url: cdnUrl + '/models/end-table/9/scene.gltf',
     categories: [Category.EndTable],
     position: { x: 0, y: -0.32, z: 0 },
@@ -109,41 +109,49 @@ const endTableItems: ItemDesc[] = [
 
 const armChairItems: ItemDesc[] = [
   {
-    name: 'arm chair 2',
+    name: 'Puget',
     url: cdnUrl + '/models/arm-chair/2/scene.gltf',
-    categories: [Category.EndTable],
+    categories: [Category.ArmChair],
     position: { x: -0.27, y: -0.51, z: -0.35 },
     rotation: { x: 0, y: -130, z: 0 },
     scale: { x: 0.001, y: 0.001, z: 0.001 },
   },
   {
-    name: 'arm chair 4',
+    name: 'Black',
     url: cdnUrl + '/models/arm-chair/4/scene.gltf',
-    categories: [Category.EndTable],
+    categories: [Category.ArmChair],
     position: { x: 0, y: -0.51, z: 0 },
     rotation: { x: 0, y: 0, z: 0 },
     scale: { x: 0.008, y: 0.008, z: 0.008 },
   },
   {
-    name: 'arm chair 5',
+    name: 'Burgundy',
     url: cdnUrl + '/models/arm-chair/5/scene.gltf',
-    categories: [Category.EndTable],
+    categories: [Category.ArmChair],
     position: { x: 0, y: -0.51, z: 0 },
     rotation: { x: 0, y: -90, z: 0 },
     scale: { x: 0.0019, y: 0.0019, z: 0.0019 },
   },
   {
-    name: 'arm chair 6',
+    name: 'Emilia',
     url: cdnUrl + '/models/arm-chair/6/scene.gltf',
-    categories: [Category.EndTable],
+    categories: [Category.ArmChair],
     position: { x: 0, y: -0.51, z: 0 },
     rotation: { x: 0, y: -90, z: 0 },
     scale: { x: 1.3, y: 1.3, z: 1.3 },
   },
   {
-    name: 'arm chair 8',
+    name: 'Kubrick',
+    url: cdnUrl + '/models/arm-chair/7/scene.gltf',
+    categories: [Category.ArmChair],
+    position: { x: 0, y: -0.51, z: 0 },
+    rotation: { x: 0, y: -90, z: 0 },
+    scale: { x: 0.01, y: 0.01, z: 0.01 },
+  },
+  {
+    name: 'Grey',
     url: cdnUrl + '/models/arm-chair/8/scene.gltf',
-    categories: [Category.EndTable],
+    categories: [Category.ArmChair],
     position: { x: 0, y: -0.51, z: 0 },
     rotation: { x: 0, y: 90, z: 0 },
     scale: { x: 0.011, y: 0.011, z: 0.011 },
@@ -152,7 +160,7 @@ const armChairItems: ItemDesc[] = [
 
 const coffeeTableItems: ItemDesc[] = [
   {
-    name: 'coffee table 1',
+    name: 'Vintage 70s',
     url: cdnUrl + '/models/coffee-table/2/scene.gltf',
     categories: [Category.CoffeTable],
     position: { x: 0, y: 0, z: 0 },
@@ -160,7 +168,7 @@ const coffeeTableItems: ItemDesc[] = [
     scale: { x: 0.6, y: 0.6, z: 0.6 },
   },
   {
-    name: 'coffee table 2',
+    name: 'Vintage 70s 2',
     url: cdnUrl + '/models/coffee-table/3/scene.gltf',
     categories: [Category.CoffeTable],
     position: { x: 0, y: 0, z: 0 },
@@ -168,7 +176,7 @@ const coffeeTableItems: ItemDesc[] = [
     scale: { x: 0.4, y: 0.4, z: 0.4 },
   },
   {
-    name: 'coffee table 3',
+    name: 'Classic',
     url: cdnUrl + '/models/coffee-table/6/scene.gltf',
     categories: [Category.CoffeTable],
     position: { x: -0.15, y: -0.2, z: 0.4 },
@@ -176,7 +184,31 @@ const coffeeTableItems: ItemDesc[] = [
     scale: { x: 0.01, y: 0.01, z: 0.01 },
   },
   {
-    name: 'coffee table 7',
+    name: 'Aula Black',
+    url: cdnUrl + '/models/coffee-table/7/scene.gltf',
+    categories: [Category.CoffeTable],
+    position: { x: 0, y: -0.26, z: 0 },
+    rotation: { x: 0, y: 0, z: 0 },
+    scale: { x: 0.01, y: 0.01, z: 0.01 },
+  },
+  {
+    name: 'Aula White',
+    url: cdnUrl + '/models/coffee-table/8/scene.gltf',
+    categories: [Category.CoffeTable],
+    position: { x: 0, y: -0.26, z: 0 },
+    rotation: { x: 0, y: 0, z: 0 },
+    scale: { x: 0.01, y: 0.01, z: 0.01 },
+  },
+  {
+    name: 'Aveiro Oak',
+    url: cdnUrl + '/models/coffee-table/9/scene.gltf',
+    categories: [Category.CoffeTable],
+    position: { x: 0, y: -0.255, z: 0 },
+    rotation: { x: 0, y: 0, z: 0 },
+    scale: { x: 0.01, y: 0.01, z: 0.01 },
+  },
+  {
+    name: 'Glass and Wood',
     url: cdnUrl + '/models/coffee-table/10/scene.gltf',
     categories: [Category.CoffeTable],
     position: { x: 1.3, y: -0.255, z: 0.2 },

@@ -11,6 +11,7 @@ type Inputs = {
 };
 
 export const loadingIndicatorType = 'mp.loadingIndicator';
+/** Bind the `loadingState` input to a glTF loader's `loadingState` output with `bindPath` before the node starts. */
 export const makeLoadingIndicator: MpSdk.Scene.IComponentFactory<Inputs> = () => {
   let mixer: AnimationMixer | null = null;
   let box: Mesh<BufferGeometry, MeshBasicMaterial> | null;
@@ -26,8 +27,6 @@ export const makeLoadingIndicator: MpSdk.Scene.IComponentFactory<Inputs> = () =>
     },
 
     onInit() {
-      // @deprecated context.root not in sdk.d.ts
-      const root: MpSdk.Scene.INode = (this.context as any).root;
       const THREE = this.context.three;
       const geometry = new THREE.BoxGeometry(1, 1, 1);
       const material = new THREE.MeshBasicMaterial({
@@ -36,12 +35,6 @@ export const makeLoadingIndicator: MpSdk.Scene.IComponentFactory<Inputs> = () =>
         opacity: 0.2,
       });
       box = new THREE.Mesh(geometry, material);
-
-      for (const component of root.componentIterator()) {
-        if (component.componentType === 'mp.gltfLoader') {
-          this.bind('loadingState', component, 'loadingState');
-        }
-      }
 
       this.onInputsUpdated();
     },

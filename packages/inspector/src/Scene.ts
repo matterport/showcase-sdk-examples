@@ -5,7 +5,7 @@ import {
   sphereSourceType, boxSourceType,
   cameraInputType, makeCameraInput, CameraInputEvent,
   makeBoxSource, makePlaneRenderer, makeCanvasRenderer,
-  makeNestThermostat, makeSphereSource, makeCylinderSource,
+  makeThermostat, makeSphereSource, makeCylinderSource,
 } from '@mp/common';
 import { gridType, makeGrid } from './Grid';
 import type { MpSdk } from '../../bundle/sdk';
@@ -75,7 +75,7 @@ class Scene implements IScene {
       sdk.Scene.register(closeupViewType, makeCloseUpView),
       sdk.Scene.register('mp.planeRenderer', makePlaneRenderer(sdk)),
       sdk.Scene.register('mp.canvasRenderer', makeCanvasRenderer),
-      sdk.Scene.register('mp.nestThermostat', makeNestThermostat),
+      sdk.Scene.register('mp.thermostat', makeThermostat(sdk)),
       sdk.Scene.register(cameraInputType, makeCameraInput),
       sdk.Scene.register(sphereSourceType, makeSphereSource(sdk)),
       sdk.Scene.register(boxSourceType, makeBoxSource(sdk)),
@@ -117,7 +117,7 @@ class Scene implements IScene {
       (mode: string) => mode === sdk.Mode.Mode.DOLLHOUSE
     );
     const cameraNode = this.sceneObject.addNode();
-    const cameraPose = await sdk.Camera.getPose();
+    const cameraPose = await sdk.Camera.pose.waitUntil(() => true);
     this.cameraInput = cameraNode.addComponent(cameraInputType);
     // SDK pose uses row-major projection and degrees — convert to THREE.js conventions
     this.cameraInput.inputs.startPose = {

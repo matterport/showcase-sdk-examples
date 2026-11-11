@@ -4,10 +4,7 @@ import { SceneNodeView } from './SceneNodeView';
 import { FrameView } from './Frame';
 import { Selection, TransformToolbar } from './TransformToolbar';
 import { SceneDropZone } from './SceneDropZone';
-import {
-  IInteractionEvent,
-  sdkKey,
-} from '@mp/common';
+import { sdkKey } from '@mp/common';
 import type { MpSdk } from '../../../bundle/sdk';
 //import { WithStyles, withStyles } from '@material-ui/core/styles';
 import { Grid, Button, Tabs, Tab } from '@mui/material';
@@ -210,13 +207,7 @@ export class MainView extends Component<Props, State> {
         this.spySubs = [];
 
         const sdk = this.context.sdk.sdk;
-        class ClickSpy implements MpSdk.Scene.IComponentEventSpy<IInteractionEvent> {
-          public eventType = sdk.Scene.InteractionType.CLICK;
-          constructor(private mainView: MainView, private node: MpSdk.Scene.INode) {}
-          onEvent(payload: IInteractionEvent) {
-            this.mainView.itemSelected(this.node);
-          }
-        }
+        const obj = this.context.scene.sceneObject;
 
         // resubscribe to spy events
         // If the current selection isn't in the scene anymore, clear it.
@@ -228,7 +219,10 @@ export class MainView extends Component<Props, State> {
 
           for (const component of node.componentIterator()) {
             if (!component.emits || !(component.emits[sdk.Scene.InteractionType.CLICK])) continue;
-            const sub = component.spyOnEvent(new ClickSpy(this, node));
+            const sub = obj.spyOnEvent({
+              path: obj.addEmitPath(component, sdk.Scene.InteractionType.CLICK),
+              onEvent: () => this.itemSelected(node),
+            });
             this.spySubs.push(sub);
           }
         }

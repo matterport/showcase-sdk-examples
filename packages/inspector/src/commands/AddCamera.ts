@@ -24,18 +24,15 @@ class AddCamera implements IMenuCommand<void> {
     node.start();
     this.appContext.scene.addObject(node);
 
-    /**
-     * Use this spy to remove the object from the scene when the animation is complete.
-     */
-    class DoneSpy implements MpSdk.Scene.IComponentEventSpy<void> {
-      public eventType = DoneEvent;
-      constructor(private appContext: IAppContext, private node: MpSdk.Scene.INode) {}
-      onEvent() {
-        this.appContext.scene.removeObject(this.node);
-      }
-    }
-
-    splineCamera.spyOnEvent(new DoneSpy(this.appContext, node));
+    // Remove the object from the scene when the animation is complete.
+    const doneSpy = {
+      id: 'splineCamera-done',
+      path: obj.addEventPath(splineCamera, DoneEvent),
+      onEvent: () => {
+        this.appContext.scene.removeObject(node);
+      },
+    };
+    obj.spyOnEvent(doneSpy);
   }
 }
 

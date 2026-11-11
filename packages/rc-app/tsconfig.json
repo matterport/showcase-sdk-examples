@@ -13,6 +13,6 @@
       "rc-app/*": ["src/*"]
     }
   },
-  "include": ["./src/**/**/*", "lib/photon/Photon-Javascript_SDK.d.ts"],
+  "include": ["./src/**/**/*", "lib/photon/Photon-Javascript_SDK.d.ts", "../common/src/global.d.ts"],
   "exclude": ["**/__test__/*.test.ts"]
 }

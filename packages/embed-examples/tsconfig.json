@@ -9,5 +9,5 @@
     "allowJs": true,
     "lib": ["dom", "es2015"]
   },
-  "include": ["./examples/**/*"]
+  "include": ["./examples/**/*", "../common/src/global.d.ts"]
 }

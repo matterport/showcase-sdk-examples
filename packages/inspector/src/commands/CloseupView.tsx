@@ -63,18 +63,17 @@ class CloseupView implements IMenuCommand<void> {
 
 
     const sdk = this.appContext.sdk.sdk;
-    class KeySpy implements MpSdk.Scene.IComponentEventSpy<KeyEvent> {
-      public eventType = sdk.Scene.InteractionType.KEY;
-      constructor(private cmd: CloseupView) {}
-      onEvent(event: KeyEvent) {
-        if (event.key === Keys.ESCAPE) {
-          this.cmd.removeNode();
-        }
-      }
-    }
-
     const input = this.node.addComponent('mp.input');
-    input.spyOnEvent(new KeySpy(this));
+    const keySpy = {
+      id: 'closeupView-key',
+      path: obj.addEmitPath(input, sdk.Scene.InteractionType.KEY),
+      onEvent: (event: KeyEvent) => {
+        if (event.key === Keys.ESCAPE) {
+          this.removeNode();
+        }
+      },
+    };
+    obj.spyOnEvent(keySpy);
 
     obj.bindPath(obj.addInputPath(cameraControl, 'camera'), obj.addOutputPath(closeupView, 'camera'));
     obj.bindPath(obj.addEventPath(closeupView, 'ONACCESSGRANTED'), obj.addEmitPath(cameraControl, 'ONACCESSGRANTED'));

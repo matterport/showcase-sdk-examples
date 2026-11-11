@@ -65,7 +65,7 @@ function createQuestionElement(question: Question, mpSdk: MpSdk) {
   goToBtn.addEventListener('click', () => {
     console.log(question.tag.id);
     // Legacy Method with no equivalent in Tag Namespace
-    mpSdk.Mattertag.navigateToTag(question.tag.id, mpSdk.Mattertag.Transition.FADEOUT).catch(console.error);
+    mpSdk.Mattertag.navigateToTag(question.tag.id, mpSdk.Camera.TransitionType.FADEOUT).catch(console.error);
   });
   return questionElement;
 }

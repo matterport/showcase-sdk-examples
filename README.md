@@ -7,6 +7,7 @@
   - [Run packages](#run-packages)
   - [Clean packages](#clean-packages)
   - [Make a prod build](#make-a-prod-build)
+  - [Assets](#assets)
   - [Packages](#packages)
     - [vs-app](#vs-app)
     - [rc-app](#rc-app)
@@ -71,6 +72,10 @@ You will need to bootstrap after cleaning.
 ```shell
 > yarn build-all-prod
 ```
+
+### Assets
+
+The examples load their 3D models and textures from `https://static.matterport.com/showcase-sdk/examples/<version>/assets`, where `<version>` comes from `assetVersion` in the root `package.json`.
 
 ### Packages
 
